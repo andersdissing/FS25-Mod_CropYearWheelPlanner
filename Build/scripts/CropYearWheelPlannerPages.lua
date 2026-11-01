@@ -331,12 +331,14 @@ local function drawColumns(state, plan, crops, x, y, w, h)
                     P.openEditor(state, plan, { type = "seed", i = seed.i })
                 end,
             })
-            local c = crop.color or { 0.5, 0.5, 0.5 }
-            UI.rect(cx + px(20), cy + cardH - py(24), px(12), py(12), { c[1], c[2], c[3], 1 })
-            local textW = cw - px(60)
-            UI.text(cx + px(40), cy + cardH - py(26), py(15), UI.fit(cropLabel(crop), py(15), textW, true), C.text, "left", true)
-            UI.text(cx + px(40), cy + py(24), py(12), UI.fit(line1, py(12), textW), C.muted)
-            UI.text(cx + px(40), cy + py(8), py(12), UI.fit(line2, py(12), textW), C.muted)
+            -- The game's crop icon on a square in the crop's colour (grey square for crops not on this map)
+            local iconS = py(40)
+            local iconW = UI.cropSquare(crop, cx + px(18), cy + (cardH - iconS) * 0.5, iconS)
+            local tx = cx + px(18) + iconW + px(10)
+            local textW = cx + cw - px(16) - tx
+            UI.text(tx, cy + cardH - py(26), py(15), UI.fit(cropLabel(crop), py(15), textW, true), C.text, "left", true)
+            UI.text(tx, cy + py(24), py(12), UI.fit(line1, py(12), textW), C.muted)
+            UI.text(tx, cy + py(8), py(12), UI.fit(line2, py(12), textW), C.muted)
             cy = cy - py(8)
         end
         UI.button(state, cx + px(10), y + py(10), cw - px(20), py(38), t("cywp_addCrop"), {
