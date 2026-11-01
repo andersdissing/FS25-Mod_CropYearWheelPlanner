@@ -473,7 +473,8 @@ function P.drawPlans(state, area)
         { ring = C.green, id = "years", edit = true })
     local vx = sx + px(190)
     UI.label(vx, top - py(14), t("cywp_view"))
-    local columns = state.plansView ~= "rows"
+    -- Year rows is the default view; Columns only when the player picked it
+    local columns = state.plansView == "columns"
     UI.rect(vx, hy, px(250), py(40), C.panelDark)
     UI.button(state, vx, hy, px(120), py(40), string.upper(t("cywp_viewColumns")), {
         bg = columns and C.green or nil, fg = columns and C.dark or C.text, bold = true, size = py(13),
