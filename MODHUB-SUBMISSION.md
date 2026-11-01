@@ -3,6 +3,10 @@
 Copy-paste values for the upload form on modhub.giants-software.com (GIANTS account). In the order of the form.
 Checklist and rules: `Docs/PUBLISHING.md`.
 
+**Status 2026-11-01: version 1.0.0.0 submitted to the ModHub** (with screenshots), from the GitHub release
+v1.0.0.0 (commit 59687e7). Waiting for the GIANTS test. A fix after their feedback needs a new version number
+(for example 1.0.0.1): GIANTS does not accept a second upload with the same version.
+
 ## Meta Data
 
 | Field | Value |
