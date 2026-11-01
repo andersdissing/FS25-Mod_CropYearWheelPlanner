@@ -1,4 +1,4 @@
-"""Tests for Build/scripts/CropRotationPlanLogic.lua, run in a real Lua runtime (lupa).
+"""Tests for Build/scripts/CropYearWheelPlannerLogic.lua, run in a real Lua runtime (lupa).
 
 The expected values come from the plan editor mockup (Editor_Crop.dc.html): its crop calendar
 and its example 4-year plan.
@@ -12,7 +12,7 @@ from lupa import LuaRuntime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 lua = LuaRuntime(unpack_returned_tuples=True)
-lua.execute(open(os.path.join(ROOT, "Build/scripts/CropRotationPlanLogic.lua"), encoding="utf-8").read())
+lua.execute(open(os.path.join(ROOT, "Build/scripts/CropYearWheelPlannerLogic.lua"), encoding="utf-8").read())
 
 # Mockup calendar: sow months and months from sowing to harvest
 lua.execute("""
@@ -25,7 +25,7 @@ CROPS = {
   CARROT = { name = "CARROT", sow = {4, 5, 6, 7}, grow = 4 },
   POTATO = { name = "POTATO", sow = {3, 4}, grow = 5 },
   GRASS = { name = "GRASS", sow = {3, 4, 5, 6, 7, 8, 9, 10, 11}, grow = 3, ley = true },
-  RICE = { name = "RICE", sow = {4, 5}, grow = 4, block = "crp_block_paddy" },
+  RICE = { name = "RICE", sow = {4, 5}, grow = 4, block = "cywp_block_paddy" },
 }
 CROP_LIST = {}
 for _, c in pairs(CROPS) do table.insert(CROP_LIST, c) end
@@ -37,7 +37,7 @@ function plan4()
 end
 function list(t) local out = {} for _, v in ipairs(t) do table.insert(out, v) end return out end
 """)
-L = lua.globals().CropRotationPlanLogic
+L = lua.globals().CropYearWheelPlannerLogic
 G = lua.globals()
 
 failures = []

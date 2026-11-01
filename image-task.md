@@ -2,10 +2,10 @@
 
 ## Setup (once)
 
-1. Game language **English**, mod **Crop Rotation Plan** active.
+1. Game language **English**, mod **Crop Year Wheel Planner** active.
 2. Developer console: in `Documents\My Games\FarmingSimulator2025\game.xml` set
    `<development><controls>true</controls></development>`. In game `~` opens the console.
-3. New career (or a copy of a savegame) on **Riverbend Springs**. Console: `crpLoadExample`
+3. New career (or a copy of a savegame) on **Riverbend Springs**. Console: `cywpLoadExample`
    (two plans, six field groups).
 4. Screenshot key: the game's own key saves to `Documents\My Games\FarmingSimulator2025\screenshots\`.
    Rename the files as below and put them in `Docs/screenshots/`.
@@ -24,7 +24,7 @@
 |---|---|---|---|
 | 1 | `01_fields.png` | A nice view over fields. **No text, no HUD at all** (ModHub rule for the first image). | Hide the HUD (Settings > Controls: hide HUD key). |
 | 2 | `02_plan_on_screen.png` | The on-screen plan (Full, Top) over a field, with a yellow **Now:** line. | Pick a month with work, e.g. July. HUD on. |
-| 3 | `03_plan_editor.png` | Esc > Crop rotation plan > Plans > **Edit plan**: a gap selected, a crop picked, sow buttons and the green result visible. | **+ New plan**, Edit plan, click **Wheat**. Cancel afterwards. |
+| 3 | `03_plan_editor.png` | Esc > Crop Year Wheel Planner > Plans > **Edit plan**: a gap selected, a crop picked, sow buttons and the green result visible. | **+ New plan**, Edit plan, click **Wheat**. Cancel afterwards. |
 
 ## B. Screen-shape check (only for me, not published)
 

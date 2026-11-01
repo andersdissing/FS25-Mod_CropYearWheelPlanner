@@ -1,4 +1,4 @@
-# Hand-off: FS25_CropRotationPlan
+# Hand-off: FS25_CropYearWheelPlanner
 
 Status 2026-10-30. Written for the next Claude Code session and for Anders (owner).
 
@@ -22,7 +22,7 @@ with `en` and `da`.
 | Minimized view (icon) | Built, not yet seen in game. Yellow + count = work this month, green = next month, grey = nothing, red = config error. |
 | Alt+R full/minimized | Listed in the F1 help list in game; pressing it not yet reported. |
 | Position top/left | Built (top default: x=0.20, topY=0.99). Not yet seen in game. |
-| Plan from XML (`modSettings/FS25_CropRotationPlan/cropRotationPlan.xml`) | Built and unit-tested; to be replaced by savegame storage + editor in v2. |
+| Plan from XML (`modSettings/FS25_CropYearWheelPlanner/cropYearWheelPlanner.xml`) | Built and unit-tested; to be replaced by savegame storage + editor in v2. |
 | Own tab in Esc menu | Registered (v1.3.1, Courseplay method) and shows, BUT rows render white with unreadable text, and the tab is at the end instead of above Settings. Screenshot `Docs/screenshots/2026-10-30_ingame_tab_v1.3.1.png`. |
 | Multiplayer | Not supported (`<multiplayer supported="false"/>`). |
 
@@ -37,7 +37,7 @@ Sections 2 and 4 above describe v1.3.1. This section is the current state; where
 - Multiplayer: by default only the farm manager may edit a farm's plans. One switch per farm ("Farm manager only" / "Everyone on the farm"), which only the farm manager can change (decided 2026-10-30, option A; per-player permissions were rejected as too complex). The Multiplayer settings section shows only in multiplayer, with a "Your rights" status row.
 - No import of the old modSettings XML. The start year is gone; each field group has "Plan year now" (set on the Field groups tab).
 - Rice: still open, GitHub issue #1.
-- Repo: https://github.com/andersdissing/FS25-Mod_CropRotationPlan (private). Releases: tag `v<modDesc version>`, see below.
+- Repo: https://github.com/andersdissing/FS25-Mod_CropYearWheelPlanner (private). Releases: tag `v<modDesc version>`, see below.
 
 ### What v2 is (versions 2.0.0.0 to 2.2.0.0)
 | Part | State |
@@ -48,21 +48,21 @@ Sections 2 and 4 above describe v1.3.1. This section is the current state; where
 | Plan editor (year wheel, gaps, crops that fit, sow month, ley + cut interval, follow-ups, Save/Cancel) | As above. |
 | Field groups (fields from farmland ownership, plan, plan year now, crops this year) | As above: 3 groups saved. |
 | Crops from the game | Worked in game: "25 crops read from the game" on Riverbend. |
-| Storage in `<savegame>/cropRotationPlan.xml`, new savegame empty | Worked in game (v2.0 file seen). v2.1 writes version 3 (per farm) and reads v2.0 files as farm 1. |
+| Storage in `<savegame>/cropYearWheelPlanner.xml`, new savegame empty | Worked in game (v2.0 file seen). v2.1 writes version 3 (per farm) and reads v2.0 files as farm 1. |
 | On-screen plan from the new data | Built; not reported. |
 | Multiplayer (v2.1) and edit permission (v2.2) | Built and tested only in the smoke test (server + clients, manager / non-manager / spectator), NOT in a real MP game yet. |
 | Known error | `TabbedMenu.lua:285 'iconFilename'` once when quitting a savegame (also in v1.3.1). Harmless so far. GitHub issue #2. |
 
 ### Files (Build/scripts)
-- `CropRotationPlan.lua` main: local settings, current farm, on-screen plan, input, load/save hooks, console `crpLoadExample` (server only) and `crpReloadCrops`.
-- `CropRotationPlanLogic.lua` pure plan rules ported from `Editor_Crop.dc.html`: absolute months (t = 0 is Jan of plan year 1), gaps, sow choices, ley durations and cuts, overlaps, year rows, plan year from (planYear, anchorYear), tasks and group status. Calendar year = game year + 1 in Jan/Feb (game years run Mar to Feb, plans Jan to Dec).
-- `CropRotationPlanCrops.lua` crops read like the game's crop calendar: `getFruitTypes()` filtered to `shownOnMap`, `getIsPlantableInPeriod/getIsHarvestableInPeriod(missionInfo.growthMode, period)` in pcall, title and `hudOverlayFilename` from the fill type. Growth time = first plantable period of the window to the first harvestable period after it. Built-in calendar as fallback (non-seasonal growth). Blocked: trees, sugarcane, meadow, catch crops, crops harvested all year, rice (paddy).
-- `CropRotationPlanData.lua` data per farm `{ grassInRotation, plans, groups, nextPlanId, nextGroupId }`, savegame XML v3, local settings `modSettings/FS25_CropRotationPlan/settings.xml` (display, position), network stream read/write, edit helpers, example plan.
-- `CropRotationPlanSync.lua` multiplayer: `CropRotationPlanSync.request(op)` is the only way the UI changes data. Server/single player applies at once; a client sends `CropRotationPlanEditEvent`. The server takes user and farm from the connection (`userManager:getUserIdByConnection`, `g_farmManager:getFarmByUserId`), checks the edit right (`farm.editPermission`, `g_farmManager:getFarmById(id):isUserFarmManager(userId)`; local player: `g_currentMission.playerUserId`; multiplayer: `missionDynamicInfo.isMultiplayer`), validates (spectator, plan limits and overlaps, field owned by the farm), saves and broadcasts `CropRotationPlanStateEvent` for that farm. Rejected edit: warning in the log, sender gets the state back. Joining players get all farms via `FSBaseMission.sendInitialClientState`.
-- `CropRotationPlanUI.lua` small immediate-mode toolkit (rects, text, buttons, steppers, crop icons, tooltips, clickable boxes).
-- `CropRotationPlanPages.lua` the Plans, plan editor and Field groups pages.
+- `CropYearWheelPlanner.lua` main: local settings, current farm, on-screen plan, input, load/save hooks, console `cywpLoadExample` (server only) and `cywpReloadCrops`.
+- `CropYearWheelPlannerLogic.lua` pure plan rules ported from `Editor_Crop.dc.html`: absolute months (t = 0 is Jan of plan year 1), gaps, sow choices, ley durations and cuts, overlaps, year rows, plan year from (planYear, anchorYear), tasks and group status. Calendar year = game year + 1 in Jan/Feb (game years run Mar to Feb, plans Jan to Dec).
+- `CropYearWheelPlannerCrops.lua` crops read like the game's crop calendar: `getFruitTypes()` filtered to `shownOnMap`, `getIsPlantableInPeriod/getIsHarvestableInPeriod(missionInfo.growthMode, period)` in pcall, title and `hudOverlayFilename` from the fill type. Growth time = first plantable period of the window to the first harvestable period after it. Built-in calendar as fallback (non-seasonal growth). Blocked: trees, sugarcane, meadow, catch crops, crops harvested all year, rice (paddy).
+- `CropYearWheelPlannerData.lua` data per farm `{ grassInRotation, plans, groups, nextPlanId, nextGroupId }`, savegame XML v3, local settings `modSettings/FS25_CropYearWheelPlanner/settings.xml` (display, position), network stream read/write, edit helpers, example plan.
+- `CropYearWheelPlannerSync.lua` multiplayer: `CropYearWheelPlannerSync.request(op)` is the only way the UI changes data. Server/single player applies at once; a client sends `CropYearWheelPlannerEditEvent`. The server takes user and farm from the connection (`userManager:getUserIdByConnection`, `g_farmManager:getFarmByUserId`), checks the edit right (`farm.editPermission`, `g_farmManager:getFarmById(id):isUserFarmManager(userId)`; local player: `g_currentMission.playerUserId`; multiplayer: `missionDynamicInfo.isMultiplayer`), validates (spectator, plan limits and overlaps, field owned by the farm), saves and broadcasts `CropYearWheelPlannerStateEvent` for that farm. Rejected edit: warning in the log, sender gets the state back. Joining players get all farms via `FSBaseMission.sendInitialClientState`.
+- `CropYearWheelPlannerUI.lua` small immediate-mode toolkit (rects, text, buttons, steppers, crop icons, tooltips, clickable boxes).
+- `CropYearWheelPlannerPages.lua` the Plans, plan editor and Field groups pages.
 - `translations/l10n_en.xml`, `_de.xml`, `_da.xml` all UI texts (modDesc `<l10n filenamePrefix="translations/l10n"/>`, FS25 format `<l10n><texts><text name text/>`); title and description stay in modDesc. EN + DE are ModHub requirements; the German was written by Claude and needs a native proofread.
-- `CropRotationPlanFrame.lua` + `gui/CropRotationPlanFrame.xml` the tab. Plans and Field groups containers are empty in the XML; the frame's `draw` draws the pages in the container's area and `mouseEvent` matches clicks against the boxes drawn.
+- `CropYearWheelPlannerFrame.lua` + `gui/CropYearWheelPlannerFrame.xml` the tab. Plans and Field groups containers are empty in the XML; the frame's `draw` draws the pages in the container's area and `mouseEvent` matches clicks against the boxes drawn.
 
 ### Verified facts and pitfalls learned in v1.3.2 to v2.1
 - Settings rows (`fs25_multiTextOptionContainer`) are white by default; colour them with `InGameMenuSettingsFrame.COLOR_ALTERNATING[isEven]`, restarting after each `name="sectionHeader"` (as AutoDrive and AdvancedDamageSystem do). This fixed the white rows.
@@ -79,7 +79,7 @@ Sections 2 and 4 above describe v1.3.1. This section is the current state; where
 - `tests/test_logic.py` plan rules in a real Lua runtime (`pip install lupa`).
 - `tests/smoke_test.py` the whole mod against a stubbed FS25: single-player play-through, savegame round trip, v2.0 file migration, 3000 random clicks; then multiplayer with one server and two clients in separate Lua runtimes, events written and read through a stream, bad edits rejected, 1500 random client clicks. Catches nil errors and wrong `string.format` arguments (real l10n texts), not layout problems.
 - `tools/deploy.ps1` builds the zip, kills FS25, keeps the last `log.txt` in `dist/logs/`, copies to the mods folder, starts the game via Steam (`-NoStart` to skip).
-- `tools/release.ps1 <version>` sets `<version>` in modDesc, tags `v<version>`, pushes; `.github/workflows/release.yml` fails if tag and modDesc differ, runs the checks and tests, publishes the release with `FS25_CropRotationPlan.zip` (file name never carries the version: the game takes the mod name from it).
+- `tools/release.ps1 <version>` sets `<version>` in modDesc, tags `v<version>`, pushes; `.github/workflows/release.yml` fails if tag and modDesc differ, runs the checks and tests, publishes the release with `FS25_CropYearWheelPlanner.zip` (file name never carries the version: the game takes the mod name from it).
 
 ### Next steps
 1. Test v2.1 in game: single player (plans from v2.0 must still be there as farm 1), then a real multiplayer session (host + one client, two farms).
@@ -96,7 +96,7 @@ https://claude.ai/artifact/SYuc3GY6Ye25LLeRJUDdUX (interactive; the logic in the
 
 ### 3.1 Menu tab
 - Own tab in the Esc menu, placed directly ABOVE the base game Settings tab (not last).
-- Header "Crop rotation plan" and three sub-tabs: Settings, Plans, Field groups.
+- Header "Crop Year Wheel Planner" and three sub-tabs: Settings, Plans, Field groups.
 - Look and feel must be the base game's. Build rows by cloning base-game elements (see 5.3), not from hand-written profiles.
 
 ### 3.2 Settings sub-tab (mockup 1)
@@ -147,7 +147,7 @@ https://claude.ai/artifact/SYuc3GY6Ye25LLeRJUDdUX (interactive; the logic in the
 ### 3.8 Storage
 - In the SAVEGAME (per savegame), not in modSettings. The owner must never copy an XML file by hand.
 - New savegame = empty plan, no field groups. The Riverbend plan in today's `defaultConfig.xml` is only an example/test fixture.
-- Optional: one-time import of an existing `modSettings/.../cropRotationPlan.xml` (v1.1 to v1.3 users).
+- Optional: one-time import of an existing `modSettings/.../cropYearWheelPlanner.xml` (v1.1 to v1.3 users).
 
 ### 3.9 Multiplayer
 - Server is authoritative: plans, field groups and settings that matter to all (grass on/off) live on the server and are saved with the savegame.
@@ -164,17 +164,17 @@ https://claude.ai/artifact/SYuc3GY6Ye25LLeRJUDdUX (interactive; the logic in the
 
 ```
 mod/                    The mod as it ships (zip the contents, not the folder)
-  modDesc.xml           descVersion 105, l10n inline (en, da), action CRP_TOGGLE_SIZE (Alt+R)
-  scripts/CropRotationPlan.lua        main: settings, HUD drawing, input, loadMap/deleteMap
-  scripts/CropRotationPlanLogic.lua   pure functions: period/month, cycle year, field status
-  scripts/CropRotationPlanConfig.lua  XML plan read/compile/validate (v1.x storage)
-  scripts/CropRotationPlanFrame.lua   Esc menu tab (v1.3.1)
-  gui/CropRotationPlanFrame.xml       tab layout (renders badly, replace)
+  modDesc.xml           descVersion 105, l10n inline (en, da), action CYWP_TOGGLE_SIZE (Alt+R)
+  scripts/CropYearWheelPlanner.lua        main: settings, HUD drawing, input, loadMap/deleteMap
+  scripts/CropYearWheelPlannerLogic.lua   pure functions: period/month, cycle year, field status
+  scripts/CropYearWheelPlannerConfig.lua  XML plan read/compile/validate (v1.x storage)
+  scripts/CropYearWheelPlannerFrame.lua   Esc menu tab (v1.3.1)
+  gui/CropYearWheelPlannerFrame.xml       tab layout (renders badly, replace)
   defaultConfig.xml     the owner's Riverbend plan, used as test fixture
 tests/
   check_static.py       XML, Lua block balance, l10n keys
   check_config.py       Python mirror of the config compiler, checks defaultConfig.xml gives the original plan
-tools/build.sh          runs the checks and builds dist/FS25_CropRotationPlan.zip
+tools/build.sh          runs the checks and builds dist/FS25_CropYearWheelPlanner.zip
 docs/mockups/           the agreed UI mockups (.dc.html, open in the canvas link above)
 Docs/screenshots/       in-game screenshots and the log of the v1.3.0 menu freeze
 ```
@@ -194,7 +194,7 @@ Docs/screenshots/       in-game screenshots and the log of the v1.3.0 menu freez
 - `GuiUtils.getUVs` defaults to a 1024x1024 texture; pass the real size.
 - Clean up on `deleteMap`: `menu:unregisterPage(Class)`, `pagingElement:removeElement(frame)`, `updatePageMapping`, `frame:delete()`, `g_gui.frames[name] = nil`.
 - Tooltip `Text` inside a `MultiTextOption` needs `name="tooltip"` or the log warns.
-- v1.3.1 rows are white with invisible text: the hand-written profile combination in `gui/CropRotationPlanFrame.xml` does not get the base game's settings styling. The v1.2 approach (clone `InGameMenuSettingsFrame.multiTimeScale.parent`, and the section header element) showed up in the General settings page in game (the owner found it); how it looked was not reported. Clone base-game elements into the tab, or copy the base game's settings frame structure (Courseplay's `GlobalSettingsFrame.xml` is a working FS25 reference).
+- v1.3.1 rows are white with invisible text: the hand-written profile combination in `gui/CropYearWheelPlannerFrame.xml` does not get the base game's settings styling. The v1.2 approach (clone `InGameMenuSettingsFrame.multiTimeScale.parent`, and the section header element) showed up in the General settings page in game (the owner found it); how it looked was not reported. Clone base-game elements into the tab, or copy the base game's settings frame structure (Courseplay's `GlobalSettingsFrame.xml` is a working FS25 reference).
 
 ### 5.3 Reference code
 - LUADOC (community): https://github.com/umbraprior/FS25-Community-LUADOC
@@ -205,7 +205,7 @@ Docs/screenshots/       in-game screenshots and the log of the v1.3.0 menu freez
 
 ### 5.4 Testing
 - No FS25 and no Lua interpreter in the cloud sandbox. Logic is tested through Python mirrors (`tests/`). Compiling Lua from source was blocked there.
-- In game: copy `dist/FS25_CropRotationPlan.zip` to `Documents\My Games\FarmingSimulator2025\mods`. After a session, `Documents\My Games\FarmingSimulator2025\log.txt`; search `CropRotationPlan` and `Error`. Copy the log right after closing the game (a new start overwrites it).
+- In game: copy `dist/FS25_CropYearWheelPlanner.zip` to `Documents\My Games\FarmingSimulator2025\mods`. After a session, `Documents\My Games\FarmingSimulator2025\log.txt`; search `CropYearWheelPlanner` and `Error`. Copy the log right after closing the game (a new start overwrites it).
 - Before ModHub: GIANTS TestRunner on the unzipped mod folder.
 
 ## 6. Suggested order of work

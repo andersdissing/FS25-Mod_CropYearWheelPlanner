@@ -1,58 +1,58 @@
--- CropRotationPlan.lua
+-- CropYearWheelPlanner.lua
 -- FS25 mod: crop rotation plans built in the game, shown on screen.
 --
--- Per farm, kept by the server and stored in <savegame>/cropRotationPlan.xml (CropRotationPlanData):
+-- Per farm, kept by the server and stored in <savegame>/cropYearWheelPlanner.xml (CropYearWheelPlannerData):
 --   plans        name, years in cycle, seeds (crop + sow month)
 --   field groups fields, plan, "plan year now"
 --   grass in rotation
 -- Per player, stored on the player's PC (modSettings): display full / minimized / hidden, position.
--- A new savegame starts empty; plans and field groups are made in the menu (Esc) > Crop rotation plan.
--- Multiplayer: edits go through the server (CropRotationPlanSync).
+-- A new savegame starts empty; plans and field groups are made in the menu (Esc) > Crop Year Wheel Planner.
+-- Multiplayer: edits go through the server (CropYearWheelPlannerSync).
 --
 -- Alt+R (rebindable in Settings > Controls) switches between full and minimized.
 -- Minimized is a single icon: yellow = tasks now (with count), green = tasks next month, grey = nothing.
 
 local modDirectory = g_currentModDirectory
 
-source(modDirectory .. "scripts/CropRotationPlanLogic.lua")
-source(modDirectory .. "scripts/CropRotationPlanCrops.lua")
-source(modDirectory .. "scripts/CropRotationPlanData.lua")
-source(modDirectory .. "scripts/CropRotationPlanSync.lua")
-source(modDirectory .. "scripts/CropRotationPlanUI.lua")
-source(modDirectory .. "scripts/CropRotationPlanPages.lua")
-source(modDirectory .. "scripts/CropRotationPlanFrame.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerLogic.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerCrops.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerData.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerSync.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerUI.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerPages.lua")
+source(modDirectory .. "scripts/CropYearWheelPlannerFrame.lua")
 
-CropRotationPlan = {}
-CropRotationPlan.modDirectory = modDirectory
+CropYearWheelPlanner = {}
+CropYearWheelPlanner.modDirectory = modDirectory
 
-CropRotationPlan.DISPLAY_FULL = "full"
-CropRotationPlan.DISPLAY_COMPACT = "compact"
-CropRotationPlan.DISPLAY_MINIMIZED = "minimized"
-CropRotationPlan.DISPLAY_HIDDEN = "hidden"
+CropYearWheelPlanner.DISPLAY_FULL = "full"
+CropYearWheelPlanner.DISPLAY_COMPACT = "compact"
+CropYearWheelPlanner.DISPLAY_MINIMIZED = "minimized"
+CropYearWheelPlanner.DISPLAY_HIDDEN = "hidden"
 -- Order used by the settings option (state 1..3)
-CropRotationPlan.DISPLAY_MODES = CropRotationPlanData.DISPLAY_MODES
+CropYearWheelPlanner.DISPLAY_MODES = CropYearWheelPlannerData.DISPLAY_MODES
 
 -- Where on screen the plan is drawn (state 1..2 in the settings option)
-CropRotationPlan.POSITIONS = CropRotationPlanData.POSITIONS
-CropRotationPlan.ANCHORS = {
+CropYearWheelPlanner.POSITIONS = CropYearWheelPlannerData.POSITIONS
+CropYearWheelPlanner.ANCHORS = {
     top = { x = 0.20, topY = 0.99 },   -- top of the screen, between the help list and the right-hand HUD
     left = { x = 0.012, topY = 0.67 }, -- left side above the minimap
 }
 
-CropRotationPlan.data = CropRotationPlanData.new()
-CropRotationPlan.settings = CropRotationPlanData.newLocalSettings()
+CropYearWheelPlanner.data = CropYearWheelPlannerData.new()
+CropYearWheelPlanner.settings = CropYearWheelPlannerData.newLocalSettings()
 
 -- Caches (issue #5). dataVersion goes up whenever plans or field groups change (edit applied on the
 -- server, state received on a client, load, example). The on-screen plan and the menu pages keep
 -- what they computed and only rebuild it when a key they depend on changes, instead of every frame.
 -- cacheEnabled = false turns all caches off (used by tests/smoke_test.py to compare the output).
-CropRotationPlan.dataVersion = 0
-CropRotationPlan.cacheEnabled = true
-CropRotationPlan.hudCache = nil
-CropRotationPlan.cropsCache = nil
+CropYearWheelPlanner.dataVersion = 0
+CropYearWheelPlanner.cacheEnabled = true
+CropYearWheelPlanner.hudCache = nil
+CropYearWheelPlanner.cropsCache = nil
 
 -- Layout (normalized screen coordinates, origin bottom-left)
-CropRotationPlan.UI = {
+CropYearWheelPlanner.UI = {
     x = 0.012,
     topY = 0.67,
     textSize = 0.0135,
@@ -87,22 +87,22 @@ local function t(key)
 end
 
 local function monthName(month)
-    return t("crp_month_" .. tostring(month))
+    return t("cywp_month_" .. tostring(month))
 end
-CropRotationPlan.monthName = monthName
+CropYearWheelPlanner.monthName = monthName
 
-function CropRotationPlan.taskText(task)
-    return string.format("%s %s", t("crp_action_" .. task.action), CropRotationPlanCrops.getTitle(task.crop))
+function CropYearWheelPlanner.taskText(task)
+    return string.format("%s %s", t("cywp_action_" .. task.action), CropYearWheelPlannerCrops.getTitle(task.crop))
 end
 
-function CropRotationPlan:getEnvironment()
+function CropYearWheelPlanner:getEnvironment()
     if g_currentMission == nil then
         return nil
     end
     return g_currentMission.environment
 end
 
-function CropRotationPlan:getCurrentYear()
+function CropYearWheelPlanner:getCurrentYear()
     local env = self:getEnvironment()
     if env == nil or env.currentYear == nil then
         return 1
@@ -110,7 +110,7 @@ function CropRotationPlan:getCurrentYear()
     return env.currentYear
 end
 
-function CropRotationPlan:getCurrentPeriod()
+function CropYearWheelPlanner:getCurrentPeriod()
     local env = self:getEnvironment()
     if env == nil or env.currentPeriod == nil then
         return 1
@@ -118,17 +118,17 @@ function CropRotationPlan:getCurrentPeriod()
     return env.currentPeriod
 end
 
-function CropRotationPlan:getCurrentMonth()
-    return CropRotationPlanLogic.periodToMonth(self:getCurrentPeriod())
+function CropYearWheelPlanner:getCurrentMonth()
+    return CropYearWheelPlannerLogic.periodToMonth(self:getCurrentPeriod())
 end
 
 -- Calendar year (January to December) that plan years are counted in
-function CropRotationPlan:getCalendarYear()
-    return CropRotationPlanLogic.calendarYear(self:getCurrentYear(), self:getCurrentPeriod())
+function CropYearWheelPlanner:getCalendarYear()
+    return CropYearWheelPlannerLogic.calendarYear(self:getCurrentYear(), self:getCurrentPeriod())
 end
 
 -- Farm of the local player (1 in single player; 0 = spectator)
-function CropRotationPlan:getFarmId()
+function CropYearWheelPlanner:getFarmId()
     if g_currentMission ~= nil and g_currentMission.getFarmId ~= nil then
         local farmId = g_currentMission:getFarmId()
         if farmId ~= nil then
@@ -139,60 +139,60 @@ function CropRotationPlan:getFarmId()
 end
 
 -- User id of the local player (multiplayer)
-function CropRotationPlan:getUserId()
+function CropYearWheelPlanner:getUserId()
     if g_currentMission ~= nil then
         return g_currentMission.playerUserId
     end
     return nil
 end
 
-function CropRotationPlan:isMultiplayer()
-    return CropRotationPlanSync.isMultiplayer()
+function CropYearWheelPlanner:isMultiplayer()
+    return CropYearWheelPlannerSync.isMultiplayer()
 end
 
 -- May the local player edit the farm's plans / change who can edit?
-function CropRotationPlan:canEdit()
-    return CropRotationPlanSync.canEdit(self:getFarmId(), self:getUserId())
+function CropYearWheelPlanner:canEdit()
+    return CropYearWheelPlannerSync.canEdit(self:getFarmId(), self:getUserId())
 end
 
-function CropRotationPlan:canChangePermission()
-    return CropRotationPlanSync.canChangePermission(self:getFarmId(), self:getUserId())
+function CropYearWheelPlanner:canChangePermission()
+    return CropYearWheelPlannerSync.canChangePermission(self:getFarmId(), self:getUserId())
 end
 
-function CropRotationPlan:getEveryoneCanEdit()
-    return self:getFarm().editPermission == CropRotationPlanData.EDIT_EVERYONE
+function CropYearWheelPlanner:getEveryoneCanEdit()
+    return self:getFarm().editPermission == CropYearWheelPlannerData.EDIT_EVERYONE
 end
 
-function CropRotationPlan:setEveryoneCanEdit(everyone)
-    CropRotationPlanSync.request({ type = CropRotationPlanSync.OP.SET_PERMISSION, value = everyone })
+function CropYearWheelPlanner:setEveryoneCanEdit(everyone)
+    CropYearWheelPlannerSync.request({ type = CropYearWheelPlannerSync.OP.SET_PERMISSION, value = everyone })
 end
 
-function CropRotationPlan:isSpectator()
+function CropYearWheelPlanner:isSpectator()
     local spectator = (FarmManager ~= nil and FarmManager.SPECTATOR_FARM_ID) or 0
     return self:getFarmId() == spectator
 end
 
 -- Plans, field groups and grass setting of the local player's farm
-function CropRotationPlan:getFarm()
-    return CropRotationPlanData.getFarm(self.data, self:getFarmId(), true)
+function CropYearWheelPlanner:getFarm()
+    return CropYearWheelPlannerData.getFarm(self.data, self:getFarmId(), true)
 end
 
 -- Plans or field groups changed: every cache is rebuilt on next use
-function CropRotationPlan:dataChanged()
+function CropYearWheelPlanner:dataChanged()
     self.dataVersion = self.dataVersion + 1
 end
 
 -- Crop lookup (name -> crop) incl. stand-ins for crops in the farm's plans that this map lacks
-function CropRotationPlan:getCrops()
+function CropYearWheelPlanner:getCrops()
     local farmId = self:getFarmId()
     local c = self.cropsCache
     if c == nil or not self.cacheEnabled or c.farmId ~= farmId or c.version ~= self.dataVersion
-        or c.cropsVersion ~= CropRotationPlanCrops.version then
+        or c.cropsVersion ~= CropYearWheelPlannerCrops.version then
         c = {
             farmId = farmId,
             version = self.dataVersion,
-            cropsVersion = CropRotationPlanCrops.version,
-            value = CropRotationPlanCrops.getLookup(self:getFarm().plans),
+            cropsVersion = CropYearWheelPlannerCrops.version,
+            value = CropYearWheelPlannerCrops.getLookup(self:getFarm().plans),
         }
         self.cropsCache = c
     end
@@ -212,39 +212,39 @@ local function indexOf(list, value)
     return 1
 end
 
-function CropRotationPlan:getDisplayModeIndex()
-    return indexOf(CropRotationPlan.DISPLAY_MODES, self.settings.displayMode)
+function CropYearWheelPlanner:getDisplayModeIndex()
+    return indexOf(CropYearWheelPlanner.DISPLAY_MODES, self.settings.displayMode)
 end
 
-function CropRotationPlan:getPositionIndex()
-    return indexOf(CropRotationPlan.POSITIONS, self.settings.position)
+function CropYearWheelPlanner:getPositionIndex()
+    return indexOf(CropYearWheelPlanner.POSITIONS, self.settings.position)
 end
 
 -- Display and position are the player's own: saved on this PC, not sent to anyone
-function CropRotationPlan:setDisplayMode(mode)
+function CropYearWheelPlanner:setDisplayMode(mode)
     self.settings.displayMode = mode
-    CropRotationPlanData.saveLocal(self.settings)
+    CropYearWheelPlannerData.saveLocal(self.settings)
 end
 
-function CropRotationPlan:setPosition(position)
-    if CropRotationPlan.ANCHORS[position] ~= nil then
+function CropYearWheelPlanner:setPosition(position)
+    if CropYearWheelPlanner.ANCHORS[position] ~= nil then
         self.settings.position = position
-        CropRotationPlanData.saveLocal(self.settings)
+        CropYearWheelPlannerData.saveLocal(self.settings)
     end
 end
 
-function CropRotationPlan:getGrassInRotation()
+function CropYearWheelPlanner:getGrassInRotation()
     return self:getFarm().grassInRotation
 end
 
-function CropRotationPlan:setGrassInRotation(allowed)
-    CropRotationPlanSync.request({ type = CropRotationPlanSync.OP.SET_GRASS, value = allowed })
+function CropYearWheelPlanner:setGrassInRotation(allowed)
+    CropYearWheelPlannerSync.request({ type = CropYearWheelPlannerSync.OP.SET_GRASS, value = allowed })
 end
 
 -- Only the server writes the savegame file
-function CropRotationPlan:save()
+function CropYearWheelPlanner:save()
     if g_server ~= nil then
-        CropRotationPlanData.save(self.data)
+        CropYearWheelPlannerData.save(self.data)
     end
 end
 
@@ -252,58 +252,58 @@ end
 -- Mod event listener
 ---------------------------------------------------------------------------
 
-function CropRotationPlan:loadMap(filename)
-    local settings, existed = CropRotationPlanData.loadLocal()
+function CropYearWheelPlanner:loadMap(filename)
+    local settings, existed = CropYearWheelPlannerData.loadLocal()
     self.settings = settings
     if g_server ~= nil then
-        local data, oldDisplay = CropRotationPlanData.load()
+        local data, oldDisplay = CropYearWheelPlannerData.load()
         self.data = data
         if not existed and oldDisplay ~= nil then
             -- v2.0 kept display and position in the savegame
-            CropRotationPlanData.applyOldDisplay(self.settings, oldDisplay)
-            CropRotationPlanData.saveLocal(self.settings)
+            CropYearWheelPlannerData.applyOldDisplay(self.settings, oldDisplay)
+            CropYearWheelPlannerData.saveLocal(self.settings)
         end
     end
-    -- A client keeps self.data: it is filled by the server's CropRotationPlanStateEvent
-    CropRotationPlanCrops.load()
+    -- A client keeps self.data: it is filled by the server's CropYearWheelPlannerStateEvent
+    CropYearWheelPlannerCrops.load()
     self:dataChanged()
     -- A dedicated server has no screen: no on-screen plan and no menu tab there
     if g_dedicatedServer == nil then
         self.iconOverlay = Overlay.new(modDirectory .. "icon_minimized.dds", 0, 0, 0, 0)
-        CropRotationPlanFrame.install(modDirectory)
+        CropYearWheelPlannerFrame.install(modDirectory)
     end
-    addConsoleCommand("crpLoadExample", "Crop rotation plan: replace plans and field groups with the Riverbend Springs example", "consoleLoadExample", self)
-    addConsoleCommand("crpReloadCrops", "Crop rotation plan: read the crops from the game again", "consoleReloadCrops", self)
+    addConsoleCommand("cywpLoadExample", "Crop Year Wheel Planner: replace plans and field groups with the Riverbend Springs example", "consoleLoadExample", self)
+    addConsoleCommand("cywpReloadCrops", "Crop Year Wheel Planner: read the crops from the game again", "consoleReloadCrops", self)
 end
 
-function CropRotationPlan:deleteMap()
-    removeConsoleCommand("crpLoadExample")
-    removeConsoleCommand("crpReloadCrops")
-    CropRotationPlanFrame.uninstall()
-    CropRotationPlanUI.deleteIcons()
+function CropYearWheelPlanner:deleteMap()
+    removeConsoleCommand("cywpLoadExample")
+    removeConsoleCommand("cywpReloadCrops")
+    CropYearWheelPlannerFrame.uninstall()
+    CropYearWheelPlannerUI.deleteIcons()
     if self.iconOverlay ~= nil then
         self.iconOverlay:delete()
         self.iconOverlay = nil
     end
 end
 
-function CropRotationPlan:consoleLoadExample()
+function CropYearWheelPlanner:consoleLoadExample()
     if g_server == nil then
-        return "Crop rotation plan: crpLoadExample only works on the server"
+        return "Crop Year Wheel Planner: cywpLoadExample only works on the server"
     end
     local farm = self:getFarm()
-    CropRotationPlanData.loadExample(farm, self:getCalendarYear())
+    CropYearWheelPlannerData.loadExample(farm, self:getCalendarYear())
     self:dataChanged()
     self:save()
-    CropRotationPlanSync.broadcastFarm(self:getFarmId())
-    return string.format("Crop rotation plan: example loaded for farm %d (%d plans, %d field groups)", self:getFarmId(), #farm.plans, #farm.groups)
+    CropYearWheelPlannerSync.broadcastFarm(self:getFarmId())
+    return string.format("Crop Year Wheel Planner: example loaded for farm %d (%d plans, %d field groups)", self:getFarmId(), #farm.plans, #farm.groups)
 end
 
-function CropRotationPlan:consoleReloadCrops()
-    CropRotationPlanCrops.load()
+function CropYearWheelPlanner:consoleReloadCrops()
+    CropYearWheelPlannerCrops.load()
     self:dataChanged()
     local lines = {}
-    for _, crop in ipairs(CropRotationPlanCrops.list) do
+    for _, crop in ipairs(CropYearWheelPlannerCrops.list) do
         local months = {}
         for _, m in ipairs(crop.sow) do
             table.insert(months, tostring(m))
@@ -311,49 +311,49 @@ function CropRotationPlan:consoleReloadCrops()
         table.insert(lines, string.format("%s (%s): sow %s, grow %d%s", crop.title, crop.name, table.concat(months, ","), crop.grow or 0, crop.block and (", " .. crop.block) or ""))
     end
     print(table.concat(lines, "\n"))
-    return string.format("Crop rotation plan: %d crops", #CropRotationPlanCrops.list)
+    return string.format("Crop Year Wheel Planner: %d crops", #CropYearWheelPlannerCrops.list)
 end
 
 ---------------------------------------------------------------------------
 -- Input
 ---------------------------------------------------------------------------
 
-function CropRotationPlan.registerActionEvents()
-    local inputAction = InputAction.CRP_TOGGLE_SIZE
+function CropYearWheelPlanner.registerActionEvents()
+    local inputAction = InputAction.CYWP_TOGGLE_SIZE
     if inputAction == nil then
         return
     end
-    local _, eventId = g_inputBinding:registerActionEvent(inputAction, CropRotationPlan, CropRotationPlan.onToggleSize, false, true, false, true)
+    local _, eventId = g_inputBinding:registerActionEvent(inputAction, CropYearWheelPlanner, CropYearWheelPlanner.onToggleSize, false, true, false, true)
     if eventId ~= nil then
-        g_inputBinding:setActionEventText(eventId, t("input_CRP_TOGGLE_SIZE"))
+        g_inputBinding:setActionEventText(eventId, t("input_CYWP_TOGGLE_SIZE"))
         g_inputBinding:setActionEventTextPriority(eventId, GS_PRIO_LOW)
     end
 end
 
 -- Full -> compact -> minimized -> full. From hidden the key brings it back as minimized.
-function CropRotationPlan:onToggleSize()
-    if self.settings.displayMode == CropRotationPlan.DISPLAY_FULL then
-        self:setDisplayMode(CropRotationPlan.DISPLAY_COMPACT)
-    elseif self.settings.displayMode == CropRotationPlan.DISPLAY_COMPACT then
-        self:setDisplayMode(CropRotationPlan.DISPLAY_MINIMIZED)
-    elseif self.settings.displayMode == CropRotationPlan.DISPLAY_MINIMIZED then
-        self:setDisplayMode(CropRotationPlan.DISPLAY_FULL)
+function CropYearWheelPlanner:onToggleSize()
+    if self.settings.displayMode == CropYearWheelPlanner.DISPLAY_FULL then
+        self:setDisplayMode(CropYearWheelPlanner.DISPLAY_COMPACT)
+    elseif self.settings.displayMode == CropYearWheelPlanner.DISPLAY_COMPACT then
+        self:setDisplayMode(CropYearWheelPlanner.DISPLAY_MINIMIZED)
+    elseif self.settings.displayMode == CropYearWheelPlanner.DISPLAY_MINIMIZED then
+        self:setDisplayMode(CropYearWheelPlanner.DISPLAY_FULL)
     else
-        self:setDisplayMode(CropRotationPlan.DISPLAY_MINIMIZED)
+        self:setDisplayMode(CropYearWheelPlanner.DISPLAY_MINIMIZED)
     end
 end
 
 PlayerInputComponent.registerGlobalPlayerActionEvents = Utils.appendedFunction(
     PlayerInputComponent.registerGlobalPlayerActionEvents,
     function(...)
-        CropRotationPlan.registerActionEvents()
+        CropYearWheelPlanner.registerActionEvents()
     end
 )
 
 -- Write the file with the savegame (also the first save of a new career, which creates the folder)
 if FSBaseMission ~= nil and FSBaseMission.saveSavegame ~= nil then
     FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, function(...)
-        CropRotationPlan:save()
+        CropYearWheelPlanner:save()
     end)
 end
 
@@ -366,16 +366,16 @@ local function fieldsText(fields)
     for _, id in ipairs(fields) do
         table.insert(parts, tostring(id))
     end
-    return string.format("%s %s", t(#fields == 1 and "crp_field" or "crp_fields"), table.concat(parts, ", "))
+    return string.format("%s %s", t(#fields == 1 and "cywp_field" or "cywp_fields"), table.concat(parts, ", "))
 end
 
 -- "Wheat -> Canola", grass as "Grass (ley)"
-function CropRotationPlan.cropsText(names)
+function CropYearWheelPlanner.cropsText(names)
     local parts = {}
     for _, name in ipairs(names) do
-        local crop = CropRotationPlanCrops.get(name)
+        local crop = CropYearWheelPlannerCrops.get(name)
         if crop.ley then
-            table.insert(parts, string.format(t("crp_leyCrop"), crop.title))
+            table.insert(parts, string.format(t("cywp_leyCrop"), crop.title))
         else
             table.insert(parts, crop.title)
         end
@@ -388,7 +388,7 @@ end
 
 -- Returns a list of plans that have field groups:
 --   { title, groups = { { name, yearText, crops, status, isNow, nextIn, fieldCount } } }
-function CropRotationPlan:buildGroups()
+function CropYearWheelPlanner:buildGroups()
     local crops = self:getCrops()
     local calendarYear = self:getCalendarYear()
     local month = self:getCurrentMonth()
@@ -399,13 +399,13 @@ function CropRotationPlan:buildGroups()
         local entry = { title = plan.name, groups = {} }
         for _, group in ipairs(farm.groups) do
             if group.planId == plan.id and #group.fields > 0 then
-                local s = CropRotationPlanLogic.getGroupStatus(plan, crops, group, calendarYear, month)
+                local s = CropYearWheelPlannerLogic.getGroupStatus(plan, crops, group, calendarYear, month)
                 local row = {
                     name = fieldsText(group.fields),
                     fieldsShort = table.concat(group.fields, " "),
                     tasks = {},
-                    yearText = string.format(t("crp_cycleYear"), s.planYear, plan.years),
-                    crops = CropRotationPlan.cropsText(s.cropsThisYear),
+                    yearText = string.format(t("cywp_cycleYear"), s.planYear, plan.years),
+                    crops = CropYearWheelPlanner.cropsText(s.cropsThisYear),
                     status = "",
                     isNow = false,
                     fieldCount = #group.fields,
@@ -413,20 +413,20 @@ function CropRotationPlan:buildGroups()
                 if #s.nowTasks > 0 then
                     local parts = {}
                     for _, task in ipairs(s.nowTasks) do
-                        table.insert(parts, CropRotationPlan.taskText(task))
+                        table.insert(parts, CropYearWheelPlanner.taskText(task))
                     end
-                    row.status = t("crp_now") .. ": " .. table.concat(parts, ", ")
+                    row.status = t("cywp_now") .. ": " .. table.concat(parts, ", ")
                     row.isNow = true
-                    row.whenShort = t("crp_now")
+                    row.whenShort = t("cywp_now")
                     for k = 1, math.min(2, #s.nowTasks) do
                         table.insert(row.tasks, s.nowTasks[k])
                     end
                 elseif s.nextTask ~= nil then
                     local when = monthName(s.nextMonth)
                     if s.nextIsNextYear then
-                        when = string.format(t("crp_whenNextYear"), when)
+                        when = string.format(t("cywp_whenNextYear"), when)
                     end
-                    row.status = string.format("%s: %s (%s)", t("crp_next"), CropRotationPlan.taskText(s.nextTask), when)
+                    row.status = string.format("%s: %s (%s)", t("cywp_next"), CropYearWheelPlanner.taskText(s.nextTask), when)
                     row.nextIn = s.nextIn
                     row.whenShort = monthName(s.nextMonth)
                     table.insert(row.tasks, s.nextTask)
@@ -445,7 +445,7 @@ end
 --   "now"  : at least one field group has a task this month (count = number of fields)
 --   "soon" : nothing now, but a task next month
 --   "idle" : nothing this month or next
-function CropRotationPlan:getAttention(plans)
+function CropYearWheelPlanner:getAttention(plans)
     local nowCount = 0
     local soon = false
     for _, plan in ipairs(plans) do
@@ -473,19 +473,19 @@ local function setColor(c)
     setTextColor(c[1], c[2], c[3], c[4])
 end
 
-function CropRotationPlan:getTitle()
-    return string.format(t("crp_title"), self:getCurrentYear(), monthName(self:getCurrentMonth()))
+function CropYearWheelPlanner:getTitle()
+    return string.format(t("cywp_title"), self:getCurrentYear(), monthName(self:getCurrentMonth()))
 end
 
 -- On-screen plan data, cached: rebuilt only when the farm, the game year, the month, the plans
 -- (dataVersion) or the crops change. Checking costs a few comparisons per frame and no new tables.
-function CropRotationPlan:getHudCache()
+function CropYearWheelPlanner:getHudCache()
     local c = self.hudCache
     local farmId = self:getFarmId()
     local year = self:getCurrentYear()
     local period = self:getCurrentPeriod()
     if c ~= nil and self.cacheEnabled and c.farmId == farmId and c.year == year and c.period == period
-        and c.version == self.dataVersion and c.cropsVersion == CropRotationPlanCrops.version then
+        and c.version == self.dataVersion and c.cropsVersion == CropYearWheelPlannerCrops.version then
         return c
     end
     c = {
@@ -493,7 +493,7 @@ function CropRotationPlan:getHudCache()
         year = year,
         period = period,
         version = self.dataVersion,
-        cropsVersion = CropRotationPlanCrops.version,
+        cropsVersion = CropYearWheelPlannerCrops.version,
     }
     c.plans = self:buildGroups()
     c.attention, c.attentionCount = self:getAttention(c.plans)
@@ -502,13 +502,13 @@ function CropRotationPlan:getHudCache()
 end
 
 -- Texts and sizes of the full view; computed once per cache rebuild
-function CropRotationPlan:layoutFull(plans)
-    local U = CropRotationPlan.UI
+function CropYearWheelPlanner:layoutFull(plans)
+    local U = CropYearWheelPlanner.UI
     local size = U.textSize
     local title = self:getTitle()
     local footer = nil
     if #plans == 0 then
-        footer = t("crp_hudEmpty")
+        footer = t("cywp_hudEmpty")
     end
 
     -- Column widths
@@ -544,8 +544,8 @@ function CropRotationPlan:layoutFull(plans)
     }
 end
 
-function CropRotationPlan:drawFull(cache)
-    local U = CropRotationPlan.UI
+function CropYearWheelPlanner:drawFull(cache)
+    local U = CropYearWheelPlanner.UI
     if cache.full == nil then
         cache.full = self:layoutFull(cache.plans)
     end
@@ -608,8 +608,8 @@ end
 -- Compact view (issue #4): one row per field group with work this month or next month:
 -- field numbers, action icon + crop icon per task (at most two), "Now" or the month.
 -- Layout computed once per cache rebuild, like the full view.
-function CropRotationPlan:layoutCompact(plans)
-    local U = CropRotationPlan.UI
+function CropYearWheelPlanner:layoutCompact(plans)
+    local U = CropYearWheelPlanner.UI
     local size = U.textSize
     local rows = {}
     local maxTasks = 1
@@ -638,7 +638,7 @@ function CropRotationPlan:layoutCompact(plans)
     local empty = nil
     local width
     if #rows == 0 then
-        empty = t("crp_compactEmpty")
+        empty = t("cywp_compactEmpty")
         width = getTextWidth(size, empty) + 2 * U.padding
     else
         local wTasks = maxTasks * (2 * iconW + iconGap) + (maxTasks - 1) * iconGap
@@ -652,8 +652,8 @@ function CropRotationPlan:layoutCompact(plans)
     }
 end
 
-function CropRotationPlan:drawCompact(cache)
-    local U = CropRotationPlan.UI
+function CropYearWheelPlanner:drawCompact(cache)
+    local U = CropYearWheelPlanner.UI
     if cache.compact == nil then
         cache.compact = self:layoutCompact(cache.plans)
     end
@@ -679,12 +679,12 @@ function CropRotationPlan:drawCompact(cache)
         local ix = x + L.wFields + U.colGap
         local tint = r.isNow and U.colorNow or U.colorTitle
         for _, task in ipairs(r.tasks) do
-            local icon = CropRotationPlanUI.getActionIcon(task.action)
+            local icon = CropYearWheelPlannerUI.getActionIcon(task.action)
             if icon ~= nil then
-                CropRotationPlanUI.drawIcon(icon, ix, y, L.iconH, tint)
+                CropYearWheelPlannerUI.drawIcon(icon, ix, y, L.iconH, tint)
             end
             ix = ix + L.iconW
-            CropRotationPlanUI.cropSquare(CropRotationPlanCrops.get(task.crop), ix, y, L.iconH)
+            CropYearWheelPlannerUI.cropSquare(CropYearWheelPlannerCrops.get(task.crop), ix, y, L.iconH)
             ix = ix + L.iconW + L.iconGap * 2
         end
         local wx = x + L.wFields + U.colGap + L.maxTasks * (2 * L.iconW + L.iconGap) + (L.maxTasks - 1) * L.iconGap + U.colGap
@@ -695,8 +695,8 @@ function CropRotationPlan:drawCompact(cache)
     end
 end
 
-function CropRotationPlan:drawMinimized(cache)
-    local U = CropRotationPlan.UI
+function CropYearWheelPlanner:drawMinimized(cache)
+    local U = CropYearWheelPlanner.UI
     if self.iconOverlay == nil then
         return
     end
@@ -743,8 +743,8 @@ function CropRotationPlan:drawMinimized(cache)
     end
 end
 
-function CropRotationPlan:draw()
-    if self.settings.displayMode == CropRotationPlan.DISPLAY_HIDDEN then
+function CropYearWheelPlanner:draw()
+    if self.settings.displayMode == CropYearWheelPlanner.DISPLAY_HIDDEN then
         return
     end
     if g_gui ~= nil and g_gui:getIsGuiVisible() then
@@ -757,14 +757,14 @@ function CropRotationPlan:draw()
         return
     end
 
-    local anchor = CropRotationPlan.ANCHORS[self.settings.position] or CropRotationPlan.ANCHORS.top
-    CropRotationPlan.UI.x = anchor.x
-    CropRotationPlan.UI.topY = anchor.topY
+    local anchor = CropYearWheelPlanner.ANCHORS[self.settings.position] or CropYearWheelPlanner.ANCHORS.top
+    CropYearWheelPlanner.UI.x = anchor.x
+    CropYearWheelPlanner.UI.topY = anchor.topY
 
     local cache = self:getHudCache()
-    if self.settings.displayMode == CropRotationPlan.DISPLAY_MINIMIZED then
+    if self.settings.displayMode == CropYearWheelPlanner.DISPLAY_MINIMIZED then
         self:drawMinimized(cache)
-    elseif self.settings.displayMode == CropRotationPlan.DISPLAY_COMPACT then
+    elseif self.settings.displayMode == CropYearWheelPlanner.DISPLAY_COMPACT then
         self:drawCompact(cache)
     else
         self:drawFull(cache)
@@ -776,4 +776,4 @@ function CropRotationPlan:draw()
     setTextAlignment(RenderText.ALIGN_LEFT)
 end
 
-addModEventListener(CropRotationPlan)
+addModEventListener(CropYearWheelPlanner)

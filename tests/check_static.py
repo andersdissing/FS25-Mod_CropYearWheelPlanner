@@ -36,7 +36,7 @@ desc = ET.parse(root + "/modDesc.xml").getroot()
 # Base game keys the mod uses
 BASE_KEYS = {"button_ok"}
 # Key prefixes built at runtime: prefix + value
-PREFIXES = ("crp_month_", "crp_action_", "crp_display_", "crp_position_")
+PREFIXES = ("cywp_month_", "cywp_action_", "cywp_display_", "cywp_position_")
 
 # ModHub: every UI text needs at least EN and DE (guideline 8.2); we also ship DA.
 # Texts are in <prefix>_<lang>.xml (modDesc <l10n filenamePrefix>); every file has the same keys.
@@ -104,7 +104,7 @@ for f in glob.glob(root + "/scripts/*.lua"):
         fail("TESTRUNNER", f, "uses pcall/xpcall")
     for key in re.findall(r'\b(?:t|tf|getText)\("([A-Za-z_]+)"', src):
         used.add((f, key))
-    for key in re.findall(r'"(crp_[A-Za-z_]+)"', src):
+    for key in re.findall(r'"(cywp_[A-Za-z_]+)"', src):
         used.add((f, key))
 
 for f, key in sorted(used):

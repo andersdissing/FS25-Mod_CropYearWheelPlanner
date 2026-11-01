@@ -1,4 +1,4 @@
--- CropRotationPlanCrops.lua
+-- CropYearWheelPlannerCrops.lua
 -- The crops that can be planned, read from the game (map + DLC + mod crops actually loaded).
 --
 -- Reads the same data as the game's own crop calendar (InGameMenuCalendarFrame):
@@ -13,25 +13,25 @@
 --
 -- A crop: { name, title, sow = { months 1..12 }, grow, ley, block, color, iconFilename }
 
-CropRotationPlanCrops = {}
+CropYearWheelPlannerCrops = {}
 
-CropRotationPlanCrops.GROWTH_MODE_SEASONAL = 1
-CropRotationPlanCrops.GRASS = "GRASS"
+CropYearWheelPlannerCrops.GROWTH_MODE_SEASONAL = 1
+CropYearWheelPlannerCrops.GRASS = "GRASS"
 
 -- Not part of a rotation: l10n key of the reason
-CropRotationPlanCrops.BLOCKED = {
-    POPLAR = "crp_block_tree",
-    GRAPE = "crp_block_tree",
-    OLIVE = "crp_block_tree",
-    SUGARCANE = "crp_block_regrows",
-    MEADOW = "crp_block_meadow",
+CropYearWheelPlannerCrops.BLOCKED = {
+    POPLAR = "cywp_block_tree",
+    GRAPE = "cywp_block_tree",
+    OLIVE = "cywp_block_tree",
+    SUGARCANE = "cywp_block_regrows",
+    MEADOW = "cywp_block_meadow",
     -- Rice needs a paddy field; how the game marks one is still open (GitHub issue #1)
-    RICE = "crp_block_paddy",
-    RICELONGGRAIN = "crp_block_paddy",
+    RICE = "cywp_block_paddy",
+    RICELONGGRAIN = "cywp_block_paddy",
 }
 
 -- Fallback calendar: sow months and months from sowing to harvest
-CropRotationPlanCrops.CALENDAR = {
+CropYearWheelPlannerCrops.CALENDAR = {
     BARLEY = { sow = { 9, 10 }, grow = 9 },
     WHEAT = { sow = { 9, 10 }, grow = 10 },
     OAT = { sow = { 3, 4 }, grow = 4 },
@@ -55,7 +55,7 @@ CropRotationPlanCrops.CALENDAR = {
 }
 
 -- Bar colours (mockup palette); other crops get one from FALLBACK_COLORS
-CropRotationPlanCrops.COLORS = {
+CropYearWheelPlannerCrops.COLORS = {
     BARLEY = { 0.79, 0.64, 0.29 },
     WHEAT = { 0.89, 0.77, 0.42 },
     OAT = { 0.85, 0.81, 0.63 },
@@ -79,15 +79,15 @@ CropRotationPlanCrops.COLORS = {
     OILSEEDRADISH = { 0.61, 0.44, 0.69 },
     GRASS = { 0.35, 0.63, 0.29 },
 }
-CropRotationPlanCrops.FALLBACK_COLORS = {
+CropYearWheelPlannerCrops.FALLBACK_COLORS = {
     { 0.55, 0.75, 0.85 }, { 0.85, 0.60, 0.75 }, { 0.70, 0.70, 0.45 }, { 0.50, 0.80, 0.65 },
     { 0.80, 0.55, 0.45 }, { 0.65, 0.60, 0.85 },
 }
 
-CropRotationPlanCrops.list = {}   -- sorted by title
-CropRotationPlanCrops.byName = {}
+CropYearWheelPlannerCrops.list = {}   -- sorted by title
+CropYearWheelPlannerCrops.byName = {}
 -- Goes up every time the crops are read again; caches of derived data compare it
-CropRotationPlanCrops.version = 0
+CropYearWheelPlannerCrops.version = 0
 
 local function readPeriods(fruitDesc, predicate, growthMode)
     local periods = {}
@@ -136,7 +136,7 @@ local function growthMode()
     if info ~= nil and type(info.growthMode) == "number" then
         return info.growthMode
     end
-    return CropRotationPlanCrops.GROWTH_MODE_SEASONAL
+    return CropYearWheelPlannerCrops.GROWTH_MODE_SEASONAL
 end
 
 -- Builds one crop from a fruit type, or nil if it should not be listed at all
@@ -166,54 +166,54 @@ local function buildCrop(fruitDesc, mode, colorIndex)
         title = title,
         sow = {},
         grow = 0,
-        ley = (name == CropRotationPlanCrops.GRASS),
-        block = CropRotationPlanCrops.BLOCKED[name],
-        color = CropRotationPlanCrops.COLORS[name] or CropRotationPlanCrops.FALLBACK_COLORS[(colorIndex % #CropRotationPlanCrops.FALLBACK_COLORS) + 1],
+        ley = (name == CropYearWheelPlannerCrops.GRASS),
+        block = CropYearWheelPlannerCrops.BLOCKED[name],
+        color = CropYearWheelPlannerCrops.COLORS[name] or CropYearWheelPlannerCrops.FALLBACK_COLORS[(colorIndex % #CropYearWheelPlannerCrops.FALLBACK_COLORS) + 1],
         iconFilename = iconFilename,
     }
 
     local isCatchCrop = fruitDesc.getIsCatchCrop ~= nil and fruitDesc:getIsCatchCrop()
     if crop.block == nil and isCatchCrop == true then
-        crop.block = "crp_block_catchCrop"
+        crop.block = "cywp_block_catchCrop"
     end
 
     local plantable, harvestable = {}, {}
-    if mode == CropRotationPlanCrops.GROWTH_MODE_SEASONAL then
+    if mode == CropYearWheelPlannerCrops.GROWTH_MODE_SEASONAL then
         plantable = readPeriods(fruitDesc, fruitDesc.getIsPlantableInPeriod, mode)
         harvestable = readPeriods(fruitDesc, fruitDesc.getIsHarvestableInPeriod, mode)
     end
 
-    local calendar = CropRotationPlanCrops.CALENDAR[name]
+    local calendar = CropYearWheelPlannerCrops.CALENDAR[name]
     if count(plantable) > 0 and count(harvestable) > 0 and count(plantable) < 12 then
         for p = 1, 12 do
             if plantable[p] then
-                table.insert(crop.sow, CropRotationPlanLogic.periodToMonth(p))
+                table.insert(crop.sow, CropYearWheelPlannerLogic.periodToMonth(p))
             end
         end
         table.sort(crop.sow)
         crop.grow = growthFromPeriods(plantable, harvestable) or 0
         if not crop.ley and crop.block == nil and count(harvestable) >= 11 then
-            crop.block = "crp_block_allYear"
+            crop.block = "cywp_block_allYear"
         end
     elseif calendar ~= nil then
         crop.sow = calendar.sow
         crop.grow = calendar.grow
     elseif crop.block == nil then
-        crop.block = "crp_block_unknown"
+        crop.block = "cywp_block_unknown"
     end
 
     if crop.ley then
         -- Grass: the player picks how long the ley stays; 3 months is the shortest
-        crop.grow = CropRotationPlanLogic.LEY_DURATIONS[1]
+        crop.grow = CropYearWheelPlannerLogic.LEY_DURATIONS[1]
     end
     if crop.block == nil and (crop.grow == nil or crop.grow <= 0 or #crop.sow == 0) then
-        crop.block = "crp_block_unknown"
+        crop.block = "cywp_block_unknown"
     end
     return crop
 end
 
 -- Reads the crops from the game. Call after the map is loaded.
-function CropRotationPlanCrops.load()
+function CropYearWheelPlannerCrops.load()
     local list, byName = {}, {}
     local fruitTypes = nil
     if g_fruitTypeManager ~= nil and g_fruitTypeManager.getFruitTypes ~= nil then
@@ -236,71 +236,71 @@ function CropRotationPlanCrops.load()
     table.sort(list, function(a, b)
         return a.title < b.title
     end)
-    CropRotationPlanCrops.list = list
-    CropRotationPlanCrops.byName = byName
-    CropRotationPlanCrops.version = CropRotationPlanCrops.version + 1
-    CropRotationPlanCrops.editorLists = {}
-    Logging.info("[CropRotationPlan] %d crops read from the game", #list)
+    CropYearWheelPlannerCrops.list = list
+    CropYearWheelPlannerCrops.byName = byName
+    CropYearWheelPlannerCrops.version = CropYearWheelPlannerCrops.version + 1
+    CropYearWheelPlannerCrops.editorLists = {}
+    Logging.info("[CropYearWheelPlanner] %d crops read from the game", #list)
 end
 
 -- Crop by fruit type name. Crops in a plan that this map does not have get a grey stand-in,
 -- so the plan still shows (and keeps its growth time from the calendar when known).
-function CropRotationPlanCrops.get(name)
-    local crop = CropRotationPlanCrops.byName[name]
+function CropYearWheelPlannerCrops.get(name)
+    local crop = CropYearWheelPlannerCrops.byName[name]
     if crop ~= nil then
         return crop
     end
-    local calendar = CropRotationPlanCrops.CALENDAR[name] or { sow = {}, grow = 1 }
+    local calendar = CropYearWheelPlannerCrops.CALENDAR[name] or { sow = {}, grow = 1 }
     crop = {
         name = name,
         title = name,
         sow = calendar.sow,
         grow = calendar.grow,
-        ley = (name == CropRotationPlanCrops.GRASS),
-        block = "crp_block_notOnMap",
+        ley = (name == CropYearWheelPlannerCrops.GRASS),
+        block = "cywp_block_notOnMap",
         color = { 0.5, 0.5, 0.5 },
     }
-    CropRotationPlanCrops.byName[name] = crop
+    CropYearWheelPlannerCrops.byName[name] = crop
     return crop
 end
 
--- Lookup table name -> crop for CropRotationPlanLogic, including stand-ins for every crop in the plans
-function CropRotationPlanCrops.getLookup(plans)
+-- Lookup table name -> crop for CropYearWheelPlannerLogic, including stand-ins for every crop in the plans
+function CropYearWheelPlannerCrops.getLookup(plans)
     for _, plan in ipairs(plans or {}) do
         for _, seed in ipairs(plan.seeds) do
-            CropRotationPlanCrops.get(seed.crop)
+            CropYearWheelPlannerCrops.get(seed.crop)
         end
     end
-    return CropRotationPlanCrops.byName
+    return CropYearWheelPlannerCrops.byName
 end
 
 -- Crops for the plan editor: grass is blocked when "Grass in rotation" is off.
 -- Built once per setting (and again after the crops are read again).
-CropRotationPlanCrops.editorLists = {}
+CropYearWheelPlannerCrops.editorLists = {}
 
-function CropRotationPlanCrops.getEditorList(grassAllowed)
+function CropYearWheelPlannerCrops.getEditorList(grassAllowed)
     local key = grassAllowed and "grass" or "noGrass"
-    local cached = CropRotationPlanCrops.editorLists[key]
-    if cached ~= nil and (CropRotationPlan == nil or CropRotationPlan.cacheEnabled ~= false) then
+    local cached = CropYearWheelPlannerCrops.editorLists[key]
+    if cached ~= nil and (CropYearWheelPlanner == nil or CropYearWheelPlanner.cacheEnabled ~= false) then
         return cached
     end
     local out = {}
-    for _, crop in ipairs(CropRotationPlanCrops.list) do
+    for _, crop in ipairs(CropYearWheelPlannerCrops.list) do
         if crop.ley and not grassAllowed and crop.block == nil then
             local copy = {}
             for k, v in pairs(crop) do
                 copy[k] = v
             end
-            copy.block = "crp_block_grassOff"
+            copy.block = "cywp_block_grassOff"
             table.insert(out, copy)
         else
             table.insert(out, crop)
         end
     end
-    CropRotationPlanCrops.editorLists[key] = out
+    CropYearWheelPlannerCrops.editorLists[key] = out
     return out
 end
 
-function CropRotationPlanCrops.getTitle(name)
-    return CropRotationPlanCrops.get(name).title
+function CropYearWheelPlannerCrops.getTitle(name)
+    return CropYearWheelPlannerCrops.get(name).title
 end

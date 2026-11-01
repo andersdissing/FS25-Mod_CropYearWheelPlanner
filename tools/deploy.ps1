@@ -1,6 +1,6 @@
 # deploy.ps1
-# Local deployment of FS25_CropRotationPlan:
-#   1. builds dist\FS25_CropRotationPlan.zip from Build\ (the contents, not the folder)
+# Local deployment of FS25_CropYearWheelPlanner:
+#   1. builds dist\FS25_CropYearWheelPlanner.zip from Build\ (the contents, not the folder)
 #   2. hard-kills Farming Simulator 25 if it is running
 #   3. saves the last log.txt to dist\logs\ (a new start overwrites it)
 #   4. copies the zip to the mods folder
@@ -16,7 +16,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$ModName      = 'FS25_CropRotationPlan'
+$ModName      = 'FS25_CropYearWheelPlanner'
 $SteamAppId   = 2300320   # Farming Simulator 25 on Steam
 $RepoRoot     = Split-Path -Parent $PSScriptRoot
 $SourceDir    = Join-Path $RepoRoot 'Build'
@@ -70,9 +70,9 @@ if (Test-Path $LogFile) {
     $saved = Join-Path $logDir "log_$stamp.txt"
     Copy-Item $LogFile $saved -Force
     Write-Host "Saved last log to $saved"
-    $hits = Select-String -Path $saved -Pattern 'CropRotationPlan' -SimpleMatch
+    $hits = Select-String -Path $saved -Pattern 'CropYearWheelPlanner' -SimpleMatch
     if ($hits) {
-        Write-Host "Lines with CropRotationPlan in that log:"
+        Write-Host "Lines with CropYearWheelPlanner in that log:"
         $hits | Select-Object -Last 20 | ForEach-Object { Write-Host "  $($_.Line)" }
     }
 }
@@ -87,6 +87,12 @@ if (Test-Path $unzipped) {
     Write-Warning "Unzipped mod folder $unzipped exists and may be loaded instead of the zip"
 }
 Copy-Item $ZipPath (Join-Path $ModsDir "$ModName.zip") -Force
+# The mod was called FS25_CropRotationPlan until 2026-11-01; two copies would both load
+$oldZip = Join-Path $ModsDir 'FS25_CropRotationPlan.zip'
+if (Test-Path $oldZip) {
+    Remove-Item $oldZip
+    Write-Host "Removed the old FS25_CropRotationPlan.zip from the mods folder"
+}
 Write-Host "Copied to $ModsDir"
 
 # --- 5. Start the game ----------------------------------------------------

@@ -1,4 +1,4 @@
-# Crop Rotation Plan (FS25_CropRotationPlan)
+# Crop Year Wheel Planner (FS25_CropYearWheelPlanner)
 
 A Farming Simulator 25 mod that lets you build crop rotation plans **inside the game** and shows on screen,
 every month, what to sow and harvest on which fields.
@@ -20,7 +20,7 @@ every month, what to sow and harvest on which fields.
 
 1. [Installation](#installation)
 2. [The on-screen plan](#the-on-screen-plan)
-3. [The menu: Esc > Crop rotation plan](#the-menu-esc--crop-rotation-plan)
+3. [The menu: Esc > Crop Year Wheel Planner](#the-menu-esc--crop-rotation-plan)
    - [Settings](#settings)
    - [Plans](#plans)
    - [The plan editor](#the-plan-editor)
@@ -35,9 +35,9 @@ every month, what to sow and harvest on which fields.
 
 ## Installation
 
-1. Download `FS25_CropRotationPlan.zip` from the [releases](../../releases).
+1. Download `FS25_CropYearWheelPlanner.zip` from the [releases](../../releases).
 2. Put the zip (do not unzip it) in `Documents\My Games\FarmingSimulator2025\mods`.
-3. Start the game and activate **Crop Rotation Plan** when you load or create a savegame.
+3. Start the game and activate **Crop Year Wheel Planner** when you load or create a savegame.
 
 ## The on-screen plan
 
@@ -54,7 +54,7 @@ The plan is drawn on top of the game, at the top of the screen or on the left si
   - grey: nothing to do this month or next.
 - **Alt + R** switches Full > Compact > Minimized (change the key in Settings > Controls).
 
-## The menu: Esc > Crop rotation plan
+## The menu: Esc > Crop Year Wheel Planner
 
 The mod adds its own tab to the in-game menu, directly above the game's Settings tab.
 It has three sub-tabs: **Settings**, **Plans** and **Field groups**.
@@ -141,8 +141,8 @@ Open the developer console (enable it with `<controls>true</controls>` under `<d
 
 | Command | What it does |
 |---|---|
-| `crpLoadExample` | Replaces your farm's plans and field groups with an example (Riverbend Springs, fields 3-4-5, 6-7, 8, 23-25, 76, 77). Server only. |
-| `crpReloadCrops` | Reads the crops from the game again and prints them. |
+| `cywpLoadExample` | Replaces your farm's plans and field groups with an example (Riverbend Springs, fields 3-4-5, 6-7, 8, 23-25, 76, 77). Server only. |
+| `cywpReloadCrops` | Reads the crops from the game again and prints them. |
 
 ## Known limitations
 
@@ -157,15 +157,15 @@ Open the developer console (enable it with `<controls>true</controls>` under `<d
 
 ```
 Build/          the mod as it ships (zip the contents, not the folder)
-  scripts/CropRotationPlan.lua        main: settings, on-screen plan, input, load/save hooks
-  scripts/CropRotationPlanLogic.lua   pure plan rules (gaps, sow months, ley, plan year, tasks)
-  scripts/CropRotationPlanCrops.lua   crops read from the game (fruit types, growth time, icons)
-  scripts/CropRotationPlanData.lua    plans and field groups per farm, savegame file, local settings
-  scripts/CropRotationPlanSync.lua    multiplayer: edit requests, server checks, state events
-  scripts/CropRotationPlanUI.lua      drawing toolkit for the custom menu pages
-  scripts/CropRotationPlanPages.lua   Plans, plan editor and Field groups pages
-  scripts/CropRotationPlanFrame.lua   the Esc menu tab
-  gui/CropRotationPlanFrame.xml       tab layout (header, sub-tabs, Settings rows)
+  scripts/CropYearWheelPlanner.lua        main: settings, on-screen plan, input, load/save hooks
+  scripts/CropYearWheelPlannerLogic.lua   pure plan rules (gaps, sow months, ley, plan year, tasks)
+  scripts/CropYearWheelPlannerCrops.lua   crops read from the game (fruit types, growth time, icons)
+  scripts/CropYearWheelPlannerData.lua    plans and field groups per farm, savegame file, local settings
+  scripts/CropYearWheelPlannerSync.lua    multiplayer: edit requests, server checks, state events
+  scripts/CropYearWheelPlannerUI.lua      drawing toolkit for the custom menu pages
+  scripts/CropYearWheelPlannerPages.lua   Plans, plan editor and Field groups pages
+  scripts/CropYearWheelPlannerFrame.lua   the Esc menu tab
+  gui/CropYearWheelPlannerFrame.xml       tab layout (header, sub-tabs, Settings rows)
   translations/l10n_en.xml, _de.xml, _da.xml, _fr.xml   all texts, one file per language
 Docs/           screenshots (see image-task.md), PUBLISHING.md (ModHub checklist), v1.1/ (old v1.1 copy, reference only)
 tests/          check_static.py, test_logic.py, smoke_test.py
@@ -199,5 +199,5 @@ copies the zip to the mods folder and starts the game (`-NoStart` to skip starti
 ### Release
 
 `pwsh -File tools\release.ps1 2.2.0.0` sets the version in `Build/modDesc.xml`, tags `v2.2.0.0` and pushes.
-The GitHub workflow runs the checks and tests and publishes the release with `FS25_CropRotationPlan.zip`.
+The GitHub workflow runs the checks and tests and publishes the release with `FS25_CropYearWheelPlanner.zip`.
 Publishing on the in-game ModHub: see [Docs/PUBLISHING.md](Docs/PUBLISHING.md).

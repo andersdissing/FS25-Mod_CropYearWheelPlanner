@@ -9,7 +9,7 @@ with game patches.
 
 - Mods on the official ModHub can be downloaded **inside FS25** (main menu > Downloadable Content / ModHub) and from
   farming-simulator.com. That is the only way to appear in the in-game mod browser; there is no other channel.
-- **PC/Mac only.** Script mods are not allowed on consoles (Sony/Microsoft rule, guideline 8.2). Crop Rotation Plan
+- **PC/Mac only.** Script mods are not allowed on consoles (Sony/Microsoft rule, guideline 8.2). Crop Year Wheel Planner
   is a script mod, so it will never be on PlayStation/Xbox.
 - Free only. Mods behind paywalls (Patreon etc.) are rejected. Other websites may only link to the ModHub page.
 
@@ -27,27 +27,27 @@ You: self-test with TestRunner  ->  Upload (New)  ->  Pending  ->  Data check (G
    and fix everything it reports.
 3. **Upload**: on farming-simulator.com, log in, go to the ModHub's mod upload page. Fill in title, category
    (script mods: "Gameplay"/"Scripts"), the zip, the screenshots and a **submission comment** (anything the
-   testers need to know, e.g. how to load the example plan with `crpLoadExample`).
+   testers need to know, e.g. how to load the example plan with `cywpLoadExample`).
 4. **Review**: GIANTS testers go through the stages above. They do not publish a fixed time; plan for
    **weeks**, not days. The better prepared the mod is, the faster it goes.
 5. **Updates** later: only for real fixes; smaller updates must wait at least **two weeks** after the last one.
-   Upload an update as a new mod with `_update` in the zip name (`FS25_CropRotationPlan_update.zip`), with a
+   Upload an update as a new mod with `_update` in the zip name (`FS25_CropYearWheelPlanner_update.zip`), with a
    **changelog in the description**. Never upload an update just to change the version number.
 
 ## Checklist for this mod
 
 | Rule (guideline item) | Status | To do |
 |---|---|---|
-| Zip name starts with `FS25_`, English, no version (5.2) | OK: `FS25_CropRotationPlan.zip` | |
+| Zip name starts with `FS25_`, English, no version (5.2) | OK: `FS25_CropYearWheelPlanner.zip` | |
 | `descVersion` is the latest for the current game patch (5.4) | Done (v2.3) | 115, from the log of game 1.25.0.0 ("ModDesc Version: 115"). Check again after game patches. |
 | Title with capital initials, description in CDATA, version with 4 digits (5.5) | OK | |
 | Detailed description, hotkeys explained (5.5, 10.4) | OK | Alt+R and console commands are described. |
 | `<multiplayer supported="true"/>` only if MP works (5.5, 7.6) | **Not tested** | Play at least **30 minutes in multiplayer** (host + 1 client, two farms) without errors. |
 | **EN and DE texts** for every UI text (8.2) and a DE description that is not a copy of EN (5.1, 7.2) | Done (v2.3) | EN, DE and DA for all texts, title and description; `tests/check_static.py` fails if one is missing. A German speaker should proofread. |
-| Mod icon `icon_*.dds`, **256x256, BC1, no mipmaps, GIANTS template background**, in the zip root (5.1) | Done (2026-11-01) | Artwork on the GIANTS template `Docs/ModHub Icon Template FS25/FS25_ModHub_BG512.png`: `Build/icon_CropRotationPlan.dds` 256x256 BC1 without mipmaps, `Docs/modhub/icon_512.png` for the form (upload it again: it changed). |
+| Mod icon `icon_*.dds`, **256x256, BC1, no mipmaps, GIANTS template background**, in the zip root (5.1) | Done (2026-11-01) | Artwork on the GIANTS template `Docs/ModHub Icon Template FS25/FS25_ModHub_BG512.png`: `Build/icon_CropYearWheelPlanner.dds` 256x256 BC1 without mipmaps, `Docs/modhub/icon_512.png` for the form (upload it again: it changed). |
 | No logos, watermarks, links, credits in icon, screenshots, description (5.1) | OK | Only contributors at the end of the description are allowed. |
 | At least 3 screenshots, first without text and HUD, English text (5.1) | To do | See `image-task.md` (shots 1, 2, 3). |
-| Log file free of errors and warnings (7.1) | Fix to verify (v2.3) | Issue #2: the uninstall now removes the page from every menu list and logs `[CropRotationPlan] Menu tab removed (...)`. Quit a savegame from the menu and check the log. |
+| Log file free of errors and warnings (7.1) | Fix to verify (v2.3) | Issue #2: the uninstall now removes the page from every menu list and logs `[CropYearWheelPlanner] Menu tab removed (...)`. Quit a savegame from the menu and check the log. |
 | Zip contains only needed files (7.5) | OK | `.lua`, `.xml`, `.dds` and a README (allowed). |
 | Custom UI works at 4:3, 16:9, 16:10, 21:9 (8.2) | **Not tested** | `pwsh -File tools\screen-shape.ps1 4:3` (also `16:10`, `21:9`, `32:9`) sets a game window of that shape; `-Restore` puts your setting back. |
 | No paywall; link only to the ModHub page (1) | OK | |

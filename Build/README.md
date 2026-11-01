@@ -1,13 +1,13 @@
-# FS25_CropRotationPlan
+# FS25_CropYearWheelPlanner
 
 Planlæg sædskiftet i spillet og se på skærmen, hvad der skal sås og høstes i denne måned.
 
 ## Installation
-Læg `FS25_CropRotationPlan.zip` (uudpakket) i mods-mappen:
+Læg `FS25_CropYearWheelPlanner.zip` (uudpakket) i mods-mappen:
 `Documents\My Games\FarmingSimulator2025\mods`
 Aktivér moddet når du indlæser savegamet.
 
-## Menuen (Esc) > Sædskifteplan
+## Menuen (Esc) > Afgrødeårshjul
 
 ### Indstillinger
 - Visning: Fuld, Kompakt, Minimeret eller Skjult.
@@ -42,15 +42,15 @@ Kompakt: kun markgrupper med arbejde denne eller næste måned: marknumre, spill
 Minimeret: ét ikon. Gult med tal = opgaver denne måned (antal marker), grønt = opgaver næste måned, gråt = intet.
 
 ## Gemt i savegamet
-Planer og markgrupper gemmes af serveren i `cropRotationPlan.xml` i savegame-mappen. Et nyt savegame starter tomt.
+Planer og markgrupper gemmes af serveren i `cropYearWheelPlanner.xml` i savegame-mappen. Et nyt savegame starter tomt.
 
 ## Afgrøder
 Afgrøderne læses fra spillet (kort, DLC og mod-afgrøder) med så- og høstmåneder fra spillets egen
 afgrødekalender. Træer, plantager, sukkerrør og efterafgrøder kan ikke indgå. Ris kræver en rismark.
 
 ## Konsol (udviklerkonsol)
-- `crpLoadExample`: erstatter planer og markgrupper med eksemplet for Riverbend Springs.
-- `crpReloadCrops`: læser afgrøderne igen og skriver dem i konsollen.
+- `cywpLoadExample`: erstatter planer og markgrupper med eksemplet for Riverbend Springs.
+- `cywpReloadCrops`: læser afgrøderne igen og skriver dem i konsollen.
 
 ## Multiplayer
 Hver gård har sine egne planer, markgrupper og indstillingen Græs i sædskiftet. Som standard kan kun gårdens leder redigere dem.
@@ -58,4 +58,4 @@ Gårdens leder kan under Indstillinger > Multiplayer skifte "Hvem kan redigere p
 "Dine rettigheder" viser om du selv kan redigere. Afsnittet Multiplayer vises kun i multiplayer.
 Serveren tjekker hver ændring (ingen overlap, marken skal tilhøre gården) og deler den med alle spillere.
 Tilskuere (ingen gård) kan ikke redigere. Visning og placering er hver spillers egne og gemmes på spillerens pc
-(`modSettings\FS25_CropRotationPlan\settings.xml`). `crpLoadExample` virker kun på serveren og fylder serverspillerens gård.
+(`modSettings\FS25_CropYearWheelPlanner\settings.xml`). `cywpLoadExample` virker kun på serveren og fylder serverspillerens gård.

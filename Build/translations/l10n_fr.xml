@@ -1,177 +1,177 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- FS25_CropRotationPlan: French (Français) texts. Same keys in every l10n_*.xml file;
+<!-- FS25_CropYearWheelPlanner: French (Français) texts. Same keys in every l10n_*.xml file;
      %d and %s are filled in by the mod and must stay in the same order. -->
 <l10n>
     <texts>
-        <text name="input_CRP_TOGGLE_SIZE"              text="Plan de rotation : complet/réduit"/>
+        <text name="input_CYWP_TOGGLE_SIZE"              text="Roue annuelle : complet/réduit"/>
 
         <!-- On-screen plan -->
-        <text name="crp_title"                          text="Plan de rotation | année %d | %s"/>
-        <text name="crp_hudEmpty"                       text="Aucun groupe de champs. Créez plans et groupes dans le menu (Échap) &gt; Plan de rotation des cultures"/>
-        <text name="crp_field"                          text="Champ"/>
-        <text name="crp_fields"                         text="Champs"/>
-        <text name="crp_cycleYear"                      text="Année %d/%d"/>
-        <text name="crp_now"                            text="Maintenant"/>
-        <text name="crp_next"                           text="Ensuite"/>
-        <text name="crp_whenNextYear"                   text="%s l'an prochain"/>
-        <text name="crp_action_sow"                     text="Semer"/>
-        <text name="crp_action_harvest"                 text="Récolter"/>
-        <text name="crp_action_cut"                     text="Faucher"/>
-        <text name="crp_leyCrop"                        text="%s (prairie temporaire)"/>
+        <text name="cywp_title"                          text="Roue annuelle | année %d | %s"/>
+        <text name="cywp_hudEmpty"                       text="Aucun groupe de champs. Créez plans et groupes dans le menu (Échap) &gt; Roue annuelle des cultures"/>
+        <text name="cywp_field"                          text="Champ"/>
+        <text name="cywp_fields"                         text="Champs"/>
+        <text name="cywp_cycleYear"                      text="Année %d/%d"/>
+        <text name="cywp_now"                            text="Maintenant"/>
+        <text name="cywp_next"                           text="Ensuite"/>
+        <text name="cywp_whenNextYear"                   text="%s l'an prochain"/>
+        <text name="cywp_action_sow"                     text="Semer"/>
+        <text name="cywp_action_harvest"                 text="Récolter"/>
+        <text name="cywp_action_cut"                     text="Faucher"/>
+        <text name="cywp_leyCrop"                        text="%s (prairie temporaire)"/>
 
         <!-- Menu tab and Settings -->
-        <text name="ui_cropRotationPlan"                text="Plan de rotation des cultures"/>
-        <text name="crp_tab_title"                      text="Plan de rotation des cultures"/>
-        <text name="crp_subtab_settings"                text="Paramètres"/>
-        <text name="crp_subtab_plans"                   text="Plans"/>
-        <text name="crp_subtab_groups"                  text="Groupes de champs"/>
-        <text name="crp_section_display"                text="Affichage"/>
-        <text name="crp_section_crops"                  text="Cultures"/>
-        <text name="crp_section_multiplayer"            text="Multijoueur"/>
-        <text name="crp_settings_display"               text="Affichage"/>
-        <text name="crp_settings_display_tooltip"       text="Complet montre chaque groupe de champs. Compact montre seulement les groupes avec du travail ce mois-ci ou le mois prochain, avec les icônes du jeu. Réduit montre une icône : jaune = travail ce mois-ci (avec le nombre de champs), vert = travail le mois prochain, gris = rien à faire. Alt+R bascule entre Complet, Compact et Réduit. La position de chaque groupe dans son plan se règle sous Groupes de champs."/>
-        <text name="crp_settings_position"              text="Position"/>
-        <text name="crp_settings_position_tooltip"      text="Où le plan de rotation est affiché : en haut de l'écran ou à gauche. Affichage et position sont vos propres réglages, enregistrés sur votre PC."/>
-        <text name="crp_settings_key"                   text="Touche afficher / réduire"/>
-        <text name="crp_settings_key_value"             text="Alt + R (modifiable dans Paramètres &gt; Commandes)"/>
-        <text name="crp_settings_key_tooltip"           text="Bascule le plan à l'écran entre complet et réduit."/>
-        <text name="crp_settings_grass"                 text="Herbe dans la rotation"/>
-        <text name="crp_settings_grass_tooltip"         text="Activé : l'herbe peut être ajoutée à un plan comme prairie temporaire ; vous choisissez sa durée et la fréquence de fauche. S'applique à toute votre ferme."/>
-        <text name="crp_settings_edit"                  text="Qui peut modifier le plan"/>
-        <text name="crp_settings_edit_manager"          text="Gestionnaire de la ferme uniquement"/>
-        <text name="crp_settings_edit_everyone"         text="Tous les membres de la ferme"/>
-        <text name="crp_settings_edit_tooltip"          text="Chaque ferme a ses propres plans et groupes de champs. Seul le gestionnaire de la ferme peut changer ce réglage. Le serveur vérifie chaque modification et la partage avec tous les joueurs."/>
-        <text name="crp_settings_editStatus"            text="Vos droits"/>
-        <text name="crp_settings_editStatus_tooltip"    text="Indique si vous pouvez modifier les plans et groupes de champs de votre ferme."/>
-        <text name="crp_status_canEdit"                 text="Vous pouvez modifier les plans"/>
-        <text name="crp_status_managerOnly"             text="Lecture seule : seul le gestionnaire de la ferme peut modifier"/>
-        <text name="crp_spectator"                      text="Rejoignez une ferme pour voir et modifier ses plans de rotation."/>
-        <text name="crp_on"                             text="Activé"/>
-        <text name="crp_off"                            text="Désactivé"/>
-        <text name="crp_position_top"                   text="En haut"/>
-        <text name="crp_position_left"                  text="À gauche"/>
-        <text name="crp_display_full"                   text="Complet"/>
-        <text name="crp_display_compact"                 text="Compact"/>
-        <text name="crp_compactEmpty"                    text="Aucun travail ce mois-ci ni le mois prochain"/>
-        <text name="crp_display_minimized"              text="Réduit"/>
-        <text name="crp_display_hidden"                 text="Masqué"/>
+        <text name="ui_cropYearWheelPlanner"                text="Roue annuelle des cultures"/>
+        <text name="cywp_tab_title"                      text="Roue annuelle des cultures"/>
+        <text name="cywp_subtab_settings"                text="Paramètres"/>
+        <text name="cywp_subtab_plans"                   text="Plans"/>
+        <text name="cywp_subtab_groups"                  text="Groupes de champs"/>
+        <text name="cywp_section_display"                text="Affichage"/>
+        <text name="cywp_section_crops"                  text="Cultures"/>
+        <text name="cywp_section_multiplayer"            text="Multijoueur"/>
+        <text name="cywp_settings_display"               text="Affichage"/>
+        <text name="cywp_settings_display_tooltip"       text="Complet montre chaque groupe de champs. Compact montre seulement les groupes avec du travail ce mois-ci ou le mois prochain, avec les icônes du jeu. Réduit montre une icône : jaune = travail ce mois-ci (avec le nombre de champs), vert = travail le mois prochain, gris = rien à faire. Alt+R bascule entre Complet, Compact et Réduit. La position de chaque groupe dans son plan se règle sous Groupes de champs."/>
+        <text name="cywp_settings_position"              text="Position"/>
+        <text name="cywp_settings_position_tooltip"      text="Où le plan de rotation est affiché : en haut de l'écran ou à gauche. Affichage et position sont vos propres réglages, enregistrés sur votre PC."/>
+        <text name="cywp_settings_key"                   text="Touche afficher / réduire"/>
+        <text name="cywp_settings_key_value"             text="Alt + R (modifiable dans Paramètres &gt; Commandes)"/>
+        <text name="cywp_settings_key_tooltip"           text="Bascule le plan à l'écran entre complet et réduit."/>
+        <text name="cywp_settings_grass"                 text="Herbe dans la rotation"/>
+        <text name="cywp_settings_grass_tooltip"         text="Activé : l'herbe peut être ajoutée à un plan comme prairie temporaire ; vous choisissez sa durée et la fréquence de fauche. S'applique à toute votre ferme."/>
+        <text name="cywp_settings_edit"                  text="Qui peut modifier le plan"/>
+        <text name="cywp_settings_edit_manager"          text="Gestionnaire de la ferme uniquement"/>
+        <text name="cywp_settings_edit_everyone"         text="Tous les membres de la ferme"/>
+        <text name="cywp_settings_edit_tooltip"          text="Chaque ferme a ses propres plans et groupes de champs. Seul le gestionnaire de la ferme peut changer ce réglage. Le serveur vérifie chaque modification et la partage avec tous les joueurs."/>
+        <text name="cywp_settings_editStatus"            text="Vos droits"/>
+        <text name="cywp_settings_editStatus_tooltip"    text="Indique si vous pouvez modifier les plans et groupes de champs de votre ferme."/>
+        <text name="cywp_status_canEdit"                 text="Vous pouvez modifier les plans"/>
+        <text name="cywp_status_managerOnly"             text="Lecture seule : seul le gestionnaire de la ferme peut modifier"/>
+        <text name="cywp_spectator"                      text="Rejoignez une ferme pour voir et modifier ses plans de rotation."/>
+        <text name="cywp_on"                             text="Activé"/>
+        <text name="cywp_off"                            text="Désactivé"/>
+        <text name="cywp_position_top"                   text="En haut"/>
+        <text name="cywp_position_left"                  text="À gauche"/>
+        <text name="cywp_display_full"                   text="Complet"/>
+        <text name="cywp_display_compact"                 text="Compact"/>
+        <text name="cywp_compactEmpty"                    text="Aucun travail ce mois-ci ni le mois prochain"/>
+        <text name="cywp_display_minimized"              text="Réduit"/>
+        <text name="cywp_display_hidden"                 text="Masqué"/>
 
         <!-- Plans -->
-        <text name="crp_plans"                          text="Plans"/>
-        <text name="crp_newPlan"                        text="+ Nouveau plan"/>
-        <text name="crp_newPlanName"                    text="Plan %d"/>
-        <text name="crp_editPlan"                       text="Modifier le plan"/>
-        <text name="crp_deletePlan"                     text="Supprimer le plan"/>
-        <text name="crp_deleteConfirm"                  text="Cliquer à nouveau pour supprimer"/>
-        <text name="crp_deletePlanTip"                  text="Les groupes de champs qui utilisent ce plan gardent leurs champs mais n'ont plus de plan."/>
-        <text name="crp_noPlans"                        text="Aucun plan. Cliquez sur + Nouveau plan pour en créer un."/>
-        <text name="crp_planMeta"                       text="%d ans - %d groupes de champs"/>
-        <text name="crp_planName"                       text="Nom du plan"/>
-        <text name="crp_renameTip"                      text="Cliquer pour renommer le plan"/>
-        <text name="crp_yearsInCycle"                   text="Années du cycle"/>
-        <text name="crp_view"                           text="Vue"/>
-        <text name="crp_viewColumns"                    text="Colonnes"/>
-        <text name="crp_viewRows"                       text="Lignes annuelles"/>
-        <text name="crp_yearN"                          text="Année %d"/>
-        <text name="crp_addCrop"                        text="+ Ajouter une culture"/>
-        <text name="crp_sowIn"                          text="Semer %s"/>
-        <text name="crp_sownInYear"                     text="Semé en année %d"/>
-        <text name="crp_harvestIn"                      text="Récolte %s"/>
-        <text name="crp_harvestedInYear"                text="Récolté en année %d"/>
-        <text name="crp_lastCutIn"                      text="Dernière fauche %s"/>
-        <text name="crp_lastCutInYear"                  text="Dernière fauche en année %d"/>
-        <text name="crp_noCropsYet"                     text="Aucune culture. Cliquez sur Modifier le plan pour en ajouter une."/>
-        <text name="crp_columnsHint"                    text="Cliquez sur une culture pour l'ouvrir dans l'éditeur de plan."/>
-        <text name="crp_rowsHint"                       text="Les barres vont du semis à la récolte. Une barre qui atteint le bord continue sur la ligne de l'année suivante."/>
-        <text name="crp_statusOk"                       text="Plan correct"/>
-        <text name="crp_statusCounts"                   text="%d semis - %d mois libres"/>
-        <text name="crp_statusEmptyYears"               text="L'année %s n'a aucune culture"/>
-        <text name="crp_statusOverlap"                  text="Des cultures se chevauchent"/>
+        <text name="cywp_plans"                          text="Plans"/>
+        <text name="cywp_newPlan"                        text="+ Nouveau plan"/>
+        <text name="cywp_newPlanName"                    text="Plan %d"/>
+        <text name="cywp_editPlan"                       text="Modifier le plan"/>
+        <text name="cywp_deletePlan"                     text="Supprimer le plan"/>
+        <text name="cywp_deleteConfirm"                  text="Cliquer à nouveau pour supprimer"/>
+        <text name="cywp_deletePlanTip"                  text="Les groupes de champs qui utilisent ce plan gardent leurs champs mais n'ont plus de plan."/>
+        <text name="cywp_noPlans"                        text="Aucun plan. Cliquez sur + Nouveau plan pour en créer un."/>
+        <text name="cywp_planMeta"                       text="%d ans - %d groupes de champs"/>
+        <text name="cywp_planName"                       text="Nom du plan"/>
+        <text name="cywp_renameTip"                      text="Cliquer pour renommer le plan"/>
+        <text name="cywp_yearsInCycle"                   text="Années du cycle"/>
+        <text name="cywp_view"                           text="Vue"/>
+        <text name="cywp_viewColumns"                    text="Colonnes"/>
+        <text name="cywp_viewRows"                       text="Lignes annuelles"/>
+        <text name="cywp_yearN"                          text="Année %d"/>
+        <text name="cywp_addCrop"                        text="+ Ajouter une culture"/>
+        <text name="cywp_sowIn"                          text="Semer %s"/>
+        <text name="cywp_sownInYear"                     text="Semé en année %d"/>
+        <text name="cywp_harvestIn"                      text="Récolte %s"/>
+        <text name="cywp_harvestedInYear"                text="Récolté en année %d"/>
+        <text name="cywp_lastCutIn"                      text="Dernière fauche %s"/>
+        <text name="cywp_lastCutInYear"                  text="Dernière fauche en année %d"/>
+        <text name="cywp_noCropsYet"                     text="Aucune culture. Cliquez sur Modifier le plan pour en ajouter une."/>
+        <text name="cywp_columnsHint"                    text="Cliquez sur une culture pour l'ouvrir dans l'éditeur de plan."/>
+        <text name="cywp_rowsHint"                       text="Les barres vont du semis à la récolte. Une barre qui atteint le bord continue sur la ligne de l'année suivante."/>
+        <text name="cywp_statusOk"                       text="Plan correct"/>
+        <text name="cywp_statusCounts"                   text="%d semis - %d mois libres"/>
+        <text name="cywp_statusEmptyYears"               text="L'année %s n'a aucune culture"/>
+        <text name="cywp_statusOverlap"                  text="Des cultures se chevauchent"/>
 
         <!-- Plan editor -->
-        <text name="crp_monthYear"                      text="%s année %d"/>
-        <text name="crp_wheelHint"                      text="Les barres vont du semis à la récolte et continuent sur la ligne suivante au passage de l'année. Cliquez sur un créneau en pointillés pour ajouter un semis, ou sur une barre pour le retirer."/>
-        <text name="crp_editorFooter"                   text="Les modifications ne sont enregistrées qu'avec Enregistrer le plan."/>
-        <text name="crp_editorHint"                     text="Cliquez sur un créneau en pointillés pour ajouter un semis, ou sur une barre pour le voir."/>
-        <text name="crp_savePlan"                       text="Enregistrer le plan"/>
-        <text name="crp_cancel"                         text="Annuler"/>
-        <text name="crp_gapTip"                         text="Libre de %s à %s"/>
-        <text name="crp_barTip"                         text="%s : semis %s, récolte %s"/>
-        <text name="crp_leyBar"                         text="%s (prairie, fauche tous les %d m.)"/>
-        <text name="crp_addSeed"                        text="Ajouter un semis"/>
-        <text name="crp_gapText"                        text="Libre de %s à %s. Le semis peut commencer le mois de la récolte précédente, la récolte peut tomber le mois du semis suivant."/>
-        <text name="crp_monthsSub"                      text="%d mois"/>
-        <text name="crp_leySub"                         text="Prairie, durée au choix"/>
-        <text name="crp_sowSub"                         text="Semis %s"/>
-        <text name="crp_noFit"                          text="Ne rentre pas dans ce créneau (%d)"/>
-        <text name="crp_needs"                          text="Il faut %d mois à partir d'un mois de semis en %s"/>
-        <text name="crp_nothingFits"                    text="Aucune culture ne peut pousser dans ce créneau. Il reste libre."/>
-        <text name="crp_pickCrop"                       text="Choisissez une culture ci-dessus."/>
-        <text name="crp_sowInLabel"                     text="Semer en"/>
-        <text name="crp_keepAsLey"                      text="Garder en prairie pendant"/>
-        <text name="crp_durMonths"                      text="%d mois"/>
-        <text name="crp_durYear"                        text="1 an"/>
-        <text name="crp_durYears"                       text="%d ans"/>
-        <text name="crp_cutWhen"                        text="Faucher quand"/>
-        <text name="crp_cutReady"                       text="Prête à récolter"/>
-        <text name="crp_cutFull"                        text="Pleine croissance"/>
-        <text name="crp_cutSub"                         text="Tous les %d mois de croissance - environ %d fauches"/>
-        <text name="crp_resultCrop"                     text="%s semé en %s pousse %d mois : récolte %s."/>
-        <text name="crp_resultLey"                      text="%s semé en %s reste en prairie %d mois, fauche tous les %d mois de croissance (environ %d fauches, pas de croissance nov-fév). Dernière fauche %s, puis le champ est de nouveau libre."/>
-        <text name="crp_followUps"                      text="Peut être semé après la récolte :"/>
-        <text name="crp_followTip"                      text="%s peut être semé en %s"/>
-        <text name="crp_changeCrop"                     text="Changer de culture"/>
-        <text name="crp_scrollMore"                     text="Faire défiler pour plus"/>
-        <text name="crp_addSeedButton"                  text="Ajouter le semis au plan"/>
-        <text name="crp_seedText"                       text="Semis %s - récolte %s - pousse %d mois."/>
-        <text name="crp_seedLeyText"                    text="Semis %s - prairie pendant %d mois - fauche tous les %d mois de croissance - dernière fauche %s."/>
-        <text name="crp_removeSeed"                     text="Retirer le semis du plan"/>
+        <text name="cywp_monthYear"                      text="%s année %d"/>
+        <text name="cywp_wheelHint"                      text="Les barres vont du semis à la récolte et continuent sur la ligne suivante au passage de l'année. Cliquez sur un créneau en pointillés pour ajouter un semis, ou sur une barre pour le retirer."/>
+        <text name="cywp_editorFooter"                   text="Les modifications ne sont enregistrées qu'avec Enregistrer le plan."/>
+        <text name="cywp_editorHint"                     text="Cliquez sur un créneau en pointillés pour ajouter un semis, ou sur une barre pour le voir."/>
+        <text name="cywp_savePlan"                       text="Enregistrer le plan"/>
+        <text name="cywp_cancel"                         text="Annuler"/>
+        <text name="cywp_gapTip"                         text="Libre de %s à %s"/>
+        <text name="cywp_barTip"                         text="%s : semis %s, récolte %s"/>
+        <text name="cywp_leyBar"                         text="%s (prairie, fauche tous les %d m.)"/>
+        <text name="cywp_addSeed"                        text="Ajouter un semis"/>
+        <text name="cywp_gapText"                        text="Libre de %s à %s. Le semis peut commencer le mois de la récolte précédente, la récolte peut tomber le mois du semis suivant."/>
+        <text name="cywp_monthsSub"                      text="%d mois"/>
+        <text name="cywp_leySub"                         text="Prairie, durée au choix"/>
+        <text name="cywp_sowSub"                         text="Semis %s"/>
+        <text name="cywp_noFit"                          text="Ne rentre pas dans ce créneau (%d)"/>
+        <text name="cywp_needs"                          text="Il faut %d mois à partir d'un mois de semis en %s"/>
+        <text name="cywp_nothingFits"                    text="Aucune culture ne peut pousser dans ce créneau. Il reste libre."/>
+        <text name="cywp_pickCrop"                       text="Choisissez une culture ci-dessus."/>
+        <text name="cywp_sowInLabel"                     text="Semer en"/>
+        <text name="cywp_keepAsLey"                      text="Garder en prairie pendant"/>
+        <text name="cywp_durMonths"                      text="%d mois"/>
+        <text name="cywp_durYear"                        text="1 an"/>
+        <text name="cywp_durYears"                       text="%d ans"/>
+        <text name="cywp_cutWhen"                        text="Faucher quand"/>
+        <text name="cywp_cutReady"                       text="Prête à récolter"/>
+        <text name="cywp_cutFull"                        text="Pleine croissance"/>
+        <text name="cywp_cutSub"                         text="Tous les %d mois de croissance - environ %d fauches"/>
+        <text name="cywp_resultCrop"                     text="%s semé en %s pousse %d mois : récolte %s."/>
+        <text name="cywp_resultLey"                      text="%s semé en %s reste en prairie %d mois, fauche tous les %d mois de croissance (environ %d fauches, pas de croissance nov-fév). Dernière fauche %s, puis le champ est de nouveau libre."/>
+        <text name="cywp_followUps"                      text="Peut être semé après la récolte :"/>
+        <text name="cywp_followTip"                      text="%s peut être semé en %s"/>
+        <text name="cywp_changeCrop"                     text="Changer de culture"/>
+        <text name="cywp_scrollMore"                     text="Faire défiler pour plus"/>
+        <text name="cywp_addSeedButton"                  text="Ajouter le semis au plan"/>
+        <text name="cywp_seedText"                       text="Semis %s - récolte %s - pousse %d mois."/>
+        <text name="cywp_seedLeyText"                    text="Semis %s - prairie pendant %d mois - fauche tous les %d mois de croissance - dernière fauche %s."/>
+        <text name="cywp_removeSeed"                     text="Retirer le semis du plan"/>
 
         <!-- Reasons a crop cannot be used -->
-        <text name="crp_block_tree"                     text="Les arbres et vergers ne font pas partie d'une rotation"/>
-        <text name="crp_block_regrows"                  text="Repousse chaque année, ne fait pas partie d'une rotation"/>
-        <text name="crp_block_meadow"                   text="Prairie permanente, ne fait pas partie d'une rotation"/>
-        <text name="crp_block_paddy"                    text="Nécessite une rizière"/>
-        <text name="crp_block_catchCrop"                text="Culture intermédiaire"/>
-        <text name="crp_block_allYear"                  text="Récoltée toute l'année"/>
-        <text name="crp_block_unknown"                  text="Pas de période de semis et de récolte dans ce jeu"/>
-        <text name="crp_block_grassOff"                 text="L'herbe dans la rotation est désactivée dans les paramètres"/>
-        <text name="crp_block_notOnMap"                 text="Cette culture n'existe pas sur cette carte"/>
+        <text name="cywp_block_tree"                     text="Les arbres et vergers ne font pas partie d'une rotation"/>
+        <text name="cywp_block_regrows"                  text="Repousse chaque année, ne fait pas partie d'une rotation"/>
+        <text name="cywp_block_meadow"                   text="Prairie permanente, ne fait pas partie d'une rotation"/>
+        <text name="cywp_block_paddy"                    text="Nécessite une rizière"/>
+        <text name="cywp_block_catchCrop"                text="Culture intermédiaire"/>
+        <text name="cywp_block_allYear"                  text="Récoltée toute l'année"/>
+        <text name="cywp_block_unknown"                  text="Pas de période de semis et de récolte dans ce jeu"/>
+        <text name="cywp_block_grassOff"                 text="L'herbe dans la rotation est désactivée dans les paramètres"/>
+        <text name="cywp_block_notOnMap"                 text="Cette culture n'existe pas sur cette carte"/>
 
         <!-- Field groups -->
-        <text name="crp_colFields"                      text="Champs"/>
-        <text name="crp_colPlan"                        text="Plan"/>
-        <text name="crp_colPlanYear"                    text="Année du plan"/>
-        <text name="crp_colCrops"                       text="Cultures de cette année (%d)"/>
-        <text name="crp_noPlan"                         text="Aucun plan"/>
-        <text name="crp_pickPlan"                       text="Choisir un plan"/>
-        <text name="crp_newGroup"                       text="+ Nouveau groupe de champs"/>
-        <text name="crp_noGroups"                       text="Aucun groupe de champs. Cliquez sur + Nouveau groupe de champs, puis sur vos champs à droite pour les ajouter."/>
-        <text name="crp_addFieldTip"                    text="Ajouter des champs : cliquez sur vos champs à droite"/>
-        <text name="crp_removeFieldTip"                 text="Champ %d : cliquer pour le retirer du groupe"/>
-        <text name="crp_removeGroupTip"                 text="Supprimer le groupe de champs"/>
-        <text name="crp_removeGroupConfirm"             text="Cliquer à nouveau pour supprimer le groupe de champs"/>
-        <text name="crp_scrollHint"                     text="%d-%d sur %d (défiler)"/>
-        <text name="crp_yourFields"                     text="Vos champs"/>
-        <text name="crp_yourFieldsText"                 text="Les champs de votre ferme, lus dans le jeu. Les champs gris ne sont dans aucun groupe."/>
-        <text name="crp_addFieldHint"                   text="Cliquez sur un champ pour l'ajouter au groupe choisi (il quitte tout autre groupe). Cliquez à nouveau pour le retirer."/>
-        <text name="crp_fieldInGroup"                   text="Dans un groupe de champs"/>
-        <text name="crp_fieldFree"                      text="Dans aucun groupe"/>
-        <text name="crp_noOwnedFields"                  text="Votre ferme ne possède aucun champ."/>
-        <text name="crp_moreFields"                     text="+%d autres"/>
-        <text name="crp_planYearHelp"                   text="«Année du plan» est la position du groupe dans son plan cette année. Elle avance d'elle-même chaque nouvelle année. Des groupes du même plan à des années différentes répartissent les cultures, ainsi les moulins reçoivent chaque culture chaque année."/>
+        <text name="cywp_colFields"                      text="Champs"/>
+        <text name="cywp_colPlan"                        text="Plan"/>
+        <text name="cywp_colPlanYear"                    text="Année du plan"/>
+        <text name="cywp_colCrops"                       text="Cultures de cette année (%d)"/>
+        <text name="cywp_noPlan"                         text="Aucun plan"/>
+        <text name="cywp_pickPlan"                       text="Choisir un plan"/>
+        <text name="cywp_newGroup"                       text="+ Nouveau groupe de champs"/>
+        <text name="cywp_noGroups"                       text="Aucun groupe de champs. Cliquez sur + Nouveau groupe de champs, puis sur vos champs à droite pour les ajouter."/>
+        <text name="cywp_addFieldTip"                    text="Ajouter des champs : cliquez sur vos champs à droite"/>
+        <text name="cywp_removeFieldTip"                 text="Champ %d : cliquer pour le retirer du groupe"/>
+        <text name="cywp_removeGroupTip"                 text="Supprimer le groupe de champs"/>
+        <text name="cywp_removeGroupConfirm"             text="Cliquer à nouveau pour supprimer le groupe de champs"/>
+        <text name="cywp_scrollHint"                     text="%d-%d sur %d (défiler)"/>
+        <text name="cywp_yourFields"                     text="Vos champs"/>
+        <text name="cywp_yourFieldsText"                 text="Les champs de votre ferme, lus dans le jeu. Les champs gris ne sont dans aucun groupe."/>
+        <text name="cywp_addFieldHint"                   text="Cliquez sur un champ pour l'ajouter au groupe choisi (il quitte tout autre groupe). Cliquez à nouveau pour le retirer."/>
+        <text name="cywp_fieldInGroup"                   text="Dans un groupe de champs"/>
+        <text name="cywp_fieldFree"                      text="Dans aucun groupe"/>
+        <text name="cywp_noOwnedFields"                  text="Votre ferme ne possède aucun champ."/>
+        <text name="cywp_moreFields"                     text="+%d autres"/>
+        <text name="cywp_planYearHelp"                   text="«Année du plan» est la position du groupe dans son plan cette année. Elle avance d'elle-même chaque nouvelle année. Des groupes du même plan à des années différentes répartissent les cultures, ainsi les moulins reçoivent chaque culture chaque année."/>
 
-        <text name="crp_month_1"                        text="Janv"/>
-        <text name="crp_month_2"                        text="Févr"/>
-        <text name="crp_month_3"                        text="Mars"/>
-        <text name="crp_month_4"                        text="Avr"/>
-        <text name="crp_month_5"                        text="Mai"/>
-        <text name="crp_month_6"                        text="Juin"/>
-        <text name="crp_month_7"                        text="Juil"/>
-        <text name="crp_month_8"                        text="Août"/>
-        <text name="crp_month_9"                        text="Sept"/>
-        <text name="crp_month_10"                       text="Oct"/>
-        <text name="crp_month_11"                       text="Nov"/>
-        <text name="crp_month_12"                       text="Déc"/>
+        <text name="cywp_month_1"                        text="Janv"/>
+        <text name="cywp_month_2"                        text="Févr"/>
+        <text name="cywp_month_3"                        text="Mars"/>
+        <text name="cywp_month_4"                        text="Avr"/>
+        <text name="cywp_month_5"                        text="Mai"/>
+        <text name="cywp_month_6"                        text="Juin"/>
+        <text name="cywp_month_7"                        text="Juil"/>
+        <text name="cywp_month_8"                        text="Août"/>
+        <text name="cywp_month_9"                        text="Sept"/>
+        <text name="cywp_month_10"                       text="Oct"/>
+        <text name="cywp_month_11"                       text="Nov"/>
+        <text name="cywp_month_12"                       text="Déc"/>
     </texts>
 </l10n>

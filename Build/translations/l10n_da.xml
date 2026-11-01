@@ -1,177 +1,177 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- FS25_CropRotationPlan: Danish (Dansk) texts. Same keys in every l10n_*.xml file;
+<!-- FS25_CropYearWheelPlanner: Danish (Dansk) texts. Same keys in every l10n_*.xml file;
      %d and %s are filled in by the mod and must stay in the same order. -->
 <l10n>
     <texts>
-        <text name="input_CRP_TOGGLE_SIZE"              text="Sædskifteplan: fuld/minimeret"/>
+        <text name="input_CYWP_TOGGLE_SIZE"              text="Afgrødeårshjul: fuld/minimeret"/>
 
         <!-- On-screen plan -->
-        <text name="crp_title"                          text="Sædskifteplan | spilår %d | %s"/>
-        <text name="crp_hudEmpty"                       text="Ingen markgrupper endnu. Lav planer og markgrupper i menuen (Esc) &gt; Sædskifteplan"/>
-        <text name="crp_field"                          text="Mark"/>
-        <text name="crp_fields"                         text="Marker"/>
-        <text name="crp_cycleYear"                      text="År %d/%d"/>
-        <text name="crp_now"                            text="Nu"/>
-        <text name="crp_next"                           text="Næste"/>
-        <text name="crp_whenNextYear"                   text="%s næste år"/>
-        <text name="crp_action_sow"                     text="Så"/>
-        <text name="crp_action_harvest"                 text="Høst"/>
-        <text name="crp_action_cut"                     text="Slå"/>
-        <text name="crp_leyCrop"                        text="%s (græsmark)"/>
+        <text name="cywp_title"                          text="Afgrødeårshjul | spilår %d | %s"/>
+        <text name="cywp_hudEmpty"                       text="Ingen markgrupper endnu. Lav planer og markgrupper i menuen (Esc) &gt; Afgrødeårshjul"/>
+        <text name="cywp_field"                          text="Mark"/>
+        <text name="cywp_fields"                         text="Marker"/>
+        <text name="cywp_cycleYear"                      text="År %d/%d"/>
+        <text name="cywp_now"                            text="Nu"/>
+        <text name="cywp_next"                           text="Næste"/>
+        <text name="cywp_whenNextYear"                   text="%s næste år"/>
+        <text name="cywp_action_sow"                     text="Så"/>
+        <text name="cywp_action_harvest"                 text="Høst"/>
+        <text name="cywp_action_cut"                     text="Slå"/>
+        <text name="cywp_leyCrop"                        text="%s (græsmark)"/>
 
         <!-- Menu tab and Settings -->
-        <text name="ui_cropRotationPlan"                text="Sædskifteplan"/>
-        <text name="crp_tab_title"                      text="Sædskifteplan"/>
-        <text name="crp_subtab_settings"                text="Indstillinger"/>
-        <text name="crp_subtab_plans"                   text="Planer"/>
-        <text name="crp_subtab_groups"                  text="Markgrupper"/>
-        <text name="crp_section_display"                text="Visning"/>
-        <text name="crp_section_crops"                  text="Afgrøder"/>
-        <text name="crp_section_multiplayer"            text="Multiplayer"/>
-        <text name="crp_settings_display"               text="Visning"/>
-        <text name="crp_settings_display_tooltip"       text="Fuld viser alle markgrupper. Kompakt viser kun grupper med arbejde denne eller næste måned, med spillets ikoner. Minimeret viser ét ikon: gult = opgaver denne måned (med antal marker), grønt = opgaver næste måned, gråt = intet at gøre. Alt+R skifter mellem Fuld, Kompakt og Minimeret. Hvor hver markgruppe er i sin plan sættes under Markgrupper."/>
-        <text name="crp_settings_position"              text="Placering"/>
-        <text name="crp_settings_position_tooltip"      text="Hvor sædskifteplanen vises: øverst på skærmen eller i venstre side. Visning og placering er dine egne og gemmes på din pc."/>
-        <text name="crp_settings_key"                   text="Tast for vis / minimér"/>
-        <text name="crp_settings_key_value"             text="Alt + R (ændres i Indstillinger &gt; Styring)"/>
-        <text name="crp_settings_key_tooltip"           text="Skifter planen på skærmen mellem fuld og minimeret."/>
-        <text name="crp_settings_grass"                 text="Græs i sædskiftet"/>
-        <text name="crp_settings_grass_tooltip"         text="Når slået til kan græs lægges ind i en plan som græsmark: du vælger hvor længe den ligger og hvor tit der slås. Gælder alle på din gård."/>
-        <text name="crp_settings_edit"                  text="Hvem kan redigere planen"/>
-        <text name="crp_settings_edit_manager"          text="Kun gårdens leder"/>
-        <text name="crp_settings_edit_everyone"         text="Alle på gården"/>
-        <text name="crp_settings_edit_tooltip"          text="Hver gård har sine egne planer og markgrupper. Kun gårdens leder kan ændre denne indstilling. Serveren tjekker hver ændring og deler den med alle spillere."/>
-        <text name="crp_settings_editStatus"            text="Dine rettigheder"/>
-        <text name="crp_settings_editStatus_tooltip"    text="Om du kan ændre din gårds planer og markgrupper."/>
-        <text name="crp_status_canEdit"                 text="Du kan redigere planerne"/>
-        <text name="crp_status_managerOnly"             text="Kun visning: kun gårdens leder kan redigere"/>
-        <text name="crp_spectator"                      text="Gå med i en gård for at se og redigere dens sædskifteplaner."/>
-        <text name="crp_on"                             text="Til"/>
-        <text name="crp_off"                            text="Fra"/>
-        <text name="crp_position_top"                   text="Top"/>
-        <text name="crp_position_left"                  text="Venstre"/>
-        <text name="crp_display_full"                   text="Fuld"/>
-        <text name="crp_display_compact"                 text="Kompakt"/>
-        <text name="crp_compactEmpty"                    text="Intet arbejde denne eller næste måned"/>
-        <text name="crp_display_minimized"              text="Minimeret"/>
-        <text name="crp_display_hidden"                 text="Skjult"/>
+        <text name="ui_cropYearWheelPlanner"                text="Afgrødeårshjul"/>
+        <text name="cywp_tab_title"                      text="Afgrødeårshjul"/>
+        <text name="cywp_subtab_settings"                text="Indstillinger"/>
+        <text name="cywp_subtab_plans"                   text="Planer"/>
+        <text name="cywp_subtab_groups"                  text="Markgrupper"/>
+        <text name="cywp_section_display"                text="Visning"/>
+        <text name="cywp_section_crops"                  text="Afgrøder"/>
+        <text name="cywp_section_multiplayer"            text="Multiplayer"/>
+        <text name="cywp_settings_display"               text="Visning"/>
+        <text name="cywp_settings_display_tooltip"       text="Fuld viser alle markgrupper. Kompakt viser kun grupper med arbejde denne eller næste måned, med spillets ikoner. Minimeret viser ét ikon: gult = opgaver denne måned (med antal marker), grønt = opgaver næste måned, gråt = intet at gøre. Alt+R skifter mellem Fuld, Kompakt og Minimeret. Hvor hver markgruppe er i sin plan sættes under Markgrupper."/>
+        <text name="cywp_settings_position"              text="Placering"/>
+        <text name="cywp_settings_position_tooltip"      text="Hvor sædskifteplanen vises: øverst på skærmen eller i venstre side. Visning og placering er dine egne og gemmes på din pc."/>
+        <text name="cywp_settings_key"                   text="Tast for vis / minimér"/>
+        <text name="cywp_settings_key_value"             text="Alt + R (ændres i Indstillinger &gt; Styring)"/>
+        <text name="cywp_settings_key_tooltip"           text="Skifter planen på skærmen mellem fuld og minimeret."/>
+        <text name="cywp_settings_grass"                 text="Græs i sædskiftet"/>
+        <text name="cywp_settings_grass_tooltip"         text="Når slået til kan græs lægges ind i en plan som græsmark: du vælger hvor længe den ligger og hvor tit der slås. Gælder alle på din gård."/>
+        <text name="cywp_settings_edit"                  text="Hvem kan redigere planen"/>
+        <text name="cywp_settings_edit_manager"          text="Kun gårdens leder"/>
+        <text name="cywp_settings_edit_everyone"         text="Alle på gården"/>
+        <text name="cywp_settings_edit_tooltip"          text="Hver gård har sine egne planer og markgrupper. Kun gårdens leder kan ændre denne indstilling. Serveren tjekker hver ændring og deler den med alle spillere."/>
+        <text name="cywp_settings_editStatus"            text="Dine rettigheder"/>
+        <text name="cywp_settings_editStatus_tooltip"    text="Om du kan ændre din gårds planer og markgrupper."/>
+        <text name="cywp_status_canEdit"                 text="Du kan redigere planerne"/>
+        <text name="cywp_status_managerOnly"             text="Kun visning: kun gårdens leder kan redigere"/>
+        <text name="cywp_spectator"                      text="Gå med i en gård for at se og redigere dens sædskifteplaner."/>
+        <text name="cywp_on"                             text="Til"/>
+        <text name="cywp_off"                            text="Fra"/>
+        <text name="cywp_position_top"                   text="Top"/>
+        <text name="cywp_position_left"                  text="Venstre"/>
+        <text name="cywp_display_full"                   text="Fuld"/>
+        <text name="cywp_display_compact"                 text="Kompakt"/>
+        <text name="cywp_compactEmpty"                    text="Intet arbejde denne eller næste måned"/>
+        <text name="cywp_display_minimized"              text="Minimeret"/>
+        <text name="cywp_display_hidden"                 text="Skjult"/>
 
         <!-- Plans -->
-        <text name="crp_plans"                          text="Planer"/>
-        <text name="crp_newPlan"                        text="+ Ny plan"/>
-        <text name="crp_newPlanName"                    text="Plan %d"/>
-        <text name="crp_editPlan"                       text="Rediger plan"/>
-        <text name="crp_deletePlan"                     text="Slet plan"/>
-        <text name="crp_deleteConfirm"                  text="Klik igen for at slette"/>
-        <text name="crp_deletePlanTip"                  text="Markgrupper der bruger planen beholder deres marker, men får ingen plan."/>
-        <text name="crp_noPlans"                        text="Ingen planer endnu. Klik + Ny plan for at lave en."/>
-        <text name="crp_planMeta"                       text="%d år - %d markgrupper"/>
-        <text name="crp_planName"                       text="Plannavn"/>
-        <text name="crp_renameTip"                      text="Klik for at omdøbe planen"/>
-        <text name="crp_yearsInCycle"                   text="År i cyklus"/>
-        <text name="crp_view"                           text="Visning"/>
-        <text name="crp_viewColumns"                    text="Kolonner"/>
-        <text name="crp_viewRows"                       text="Årsrækker"/>
-        <text name="crp_yearN"                          text="År %d"/>
-        <text name="crp_addCrop"                        text="+ Tilføj afgrøde"/>
-        <text name="crp_sowIn"                          text="Så %s"/>
-        <text name="crp_sownInYear"                     text="Sået i år %d"/>
-        <text name="crp_harvestIn"                      text="Høst %s"/>
-        <text name="crp_harvestedInYear"                text="Høstes i år %d"/>
-        <text name="crp_lastCutIn"                      text="Sidste slæt %s"/>
-        <text name="crp_lastCutInYear"                  text="Sidste slæt i år %d"/>
-        <text name="crp_noCropsYet"                     text="Ingen afgrøder endnu. Klik Rediger plan for at tilføje en."/>
-        <text name="crp_columnsHint"                    text="Klik på en afgrøde for at åbne den i planeditoren."/>
-        <text name="crp_rowsHint"                       text="Bjælkerne går fra såning til høst. En bjælke der når kanten fortsætter i næste års række."/>
-        <text name="crp_statusOk"                       text="Plan OK"/>
-        <text name="crp_statusCounts"                   text="%d afgrøder - %d ledige måneder"/>
-        <text name="crp_statusEmptyYears"               text="År %s har ingen afgrøder"/>
-        <text name="crp_statusOverlap"                  text="Afgrøder overlapper"/>
+        <text name="cywp_plans"                          text="Planer"/>
+        <text name="cywp_newPlan"                        text="+ Ny plan"/>
+        <text name="cywp_newPlanName"                    text="Plan %d"/>
+        <text name="cywp_editPlan"                       text="Rediger plan"/>
+        <text name="cywp_deletePlan"                     text="Slet plan"/>
+        <text name="cywp_deleteConfirm"                  text="Klik igen for at slette"/>
+        <text name="cywp_deletePlanTip"                  text="Markgrupper der bruger planen beholder deres marker, men får ingen plan."/>
+        <text name="cywp_noPlans"                        text="Ingen planer endnu. Klik + Ny plan for at lave en."/>
+        <text name="cywp_planMeta"                       text="%d år - %d markgrupper"/>
+        <text name="cywp_planName"                       text="Plannavn"/>
+        <text name="cywp_renameTip"                      text="Klik for at omdøbe planen"/>
+        <text name="cywp_yearsInCycle"                   text="År i cyklus"/>
+        <text name="cywp_view"                           text="Visning"/>
+        <text name="cywp_viewColumns"                    text="Kolonner"/>
+        <text name="cywp_viewRows"                       text="Årsrækker"/>
+        <text name="cywp_yearN"                          text="År %d"/>
+        <text name="cywp_addCrop"                        text="+ Tilføj afgrøde"/>
+        <text name="cywp_sowIn"                          text="Så %s"/>
+        <text name="cywp_sownInYear"                     text="Sået i år %d"/>
+        <text name="cywp_harvestIn"                      text="Høst %s"/>
+        <text name="cywp_harvestedInYear"                text="Høstes i år %d"/>
+        <text name="cywp_lastCutIn"                      text="Sidste slæt %s"/>
+        <text name="cywp_lastCutInYear"                  text="Sidste slæt i år %d"/>
+        <text name="cywp_noCropsYet"                     text="Ingen afgrøder endnu. Klik Rediger plan for at tilføje en."/>
+        <text name="cywp_columnsHint"                    text="Klik på en afgrøde for at åbne den i planeditoren."/>
+        <text name="cywp_rowsHint"                       text="Bjælkerne går fra såning til høst. En bjælke der når kanten fortsætter i næste års række."/>
+        <text name="cywp_statusOk"                       text="Plan OK"/>
+        <text name="cywp_statusCounts"                   text="%d afgrøder - %d ledige måneder"/>
+        <text name="cywp_statusEmptyYears"               text="År %s har ingen afgrøder"/>
+        <text name="cywp_statusOverlap"                  text="Afgrøder overlapper"/>
 
         <!-- Plan editor -->
-        <text name="crp_monthYear"                      text="%s år %d"/>
-        <text name="crp_wheelHint"                      text="Bjælkerne går fra såning til høst og fortsætter i næste række over nytår. Klik på et stiplet hul for at tilføje en afgrøde, eller på en bjælke for at fjerne den."/>
-        <text name="crp_editorFooter"                   text="Ændringer gemmes først når du trykker Gem plan."/>
-        <text name="crp_editorHint"                     text="Klik på et stiplet hul for at tilføje en afgrøde, eller på en bjælke for at se den."/>
-        <text name="crp_savePlan"                       text="Gem plan"/>
-        <text name="crp_cancel"                         text="Annuller"/>
-        <text name="crp_gapTip"                         text="Ledig fra %s til %s"/>
-        <text name="crp_barTip"                         text="%s: så %s, høst %s"/>
-        <text name="crp_leyBar"                         text="%s (græsmark, slæt hver %d. md.)"/>
-        <text name="crp_addSeed"                        text="Tilføj afgrøde"/>
-        <text name="crp_gapText"                        text="Ledig fra %s til %s. Såning må starte i høstmåneden før, høst må falde i såmåneden efter."/>
-        <text name="crp_monthsSub"                      text="%d mdr."/>
-        <text name="crp_leySub"                         text="Græsmark, du vælger hvor længe"/>
-        <text name="crp_sowSub"                         text="Så %s"/>
-        <text name="crp_noFit"                          text="Passer ikke i dette hul (%d)"/>
-        <text name="crp_needs"                          text="Skal bruge %d mdr. fra en såmåned i %s"/>
-        <text name="crp_nothingFits"                    text="Ingen afgrøde kan gro i dette hul. Det forbliver ledigt."/>
-        <text name="crp_pickCrop"                       text="Vælg en afgrøde ovenfor."/>
-        <text name="crp_sowInLabel"                     text="Så i"/>
-        <text name="crp_keepAsLey"                      text="Behold som græsmark i"/>
-        <text name="crp_durMonths"                      text="%d måneder"/>
-        <text name="crp_durYear"                        text="1 år"/>
-        <text name="crp_durYears"                       text="%d år"/>
-        <text name="crp_cutWhen"                        text="Slå når"/>
-        <text name="crp_cutReady"                       text="Klar til høst"/>
-        <text name="crp_cutFull"                        text="Fuldt udvokset"/>
-        <text name="crp_cutSub"                         text="Hver %d. vækstmåned - ca. %d slæt"/>
-        <text name="crp_resultCrop"                     text="%s sået %s gror %d måneder: høst %s."/>
-        <text name="crp_resultLey"                      text="%s sået %s ligger som græsmark i %d måneder, slæt hver %d. vækstmåned (ca. %d slæt, ingen vækst nov-feb). Sidste slæt %s, derefter er marken ledig igen."/>
-        <text name="crp_followUps"                      text="Kan sås efter høst:"/>
-        <text name="crp_followTip"                      text="%s kan sås i %s"/>
-        <text name="crp_changeCrop"                     text="Skift afgrøde"/>
-        <text name="crp_scrollMore"                     text="Rul for mere"/>
-        <text name="crp_addSeedButton"                  text="Tilføj afgrøde til planen"/>
-        <text name="crp_seedText"                       text="Så %s - høst %s - gror %d måneder."/>
-        <text name="crp_seedLeyText"                    text="Så %s - græsmark i %d måneder - slæt hver %d. vækstmåned - sidste slæt %s."/>
-        <text name="crp_removeSeed"                     text="Fjern afgrøde fra planen"/>
+        <text name="cywp_monthYear"                      text="%s år %d"/>
+        <text name="cywp_wheelHint"                      text="Bjælkerne går fra såning til høst og fortsætter i næste række over nytår. Klik på et stiplet hul for at tilføje en afgrøde, eller på en bjælke for at fjerne den."/>
+        <text name="cywp_editorFooter"                   text="Ændringer gemmes først når du trykker Gem plan."/>
+        <text name="cywp_editorHint"                     text="Klik på et stiplet hul for at tilføje en afgrøde, eller på en bjælke for at se den."/>
+        <text name="cywp_savePlan"                       text="Gem plan"/>
+        <text name="cywp_cancel"                         text="Annuller"/>
+        <text name="cywp_gapTip"                         text="Ledig fra %s til %s"/>
+        <text name="cywp_barTip"                         text="%s: så %s, høst %s"/>
+        <text name="cywp_leyBar"                         text="%s (græsmark, slæt hver %d. md.)"/>
+        <text name="cywp_addSeed"                        text="Tilføj afgrøde"/>
+        <text name="cywp_gapText"                        text="Ledig fra %s til %s. Såning må starte i høstmåneden før, høst må falde i såmåneden efter."/>
+        <text name="cywp_monthsSub"                      text="%d mdr."/>
+        <text name="cywp_leySub"                         text="Græsmark, du vælger hvor længe"/>
+        <text name="cywp_sowSub"                         text="Så %s"/>
+        <text name="cywp_noFit"                          text="Passer ikke i dette hul (%d)"/>
+        <text name="cywp_needs"                          text="Skal bruge %d mdr. fra en såmåned i %s"/>
+        <text name="cywp_nothingFits"                    text="Ingen afgrøde kan gro i dette hul. Det forbliver ledigt."/>
+        <text name="cywp_pickCrop"                       text="Vælg en afgrøde ovenfor."/>
+        <text name="cywp_sowInLabel"                     text="Så i"/>
+        <text name="cywp_keepAsLey"                      text="Behold som græsmark i"/>
+        <text name="cywp_durMonths"                      text="%d måneder"/>
+        <text name="cywp_durYear"                        text="1 år"/>
+        <text name="cywp_durYears"                       text="%d år"/>
+        <text name="cywp_cutWhen"                        text="Slå når"/>
+        <text name="cywp_cutReady"                       text="Klar til høst"/>
+        <text name="cywp_cutFull"                        text="Fuldt udvokset"/>
+        <text name="cywp_cutSub"                         text="Hver %d. vækstmåned - ca. %d slæt"/>
+        <text name="cywp_resultCrop"                     text="%s sået %s gror %d måneder: høst %s."/>
+        <text name="cywp_resultLey"                      text="%s sået %s ligger som græsmark i %d måneder, slæt hver %d. vækstmåned (ca. %d slæt, ingen vækst nov-feb). Sidste slæt %s, derefter er marken ledig igen."/>
+        <text name="cywp_followUps"                      text="Kan sås efter høst:"/>
+        <text name="cywp_followTip"                      text="%s kan sås i %s"/>
+        <text name="cywp_changeCrop"                     text="Skift afgrøde"/>
+        <text name="cywp_scrollMore"                     text="Rul for mere"/>
+        <text name="cywp_addSeedButton"                  text="Tilføj afgrøde til planen"/>
+        <text name="cywp_seedText"                       text="Så %s - høst %s - gror %d måneder."/>
+        <text name="cywp_seedLeyText"                    text="Så %s - græsmark i %d måneder - slæt hver %d. vækstmåned - sidste slæt %s."/>
+        <text name="cywp_removeSeed"                     text="Fjern afgrøde fra planen"/>
 
         <!-- Reasons a crop cannot be used -->
-        <text name="crp_block_tree"                     text="Træer og plantager indgår ikke i et sædskifte"/>
-        <text name="crp_block_regrows"                  text="Gror igen hvert år, indgår ikke i et sædskifte"/>
-        <text name="crp_block_meadow"                   text="Permanent eng, indgår ikke i et sædskifte"/>
-        <text name="crp_block_paddy"                    text="Kræver en rismark"/>
-        <text name="crp_block_catchCrop"                text="Efterafgrøde"/>
-        <text name="crp_block_allYear"                  text="Høstes hele året"/>
-        <text name="crp_block_unknown"                  text="Ingen så- og høsttid i dette spil"/>
-        <text name="crp_block_grassOff"                 text="Græs i sædskiftet er slået fra i Indstillinger"/>
-        <text name="crp_block_notOnMap"                 text="Denne afgrøde findes ikke på dette kort"/>
+        <text name="cywp_block_tree"                     text="Træer og plantager indgår ikke i et sædskifte"/>
+        <text name="cywp_block_regrows"                  text="Gror igen hvert år, indgår ikke i et sædskifte"/>
+        <text name="cywp_block_meadow"                   text="Permanent eng, indgår ikke i et sædskifte"/>
+        <text name="cywp_block_paddy"                    text="Kræver en rismark"/>
+        <text name="cywp_block_catchCrop"                text="Efterafgrøde"/>
+        <text name="cywp_block_allYear"                  text="Høstes hele året"/>
+        <text name="cywp_block_unknown"                  text="Ingen så- og høsttid i dette spil"/>
+        <text name="cywp_block_grassOff"                 text="Græs i sædskiftet er slået fra i Indstillinger"/>
+        <text name="cywp_block_notOnMap"                 text="Denne afgrøde findes ikke på dette kort"/>
 
         <!-- Field groups -->
-        <text name="crp_colFields"                      text="Marker"/>
-        <text name="crp_colPlan"                        text="Plan"/>
-        <text name="crp_colPlanYear"                    text="Planår nu"/>
-        <text name="crp_colCrops"                       text="Afgrøder i dette spilår (%d)"/>
-        <text name="crp_noPlan"                         text="Ingen plan"/>
-        <text name="crp_pickPlan"                       text="Vælg en plan"/>
-        <text name="crp_newGroup"                       text="+ Ny markgruppe"/>
-        <text name="crp_noGroups"                       text="Ingen markgrupper endnu. Klik + Ny markgruppe og klik derefter på dine marker til højre for at tilføje dem."/>
-        <text name="crp_addFieldTip"                    text="Tilføj marker: klik på dine marker til højre"/>
-        <text name="crp_removeFieldTip"                 text="Mark %d: klik for at tage den ud af gruppen"/>
-        <text name="crp_removeGroupTip"                 text="Fjern markgruppe"/>
-        <text name="crp_removeGroupConfirm"             text="Klik igen for at fjerne markgruppen"/>
-        <text name="crp_scrollHint"                     text="%d-%d af %d (rul)"/>
-        <text name="crp_yourFields"                     text="Dine marker"/>
-        <text name="crp_yourFieldsText"                 text="Marker din gård ejer, læst fra spillet. Grå marker er ikke i nogen gruppe endnu."/>
-        <text name="crp_addFieldHint"                   text="Klik på en mark for at tilføje den til den valgte gruppe (den forlader en anden gruppe). Klik igen for at tage den ud."/>
-        <text name="crp_fieldInGroup"                   text="I en markgruppe"/>
-        <text name="crp_fieldFree"                      text="Ikke i en gruppe"/>
-        <text name="crp_noOwnedFields"                  text="Din gård ejer ingen marker."/>
-        <text name="crp_moreFields"                     text="+%d flere"/>
-        <text name="crp_planYearHelp"                   text="&quot;Planår nu&quot; er hvor gruppen er i sin plan i år. Det rykker selv videre hvert nyt år. Grupper i samme plan på forskellige planår spreder afgrøderne, så møllerne får alle afgrøder hvert år."/>
+        <text name="cywp_colFields"                      text="Marker"/>
+        <text name="cywp_colPlan"                        text="Plan"/>
+        <text name="cywp_colPlanYear"                    text="Planår nu"/>
+        <text name="cywp_colCrops"                       text="Afgrøder i dette spilår (%d)"/>
+        <text name="cywp_noPlan"                         text="Ingen plan"/>
+        <text name="cywp_pickPlan"                       text="Vælg en plan"/>
+        <text name="cywp_newGroup"                       text="+ Ny markgruppe"/>
+        <text name="cywp_noGroups"                       text="Ingen markgrupper endnu. Klik + Ny markgruppe og klik derefter på dine marker til højre for at tilføje dem."/>
+        <text name="cywp_addFieldTip"                    text="Tilføj marker: klik på dine marker til højre"/>
+        <text name="cywp_removeFieldTip"                 text="Mark %d: klik for at tage den ud af gruppen"/>
+        <text name="cywp_removeGroupTip"                 text="Fjern markgruppe"/>
+        <text name="cywp_removeGroupConfirm"             text="Klik igen for at fjerne markgruppen"/>
+        <text name="cywp_scrollHint"                     text="%d-%d af %d (rul)"/>
+        <text name="cywp_yourFields"                     text="Dine marker"/>
+        <text name="cywp_yourFieldsText"                 text="Marker din gård ejer, læst fra spillet. Grå marker er ikke i nogen gruppe endnu."/>
+        <text name="cywp_addFieldHint"                   text="Klik på en mark for at tilføje den til den valgte gruppe (den forlader en anden gruppe). Klik igen for at tage den ud."/>
+        <text name="cywp_fieldInGroup"                   text="I en markgruppe"/>
+        <text name="cywp_fieldFree"                      text="Ikke i en gruppe"/>
+        <text name="cywp_noOwnedFields"                  text="Din gård ejer ingen marker."/>
+        <text name="cywp_moreFields"                     text="+%d flere"/>
+        <text name="cywp_planYearHelp"                   text="&quot;Planår nu&quot; er hvor gruppen er i sin plan i år. Det rykker selv videre hvert nyt år. Grupper i samme plan på forskellige planår spreder afgrøderne, så møllerne får alle afgrøder hvert år."/>
 
-        <text name="crp_month_1"                        text="Jan"/>
-        <text name="crp_month_2"                        text="Feb"/>
-        <text name="crp_month_3"                        text="Mar"/>
-        <text name="crp_month_4"                        text="Apr"/>
-        <text name="crp_month_5"                        text="Maj"/>
-        <text name="crp_month_6"                        text="Jun"/>
-        <text name="crp_month_7"                        text="Jul"/>
-        <text name="crp_month_8"                        text="Aug"/>
-        <text name="crp_month_9"                        text="Sep"/>
-        <text name="crp_month_10"                       text="Okt"/>
-        <text name="crp_month_11"                       text="Nov"/>
-        <text name="crp_month_12"                       text="Dec"/>
+        <text name="cywp_month_1"                        text="Jan"/>
+        <text name="cywp_month_2"                        text="Feb"/>
+        <text name="cywp_month_3"                        text="Mar"/>
+        <text name="cywp_month_4"                        text="Apr"/>
+        <text name="cywp_month_5"                        text="Maj"/>
+        <text name="cywp_month_6"                        text="Jun"/>
+        <text name="cywp_month_7"                        text="Jul"/>
+        <text name="cywp_month_8"                        text="Aug"/>
+        <text name="cywp_month_9"                        text="Sep"/>
+        <text name="cywp_month_10"                       text="Okt"/>
+        <text name="cywp_month_11"                       text="Nov"/>
+        <text name="cywp_month_12"                       text="Dec"/>
     </texts>
 </l10n>

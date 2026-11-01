@@ -3,15 +3,15 @@
     <author>Anders Dissing</author>
     <version>1.0.0.0</version>
     <title>
-        <en>Crop Rotation Plan</en>
-        <de>Fruchtfolgeplan</de>
-        <fr>Plan De Rotation Des Cultures</fr>
-        <da>Sædskifteplan</da>
+        <en>Crop Year Wheel Planner</en>
+        <de>Fruchtfolge-Jahresrad</de>
+        <fr>Roue Annuelle Des Cultures</fr>
+        <da>Afgrødeårshjul</da>
     </title>
     <description>
         <en><![CDATA[Plan your crop rotation in the game and see on screen what to sow and harvest this month.
 
-Menu (Esc) > Crop rotation plan:
+Menu (Esc) > Crop Year Wheel Planner:
 - Plans: build a plan year by year on a year wheel (January to December). Only crops that can grow in a free gap are offered; you pick the sow month, the harvest month follows from the crop's growth time. Grass can be kept as a ley with a cut interval.
 - Field groups: put your fields into groups, pick a plan and where the group is in the plan this year. It moves on by itself every year.
 - Settings: display full / compact / minimized / hidden, position top / left, grass in rotation.
@@ -19,10 +19,10 @@ Menu (Esc) > Crop rotation plan:
 Crops are read from the game (map, DLC and mod crops). Plans are saved in the savegame; a new savegame starts empty.
 Multiplayer: each farm has its own plans and field groups. The farm manager edits them, or lets everyone on the farm edit them.
 Alt+R: switch between full, compact (only groups with work, with the game's icons) and minimized.
-Console: crpLoadExample (Riverbend Springs example plan), crpReloadCrops]]></en>
+Console: cywpLoadExample (Riverbend Springs example plan), cywpReloadCrops]]></en>
         <de><![CDATA[Plane deine Fruchtfolge direkt im Spiel und sieh auf dem Bildschirm, was in diesem Monat gesät und geerntet werden muss.
 
-Menü (Esc) > Fruchtfolgeplan:
+Menü (Esc) > Fruchtfolge-Jahresrad:
 - Pläne: Baue einen Plan Jahr für Jahr auf einem Jahresrad (Januar bis Dezember). Angeboten werden nur Feldfrüchte, die in einer freien Lücke wachsen können; du wählst den Saatmonat, der Erntemonat ergibt sich aus der Wachstumszeit. Gras kann als Grünland mit Schnittintervall eingeplant werden.
 - Feldgruppen: Fasse deine Felder in Gruppen zusammen, wähle einen Plan und wo die Gruppe dieses Jahr im Plan steht. Das rückt jedes Jahr von selbst weiter.
 - Einstellungen: Anzeige voll / kompakt / minimiert / ausgeblendet, Position oben / links, Gras in der Fruchtfolge.
@@ -30,10 +30,10 @@ Menü (Esc) > Fruchtfolgeplan:
 Die Feldfrüchte werden aus dem Spiel gelesen (Karte, DLC und Mod-Früchte). Die Pläne werden im Spielstand gespeichert; ein neuer Spielstand beginnt leer.
 Mehrspieler: Jeder Hof hat eigene Pläne und Feldgruppen. Standardmäßig bearbeitet nur der Hofverwalter sie; er kann es allen auf dem Hof erlauben.
 Alt+R: zwischen voll, kompakt (nur Gruppen mit Arbeit, mit den Symbolen des Spiels) und minimiert umschalten.
-Konsole: crpLoadExample (Beispielplan für Riverbend Springs), crpReloadCrops]]></de>
+Konsole: cywpLoadExample (Beispielplan für Riverbend Springs), cywpReloadCrops]]></de>
         <fr><![CDATA[Planifiez votre rotation des cultures dans le jeu et voyez à l'écran ce qu'il faut semer et récolter ce mois-ci.
 
-Menu (Échap) > Plan de rotation des cultures :
+Menu (Échap) > Roue annuelle des cultures :
 - Plans : construisez un plan année par année sur une roue annuelle (janvier à décembre). Seules les cultures qui peuvent pousser dans un créneau libre sont proposées ; vous choisissez le mois de semis, le mois de récolte découle du temps de croissance. L'herbe peut rester en prairie temporaire avec un intervalle de fauche.
 - Groupes de champs : regroupez vos champs, choisissez un plan et l'année du plan où se trouve le groupe cette année. Elle avance d'elle-même chaque année.
 - Paramètres : affichage complet / compact / réduit / masqué, position en haut / à gauche, herbe dans la rotation.
@@ -41,10 +41,10 @@ Menu (Échap) > Plan de rotation des cultures :
 Les cultures sont lues dans le jeu (carte, DLC et cultures de mods). Les plans sont enregistrés dans la sauvegarde ; une nouvelle sauvegarde commence vide.
 Multijoueur : chaque ferme a ses propres plans et groupes de champs. Le gestionnaire de la ferme les modifie, ou autorise tous les membres de la ferme à les modifier.
 Alt+R : basculer entre complet, compact (seulement les groupes avec du travail, avec les icônes du jeu) et réduit.
-Console : crpLoadExample (plan d'exemple pour Riverbend Springs), crpReloadCrops]]></fr>
+Console : cywpLoadExample (plan d'exemple pour Riverbend Springs), cywpReloadCrops]]></fr>
         <da><![CDATA[Planlæg dit sædskifte i spillet og se på skærmen, hvad der skal sås og høstes i denne måned.
 
-Menu (Esc) > Sædskifteplan:
+Menu (Esc) > Afgrødeårshjul:
 - Planer: byg en plan år for år på et årshjul (januar til december). Kun afgrøder der kan gro i et ledigt hul tilbydes; du vælger såmåneden, høstmåneden følger af afgrødens vækstid. Græs kan ligge som græsmark med et slætinterval.
 - Markgrupper: saml dine marker i grupper, vælg en plan og hvor gruppen er i planen i år. Den rykker selv videre hvert år.
 - Indstillinger: visning fuld / kompakt / minimeret / skjult, placering top / venstre, græs i sædskiftet.
@@ -52,21 +52,21 @@ Menu (Esc) > Sædskifteplan:
 Afgrøderne læses fra spillet (kort, DLC og mod-afgrøder). Planerne gemmes i savegamet; et nyt savegame starter tomt.
 Multiplayer: hver gård har sine egne planer og markgrupper. Gårdens leder redigerer dem eller lader alle på gården redigere.
 Alt+R: skift mellem fuld, kompakt (kun grupper med arbejde, med spillets ikoner) og minimeret.
-Konsol: crpLoadExample (eksempelplan for Riverbend Springs), crpReloadCrops]]></da>
+Konsol: cywpLoadExample (eksempelplan for Riverbend Springs), cywpReloadCrops]]></da>
     </description>
-    <iconFilename>icon_CropRotationPlan.dds</iconFilename>
+    <iconFilename>icon_CropYearWheelPlanner.dds</iconFilename>
     <multiplayer supported="true"/>
 
     <extraSourceFiles>
-        <sourceFile filename="scripts/CropRotationPlan.lua"/>
+        <sourceFile filename="scripts/CropYearWheelPlanner.lua"/>
     </extraSourceFiles>
 
     <actions>
-        <action name="CRP_TOGGLE_SIZE" category="ONFOOT VEHICLE" axisType="HALF" ignoreComboMask="false"/>
+        <action name="CYWP_TOGGLE_SIZE" category="ONFOOT VEHICLE" axisType="HALF" ignoreComboMask="false"/>
     </actions>
 
     <inputBinding>
-        <actionBinding action="CRP_TOGGLE_SIZE">
+        <actionBinding action="CYWP_TOGGLE_SIZE">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_r"/>
         </actionBinding>
     </inputBinding>

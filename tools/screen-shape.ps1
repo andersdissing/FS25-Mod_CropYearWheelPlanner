@@ -60,5 +60,5 @@ $display.fullscreenMode = 'windowed'
 $xml.Save($GameXml)
 Write-Host "FS25 set to a $width x $height window ($Shape). Start the game and check:"
 Write-Host '  - the on-screen plan (Full and Minimized, Top and Left)'
-Write-Host '  - Esc > Crop rotation plan: Settings, Plans (both views), plan editor, Field groups'
+Write-Host '  - Esc > Crop Year Wheel Planner: Settings, Plans (both views), plan editor, Field groups'
 Write-Host 'Afterwards: pwsh -File tools\screen-shape.ps1 -Restore'
