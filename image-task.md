@@ -13,9 +13,11 @@
 ## Status (2026-10-30)
 
 - Done: `01_fields.png` (1600x900, no HUD: good for ModHub).
-- Taken instead of shots 2 and 3, kept for the README: `plans_year_rows.png` (Plans page) and
-  `field_groups.png` (retake after the next build: field numbers 23, 25, 76, 77 showed as "2.." / "7..").
-- **Still needed:** shot 2 (the plan **on screen over a field**, menu closed) and shot 3 (the **plan editor**).
+- Done 2026-11-01: `in-game.png` (shot 2: the on-screen plan, Full, Top, with a yellow **Now:**) and a new
+  `plans_year_rows.png` (Plans page, Year rows, current build).
+- **Still needed:** shot 3 (the **plan editor**) and a retake of `field_groups.png` (old build: field numbers
+  23, 25, 76, 77 showed as "2.." / "7..").
+- Optional: the **Compact** on-screen view (Alt+R), with a month that has work.
 - Next time use **1920x1080** if the screen allows it (these are 1600x900, which is 16:9 and fine for the README).
 
 ## A. ModHub and README (your normal 16:9 resolution)

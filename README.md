@@ -3,7 +3,7 @@
 A Farming Simulator 25 mod that lets you build crop rotation plans **inside the game** and shows on screen,
 every month, what to sow and harvest on which fields.
 
-<!-- screenshot: Docs/screenshots/02_plan_on_screen.png -->
+![The on-screen plan in the game](Docs/screenshots/in-game.png)
 
 - Build plans year by year on a **year wheel** (January to December).
 - Only crops that can actually **grow in a free gap** are offered; you pick the sow month and the harvest month follows from the crop's growth time.

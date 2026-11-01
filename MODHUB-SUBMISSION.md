@@ -72,14 +72,15 @@ The mod's in-game texts are in English, German, Danish and French (`Build/transl
 |---|---|
 | Mod zip | `FS25_CropYearWheelPlanner.zip` from the GitHub release v1.0.0.0 |
 | Screenshot 1 (no text, no HUD) | `Docs/screenshots/01_fields.png` |
-| Screenshot 2 | `Docs/screenshots/plans_year_rows.png` |
-| Screenshot 3 | `Docs/screenshots/field_groups.png` |
+| Screenshot 2 | `Docs/screenshots/in-game.png` (the on-screen plan) |
+| Screenshot 3 | `Docs/screenshots/plans_year_rows.png` |
+| Screenshot 4 | `Docs/screenshots/field_groups.png` (retake: field numbers were shortened in the old build) |
 | Platform | PC/Mac only (script mod, guideline 8.2) |
 
 ## Submission comment (for the testers)
 
 ```
-Script mod, PC only. Adds a tab to the in-game menu (Esc > Crop Year Wheel Planner) where players build crop rotation plans on a January-December year wheel, group their fields and set where each group is in its plan. The on-screen plan shows this month's tasks (Alt+R: full/minimized).
+Script mod, PC only. Adds a tab to the in-game menu (Esc > Crop Year Wheel Planner) where players build crop rotation plans on a January-December year wheel, group their fields and set where each group is in its plan. The on-screen plan shows this month's tasks (Alt+R: full/compact/minimized).
 
 Quick test: load any savegame (Riverbend Springs gives the right field numbers), enable the developer console and run cywpLoadExample (server only). That creates two plans and six field groups for the current farm. cywpReloadCrops prints the crops read from the game.
 
