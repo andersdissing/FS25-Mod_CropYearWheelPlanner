@@ -46,11 +46,13 @@ The plan is drawn on top of the game, at the top of the screen or on the left si
 
 - **Full** shows one line per field group under the plan's name: the plan year (e.g. *Year 2/4*), the crops
   this year, and either **Now:** (yellow, work this month) or **Next:** with the month.
+- **Compact** shows only the field groups with work this month or next: field numbers, the game's icons for
+  the work (sow, harvest, mow) and the crop, and **Now** (yellow) or the month (green).
 - **Minimized** shows a single icon:
   - yellow with a number: work this month (number of fields),
   - green: work next month,
   - grey: nothing to do this month or next.
-- **Alt + R** switches between full and minimized (change the key in Settings > Controls).
+- **Alt + R** switches Full > Compact > Minimized (change the key in Settings > Controls).
 
 ## The menu: Esc > Crop rotation plan
 
@@ -62,7 +64,7 @@ It has three sub-tabs: **Settings**, **Plans** and **Field groups**.
 
 | Setting | What it does |
 |---|---|
-| Display | Full, Minimized or Hidden. Your own setting, saved on your PC. |
+| Display | Full, Compact, Minimized or Hidden. Your own setting, saved on your PC. |
 | Position | Top or Left. Your own setting, saved on your PC. |
 | Show / minimize key | Shows the key (Alt + R by default). |
 | Grass in rotation | On: grass can be added to plans as a ley. Applies to your farm. |

@@ -26,6 +26,7 @@ CropRotationPlan = {}
 CropRotationPlan.modDirectory = modDirectory
 
 CropRotationPlan.DISPLAY_FULL = "full"
+CropRotationPlan.DISPLAY_COMPACT = "compact"
 CropRotationPlan.DISPLAY_MINIMIZED = "minimized"
 CropRotationPlan.DISPLAY_HIDDEN = "hidden"
 -- Order used by the settings option (state 1..3)
@@ -329,9 +330,11 @@ function CropRotationPlan.registerActionEvents()
     end
 end
 
--- Full -> minimized -> full. From hidden the key brings it back as minimized.
+-- Full -> compact -> minimized -> full. From hidden the key brings it back as minimized.
 function CropRotationPlan:onToggleSize()
     if self.settings.displayMode == CropRotationPlan.DISPLAY_FULL then
+        self:setDisplayMode(CropRotationPlan.DISPLAY_COMPACT)
+    elseif self.settings.displayMode == CropRotationPlan.DISPLAY_COMPACT then
         self:setDisplayMode(CropRotationPlan.DISPLAY_MINIMIZED)
     elseif self.settings.displayMode == CropRotationPlan.DISPLAY_MINIMIZED then
         self:setDisplayMode(CropRotationPlan.DISPLAY_FULL)
@@ -399,6 +402,8 @@ function CropRotationPlan:buildGroups()
                 local s = CropRotationPlanLogic.getGroupStatus(plan, crops, group, calendarYear, month)
                 local row = {
                     name = fieldsText(group.fields),
+                    fieldsShort = table.concat(group.fields, " "),
+                    tasks = {},
                     yearText = string.format(t("crp_cycleYear"), s.planYear, plan.years),
                     crops = CropRotationPlan.cropsText(s.cropsThisYear),
                     status = "",
@@ -412,6 +417,10 @@ function CropRotationPlan:buildGroups()
                     end
                     row.status = t("crp_now") .. ": " .. table.concat(parts, ", ")
                     row.isNow = true
+                    row.whenShort = t("crp_now")
+                    for k = 1, math.min(2, #s.nowTasks) do
+                        table.insert(row.tasks, s.nowTasks[k])
+                    end
                 elseif s.nextTask ~= nil then
                     local when = monthName(s.nextMonth)
                     if s.nextIsNextYear then
@@ -419,6 +428,8 @@ function CropRotationPlan:buildGroups()
                     end
                     row.status = string.format("%s: %s (%s)", t("crp_next"), CropRotationPlan.taskText(s.nextTask), when)
                     row.nextIn = s.nextIn
+                    row.whenShort = monthName(s.nextMonth)
+                    table.insert(row.tasks, s.nextTask)
                 end
                 table.insert(entry.groups, row)
             end
@@ -594,6 +605,96 @@ function CropRotationPlan:drawFull(cache)
     end
 end
 
+-- Compact view (issue #4): one row per field group with work this month or next month:
+-- field numbers, action icon + crop icon per task (at most two), "Now" or the month.
+-- Layout computed once per cache rebuild, like the full view.
+function CropRotationPlan:layoutCompact(plans)
+    local U = CropRotationPlan.UI
+    local size = U.textSize
+    local rows = {}
+    local maxTasks = 1
+    for _, p in ipairs(plans) do
+        for _, r in ipairs(p.groups) do
+            if (r.isNow or r.nextIn == 1) and #r.tasks > 0 then
+                table.insert(rows, r)
+                maxTasks = math.max(maxTasks, #r.tasks)
+            end
+        end
+    end
+    local iconH = size * 1.6
+    local aspect = 1
+    if g_screenWidth ~= nil and g_screenHeight ~= nil and g_screenWidth > 0 then
+        aspect = g_screenHeight / g_screenWidth
+    end
+    local iconW = iconH * aspect
+    local iconGap = iconW * 0.25
+    local wFields, wWhen = 0, 0
+    setTextBold(true)
+    for _, r in ipairs(rows) do
+        wFields = math.max(wFields, getTextWidth(size, r.fieldsShort))
+        wWhen = math.max(wWhen, getTextWidth(size, r.whenShort))
+    end
+    setTextBold(false)
+    local empty = nil
+    local width
+    if #rows == 0 then
+        empty = t("crp_compactEmpty")
+        width = getTextWidth(size, empty) + 2 * U.padding
+    else
+        local wTasks = maxTasks * (2 * iconW + iconGap) + (maxTasks - 1) * iconGap
+        width = 2 * U.padding + wFields + U.colGap + wTasks + U.colGap + wWhen
+    end
+    local rowH = iconH + U.lineGap
+    local height = 2 * U.padding + math.max(1, #rows) * rowH - U.lineGap
+    return {
+        rows = rows, empty = empty, width = width, height = height, rowH = rowH,
+        iconW = iconW, iconH = iconH, iconGap = iconGap, wFields = wFields, maxTasks = maxTasks,
+    }
+end
+
+function CropRotationPlan:drawCompact(cache)
+    local U = CropRotationPlan.UI
+    if cache.compact == nil then
+        cache.compact = self:layoutCompact(cache.plans)
+    end
+    local L = cache.compact
+    local size = U.textSize
+    local bottomY = U.topY - L.height
+    drawFilledRect(U.x, bottomY, L.width, L.height, U.bgColor[1], U.bgColor[2], U.bgColor[3], U.bgColor[4])
+    setTextAlignment(RenderText.ALIGN_LEFT)
+
+    local x = U.x + U.padding
+    if L.empty ~= nil then
+        setColor(U.colorMuted)
+        renderText(x, U.topY - U.padding - L.iconH + (L.iconH - size) * 0.5 + size * 0.15, size, L.empty)
+        return
+    end
+
+    local y = U.topY - U.padding - L.iconH
+    for _, r in ipairs(L.rows) do
+        local textY = y + (L.iconH - size) * 0.5 + size * 0.15
+        setTextBold(true)
+        setColor(U.colorText)
+        renderText(x, textY, size, r.fieldsShort)
+        local ix = x + L.wFields + U.colGap
+        local tint = r.isNow and U.colorNow or U.colorTitle
+        for _, task in ipairs(r.tasks) do
+            local icon = CropRotationPlanUI.getActionIcon(task.action)
+            if icon ~= nil then
+                CropRotationPlanUI.drawIcon(icon, ix, y, L.iconH, tint)
+            end
+            ix = ix + L.iconW
+            CropRotationPlanUI.cropSquare(CropRotationPlanCrops.get(task.crop), ix, y, L.iconH)
+            ix = ix + L.iconW + L.iconGap * 2
+        end
+        local wx = x + L.wFields + U.colGap + L.maxTasks * (2 * L.iconW + L.iconGap) + (L.maxTasks - 1) * L.iconGap + U.colGap
+        setColor(tint)
+        renderText(wx, textY, size, r.whenShort)
+        setTextBold(false)
+        y = y - L.rowH
+    end
+end
+
 function CropRotationPlan:drawMinimized(cache)
     local U = CropRotationPlan.UI
     if self.iconOverlay == nil then
@@ -663,6 +764,8 @@ function CropRotationPlan:draw()
     local cache = self:getHudCache()
     if self.settings.displayMode == CropRotationPlan.DISPLAY_MINIMIZED then
         self:drawMinimized(cache)
+    elseif self.settings.displayMode == CropRotationPlan.DISPLAY_COMPACT then
+        self:drawCompact(cache)
     else
         self:drawFull(cache)
     end

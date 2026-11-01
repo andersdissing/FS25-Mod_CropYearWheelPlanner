@@ -325,6 +325,16 @@ g_fruitTypeManager = {
   end,
 }
 
+-- Shop categories: only MOWERS exists here, so sowing falls back to the SEEDS fill type icon
+g_storeManager = { getCategoryByName = function(self, name)
+  if name == "MOWERS" then return { image = "data/store/categories/mowers.dds" } end
+  return nil
+end }
+g_fillTypeManager = { getFillTypeByName = function(self, name)
+  if name == "SEEDS" or name == "GRASS_WINDROW" then return { hudOverlayFilename = "data/fillTypes/" .. name .. ".dds" } end
+  return nil
+end }
+
 g_currentModDirectory = MOD_DIR
 function source(path) dofile(path) end
 dofile(MOD_DIR .. "scripts/CropRotationPlan.lua")
@@ -485,7 +495,7 @@ check("grass option On/Off", frame.grassOption.texts[1] == "On")
 frame.onClickGrass(frame, 2)
 check("grass off (farm setting)", farm().grassInRotation is False)
 frame.onClickGrass(frame, 1)
-frame.onClickDisplay(frame, 2)
+frame.onClickDisplay(frame, 3)
 frame.onClickPosition(frame, 2)
 check("display + position", MOD.settings.displayMode == "minimized" and MOD.settings.position == "left")
 local_file = G.FILES["/profile/modSettings/FS25_CropRotationPlan/settings.xml"]
@@ -684,6 +694,57 @@ def timed(enabled, n):
 uncached, cached = timed(False, 300), timed(True, 300)
 print(f"     on-screen plan per frame: {uncached:.3f} ms uncached, {cached:.3f} ms cached ({uncached / max(cached, 1e-9):.0f}x)")
 check("cache: on-screen plan faster with the cache", cached < uncached)
+
+# --- Compact view (issue #4) ---------------------------------------------------------
+UIG = G.CropRotationPlanUI
+check("compact: sow icon falls back to the SEEDS fill type icon", UIG.getActionIcon("sow") == "data/fillTypes/SEEDS.dds")
+check("compact: cut icon is the shop's mowers category icon", UIG.getActionIcon("cut") == "data/store/categories/mowers.dds")
+check("compact: harvest without a category icon shows only the crop", UIG.getActionIcon("harvest") is None)
+work_months = 0
+for year in (3, 4):
+    for period in range(1, 13):
+        env.currentYear, env.currentPeriod = year, period
+        out = G.hud("compact")
+        full = G.hud("full")
+        if "Now:" in full or "(" in full:
+            pass
+        if out and (texts["crp_now"] in out or any(G.CropRotationPlan.monthName(m) in out for m in range(1, 13))):
+            work_months += 1
+        check_same = G.hudBoth("compact")
+        if not check_same:
+            break
+check("compact: identical with and without cache, every month", check_same)
+check("compact: rows with Now or a month shown in months with work", work_months > 0, work_months)
+env.currentYear, env.currentPeriod = 3, 7
+out = G.hud("compact")
+check("compact: field numbers shown without 'Field' label", out.startswith("5 |") and "Field" not in out, out[:200])
+empty_layout = G.MOD.layoutCompact(G.MOD, lua.table())
+check("compact: empty message when no group has work", empty_layout.empty == texts["crp_compactEmpty"])
+G.MOD.settings.displayMode = "full"
+cycle = []
+for _ in range(4):
+    G.MOD.onToggleSize(G.MOD)
+    cycle.append(G.MOD.settings.displayMode)
+check("Alt+R cycles full > compact > minimized > full", cycle == ["compact", "minimized", "full", "compact"], cycle)
+lua.execute("""
+function compactGarbageKB(frames)
+  local saved, savedRect = renderText, drawFilledRect
+  renderText = function() end
+  drawFilledRect = function() end
+  MOD.settings.displayMode = "compact"
+  MOD:draw()
+  collectgarbage("collect")
+  collectgarbage("stop")
+  local before = collectgarbage("count")
+  for _ = 1, frames do MOD:draw() end
+  local after = collectgarbage("count")
+  collectgarbage("restart")
+  renderText, drawFilledRect = saved, savedRect
+  return after - before
+end
+""")
+garbage = G.compactGarbageKB(300)
+check("compact: 300 frames allocate (almost) nothing", garbage < 4, f"{garbage:.1f} KB")
 
 # Savegame round trip
 MOD.save(MOD)
