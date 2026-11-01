@@ -41,6 +41,15 @@ CropRotationPlan.ANCHORS = {
 CropRotationPlan.data = CropRotationPlanData.new()
 CropRotationPlan.settings = CropRotationPlanData.newLocalSettings()
 
+-- Caches (issue #5). dataVersion goes up whenever plans or field groups change (edit applied on the
+-- server, state received on a client, load, example). The on-screen plan and the menu pages keep
+-- what they computed and only rebuild it when a key they depend on changes, instead of every frame.
+-- cacheEnabled = false turns all caches off (used by tests/smoke_test.py to compare the output).
+CropRotationPlan.dataVersion = 0
+CropRotationPlan.cacheEnabled = true
+CropRotationPlan.hudCache = nil
+CropRotationPlan.cropsCache = nil
+
 -- Layout (normalized screen coordinates, origin bottom-left)
 CropRotationPlan.UI = {
     x = 0.012,
@@ -167,8 +176,26 @@ function CropRotationPlan:getFarm()
     return CropRotationPlanData.getFarm(self.data, self:getFarmId(), true)
 end
 
+-- Plans or field groups changed: every cache is rebuilt on next use
+function CropRotationPlan:dataChanged()
+    self.dataVersion = self.dataVersion + 1
+end
+
+-- Crop lookup (name -> crop) incl. stand-ins for crops in the farm's plans that this map lacks
 function CropRotationPlan:getCrops()
-    return CropRotationPlanCrops.getLookup(self:getFarm().plans)
+    local farmId = self:getFarmId()
+    local c = self.cropsCache
+    if c == nil or not self.cacheEnabled or c.farmId ~= farmId or c.version ~= self.dataVersion
+        or c.cropsVersion ~= CropRotationPlanCrops.version then
+        c = {
+            farmId = farmId,
+            version = self.dataVersion,
+            cropsVersion = CropRotationPlanCrops.version,
+            value = CropRotationPlanCrops.getLookup(self:getFarm().plans),
+        }
+        self.cropsCache = c
+    end
+    return c.value
 end
 
 ---------------------------------------------------------------------------
@@ -238,6 +265,7 @@ function CropRotationPlan:loadMap(filename)
     end
     -- A client keeps self.data: it is filled by the server's CropRotationPlanStateEvent
     CropRotationPlanCrops.load()
+    self:dataChanged()
     -- A dedicated server has no screen: no on-screen plan and no menu tab there
     if g_dedicatedServer == nil then
         self.iconOverlay = Overlay.new(modDirectory .. "icon_minimized.dds", 0, 0, 0, 0)
@@ -264,6 +292,7 @@ function CropRotationPlan:consoleLoadExample()
     end
     local farm = self:getFarm()
     CropRotationPlanData.loadExample(farm, self:getCalendarYear())
+    self:dataChanged()
     self:save()
     CropRotationPlanSync.broadcastFarm(self:getFarmId())
     return string.format("Crop rotation plan: example loaded for farm %d (%d plans, %d field groups)", self:getFarmId(), #farm.plans, #farm.groups)
@@ -271,6 +300,7 @@ end
 
 function CropRotationPlan:consoleReloadCrops()
     CropRotationPlanCrops.load()
+    self:dataChanged()
     local lines = {}
     for _, crop in ipairs(CropRotationPlanCrops.list) do
         local months = {}
@@ -436,7 +466,32 @@ function CropRotationPlan:getTitle()
     return string.format(t("crp_title"), self:getCurrentYear(), monthName(self:getCurrentMonth()))
 end
 
-function CropRotationPlan:drawFull(plans)
+-- On-screen plan data, cached: rebuilt only when the farm, the game year, the month, the plans
+-- (dataVersion) or the crops change. Checking costs a few comparisons per frame and no new tables.
+function CropRotationPlan:getHudCache()
+    local c = self.hudCache
+    local farmId = self:getFarmId()
+    local year = self:getCurrentYear()
+    local period = self:getCurrentPeriod()
+    if c ~= nil and self.cacheEnabled and c.farmId == farmId and c.year == year and c.period == period
+        and c.version == self.dataVersion and c.cropsVersion == CropRotationPlanCrops.version then
+        return c
+    end
+    c = {
+        farmId = farmId,
+        year = year,
+        period = period,
+        version = self.dataVersion,
+        cropsVersion = CropRotationPlanCrops.version,
+    }
+    c.plans = self:buildGroups()
+    c.attention, c.attentionCount = self:getAttention(c.plans)
+    self.hudCache = c
+    return c
+end
+
+-- Texts and sizes of the full view; computed once per cache rebuild
+function CropRotationPlan:layoutFull(plans)
     local U = CropRotationPlan.UI
     local size = U.textSize
     local title = self:getTitle()
@@ -472,6 +527,22 @@ function CropRotationPlan:drawFull(plans)
     if footer ~= nil then
         height = height + lineH + U.groupGap
     end
+    return {
+        title = title, footer = footer, width = width, height = height, lineH = lineH,
+        wName = wName, wYear = wYear, wCrops = wCrops,
+    }
+end
+
+function CropRotationPlan:drawFull(cache)
+    local U = CropRotationPlan.UI
+    if cache.full == nil then
+        cache.full = self:layoutFull(cache.plans)
+    end
+    local L = cache.full
+    local plans = cache.plans
+    local size = U.textSize
+    local title, footer, width, height, lineH = L.title, L.footer, L.width, L.height, L.lineH
+    local wName, wYear, wCrops = L.wName, L.wYear, L.wCrops
     local bottomY = U.topY - height
 
     drawFilledRect(U.x, bottomY, width, height, U.bgColor[1], U.bgColor[2], U.bgColor[3], U.bgColor[4])
@@ -523,13 +594,13 @@ function CropRotationPlan:drawFull(plans)
     end
 end
 
-function CropRotationPlan:drawMinimized(plans)
+function CropRotationPlan:drawMinimized(cache)
     local U = CropRotationPlan.UI
     if self.iconOverlay == nil then
         return
     end
 
-    local state, count = self:getAttention(plans)
+    local state, count = cache.attention, cache.attentionCount
     local color = U.iconColorIdle
     local bgAlpha = U.bgColor[4]
     if state == "now" then
@@ -589,11 +660,11 @@ function CropRotationPlan:draw()
     CropRotationPlan.UI.x = anchor.x
     CropRotationPlan.UI.topY = anchor.topY
 
-    local plans = self:buildGroups()
+    local cache = self:getHudCache()
     if self.settings.displayMode == CropRotationPlan.DISPLAY_MINIMIZED then
-        self:drawMinimized(plans)
+        self:drawMinimized(cache)
     else
-        self:drawFull(plans)
+        self:drawFull(cache)
     end
 
     -- Reset render state for other mods

@@ -615,6 +615,76 @@ for year in (3, 4):
 check("HUD shows Now/Next every month", statuses == 24, statuses)
 check("HUD shows the plan name", "Rotation A" in G.hud("full"))
 
+# --- Caching (issue #5): same output with and without, no new memory per frame -------
+lua.execute("""
+function renderedWith(enabled, fn)
+  CropRotationPlan.cacheEnabled = enabled
+  RENDERED = {}
+  fn()
+  CropRotationPlan.cacheEnabled = true
+  return table.concat(RENDERED, " | ")
+end
+function hudBoth(mode)
+  MOD.settings.displayMode = mode
+  local a = renderedWith(false, function() MOD:draw() end)
+  local b = renderedWith(true, function() MOD:draw() end)
+  local c = renderedWith(true, function() MOD:draw() end)
+  return a == b and b == c
+end
+function pageBoth(sub)
+  frame():updateSubCategoryPages(sub)
+  local a = renderedWith(false, function() frame():draw() end)
+  local b = renderedWith(true, function() frame():draw() end)
+  local c = renderedWith(true, function() frame():draw() end)
+  return a == b and b == c
+end
+function hudGarbageKB(frames)
+  -- The test's own drawFilledRect/renderText stubs allocate (argument checks, RENDERED); swap them out
+  local saved, savedRect = renderText, drawFilledRect
+  renderText = function() end
+  drawFilledRect = function() end
+  MOD.settings.displayMode = "full"
+  MOD:draw()
+  collectgarbage("collect")
+  collectgarbage("stop")
+  local before = collectgarbage("count")
+  for _ = 1, frames do MOD:draw() end
+  local after = collectgarbage("count")
+  collectgarbage("restart")
+  renderText, drawFilledRect = saved, savedRect
+  return after - before
+end
+""")
+same = True
+for year in (3, 4):
+    for period in range(1, 13):
+        env.currentYear, env.currentPeriod = year, period
+        for mode in ("full", "minimized"):
+            same = same and G.hudBoth(mode)
+check("cache: on-screen plan identical with and without cache, every month", same)
+env.currentYear, env.currentPeriod = 3, 4
+check("cache: Plans page identical", G.pageBoth(2))
+check("cache: Field groups page identical", G.pageBoth(3))
+frame.updateSubCategoryPages(frame, 2)
+G.clickId("EDIT PLAN")
+gaps_now = [i for i in ids() if i.startswith("gap:")]
+if gaps_now:
+    G.clickId(gaps_now[0])
+check("cache: plan editor identical", G.pageBoth(2))
+G.clickId("CANCEL")
+garbage = G.hudGarbageKB(300)
+check("cache: 300 on-screen plan frames allocate (almost) nothing", garbage < 4, f"{garbage:.1f} KB")
+import time
+def timed(enabled, n):
+    G.CropRotationPlan.cacheEnabled = enabled
+    start = time.perf_counter()
+    lua.execute(f"for _ = 1, {n} do MOD:draw() end")
+    G.CropRotationPlan.cacheEnabled = True
+    return (time.perf_counter() - start) / n * 1000
+uncached, cached = timed(False, 300), timed(True, 300)
+print(f"     on-screen plan per frame: {uncached:.3f} ms uncached, {cached:.3f} ms cached ({uncached / max(cached, 1e-9):.0f}x)")
+check("cache: on-screen plan faster with the cache", cached < uncached)
+
 # Savegame round trip
 MOD.save(MOD)
 loaded, old = G.CropRotationPlanData.load()
