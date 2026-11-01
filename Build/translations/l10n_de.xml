@@ -29,7 +29,7 @@
         <text name="crp_section_crops"                  text="Feldfrüchte"/>
         <text name="crp_section_multiplayer"            text="Mehrspieler"/>
         <text name="crp_settings_display"               text="Anzeige"/>
-        <text name="crp_settings_display_tooltip"       text="Voll zeigt jede Feldgruppe. Kompakt zeigt nur Gruppen mit Arbeit in diesem oder im nächsten Monat, mit den Symbolen des Spiels. Minimiert zeigt ein Symbol: gelb = Arbeit in diesem Monat (mit Anzahl der Felder), grün = Arbeit im nächsten Monat, grau = nichts zu tun. Alt+R wechselt zwischen Voll, Kompakt und Minimiert. Wo jede Feldgruppe in ihrem Plan steht, wird unter Feldgruppen eingestellt."/>
+        <text name="crp_settings_display_tooltip"       text="Voll zeigt jede Feldgruppe. Minimiert zeigt ein Symbol: gelb = Arbeit in diesem Monat (mit Anzahl der Felder), grün = Arbeit im nächsten Monat, grau = nichts zu tun. Wo jede Feldgruppe in ihrem Plan steht, wird unter Feldgruppen eingestellt."/>
         <text name="crp_settings_position"              text="Position"/>
         <text name="crp_settings_position_tooltip"      text="Wo der Fruchtfolgeplan angezeigt wird: oben am Bildschirm oder links. Anzeige und Position sind deine eigenen Einstellungen und werden auf deinem PC gespeichert."/>
         <text name="crp_settings_key"                   text="Taste anzeigen / minimieren"/>
@@ -51,8 +51,6 @@
         <text name="crp_position_top"                   text="Oben"/>
         <text name="crp_position_left"                  text="Links"/>
         <text name="crp_display_full"                   text="Voll"/>
-        <text name="crp_display_compact"                 text="Kompakt"/>
-        <text name="crp_compactEmpty"                    text="Keine Arbeit in diesem oder im nächsten Monat"/>
         <text name="crp_display_minimized"              text="Minimiert"/>
         <text name="crp_display_hidden"                 text="Ausgeblendet"/>
 

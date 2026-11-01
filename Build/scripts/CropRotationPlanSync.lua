@@ -285,7 +285,6 @@ function S.apply(op, farmId, userId, connection)
         end
         return false
     end
-    CropRotationPlan:dataChanged()
     CropRotationPlan:save()
     S.broadcastFarm(farmId)
     return true
@@ -348,7 +347,6 @@ function CropRotationPlanStateEvent:run(connection)
         for farmId, farm in pairs(self.farms) do
             CropRotationPlan.data.farms[farmId] = farm
         end
-        CropRotationPlan:dataChanged()
     end
 end
 

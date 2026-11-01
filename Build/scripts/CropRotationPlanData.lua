@@ -29,7 +29,7 @@ CropRotationPlanData.VERSION = 3
 CropRotationPlanData.LOCAL_FOLDER = "modSettings/FS25_CropRotationPlan/"
 CropRotationPlanData.LOCAL_FILENAME = "settings.xml"
 
-CropRotationPlanData.DISPLAY_MODES = { "full", "compact", "minimized", "hidden" }
+CropRotationPlanData.DISPLAY_MODES = { "full", "minimized", "hidden" }
 -- Who may edit a farm's plans in multiplayer: only the farm manager (default) or everyone on the farm
 CropRotationPlanData.EDIT_MANAGER = "manager"
 CropRotationPlanData.EDIT_EVERYONE = "everyone"

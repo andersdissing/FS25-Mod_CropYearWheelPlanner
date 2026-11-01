@@ -24,11 +24,11 @@ Plan your crop rotation in the game and see on screen what to sow and harvest th
 Menu (Esc) > Crop rotation plan:
 - Plans: build a plan year by year on a year wheel (January to December). Only crops that can grow in a free gap are offered; you pick the sow month, the harvest month follows from the crop's growth time. Grass can be kept as a ley with a cut interval.
 - Field groups: put your fields into groups, pick a plan and where the group is in the plan this year. It moves on by itself every year.
-- Settings: display full / compact / minimized / hidden, position top / left, grass in rotation.
+- Settings: display full / minimized / hidden, position top / left, grass in rotation.
 
 Crops are read from the game (map, DLC and mod crops). Plans are saved in the savegame; a new savegame starts empty.
 Multiplayer: each farm has its own plans and field groups. The farm manager edits them, or lets everyone on the farm edit them.
-Alt+R: switch between full, compact (only groups with work, with the game's icons) and minimized.
+Alt+R: switch between full and minimized.
 Console: crpLoadExample (Riverbend Springs example plan), crpReloadCrops
 ```
 
@@ -40,11 +40,11 @@ Plane deine Fruchtfolge direkt im Spiel und sieh auf dem Bildschirm, was in dies
 Menü (Esc) > Fruchtfolgeplan:
 - Pläne: Baue einen Plan Jahr für Jahr auf einem Jahresrad (Januar bis Dezember). Angeboten werden nur Feldfrüchte, die in einer freien Lücke wachsen können; du wählst den Saatmonat, der Erntemonat ergibt sich aus der Wachstumszeit. Gras kann als Grünland mit Schnittintervall eingeplant werden.
 - Feldgruppen: Fasse deine Felder in Gruppen zusammen, wähle einen Plan und wo die Gruppe dieses Jahr im Plan steht. Das rückt jedes Jahr von selbst weiter.
-- Einstellungen: Anzeige voll / kompakt / minimiert / ausgeblendet, Position oben / links, Gras in der Fruchtfolge.
+- Einstellungen: Anzeige voll / minimiert / ausgeblendet, Position oben / links, Gras in der Fruchtfolge.
 
 Die Feldfrüchte werden aus dem Spiel gelesen (Karte, DLC und Mod-Früchte). Die Pläne werden im Spielstand gespeichert; ein neuer Spielstand beginnt leer.
 Mehrspieler: Jeder Hof hat eigene Pläne und Feldgruppen. Standardmäßig bearbeitet nur der Hofverwalter sie; er kann es allen auf dem Hof erlauben.
-Alt+R: zwischen voll, kompakt (nur Gruppen mit Arbeit, mit den Symbolen des Spiels) und minimiert umschalten.
+Alt+R: zwischen voll und minimiert umschalten.
 Konsole: crpLoadExample (Beispielplan für Riverbend Springs), crpReloadCrops
 ```
 
@@ -56,11 +56,11 @@ Planifiez votre rotation des cultures dans le jeu et voyez à l'écran ce qu'il 
 Menu (Échap) > Plan de rotation des cultures :
 - Plans : construisez un plan année par année sur une roue annuelle (janvier à décembre). Seules les cultures qui peuvent pousser dans un créneau libre sont proposées ; vous choisissez le mois de semis, le mois de récolte découle du temps de croissance. L'herbe peut rester en prairie temporaire avec un intervalle de fauche.
 - Groupes de champs : regroupez vos champs, choisissez un plan et l'année du plan où se trouve le groupe cette année. Elle avance d'elle-même chaque année.
-- Paramètres : affichage complet / compact / réduit / masqué, position en haut / à gauche, herbe dans la rotation.
+- Paramètres : affichage complet / réduit / masqué, position en haut / à gauche, herbe dans la rotation.
 
 Les cultures sont lues dans le jeu (carte, DLC et cultures de mods). Les plans sont enregistrés dans la sauvegarde ; une nouvelle sauvegarde commence vide.
 Multijoueur : chaque ferme a ses propres plans et groupes de champs. Le gestionnaire de la ferme les modifie, ou autorise tous les membres de la ferme à les modifier.
-Alt+R : basculer entre complet, compact (seulement les groupes avec du travail, avec les icônes du jeu) et réduit.
+Alt+R : basculer entre complet et réduit.
 Console : crpLoadExample (plan d'exemple pour Riverbend Springs), crpReloadCrops
 ```
 

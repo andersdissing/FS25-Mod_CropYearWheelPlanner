@@ -29,7 +29,7 @@
         <text name="crp_section_crops"                  text="Crops"/>
         <text name="crp_section_multiplayer"            text="Multiplayer"/>
         <text name="crp_settings_display"               text="Display"/>
-        <text name="crp_settings_display_tooltip"       text="Full shows every field group. Compact shows only the groups with work this month or next, with the game's icons. Minimized shows one icon: yellow = work this month (with number of fields), green = work next month, grey = nothing to do. Alt+R switches Full, Compact and Minimized. Where each field group is in its plan is set under Field groups."/>
+        <text name="crp_settings_display_tooltip"       text="Full shows every field group. Minimized shows one icon: yellow = work this month (with number of fields), green = work next month, grey = nothing to do. Where each field group is in its plan is set under Field groups."/>
         <text name="crp_settings_position"              text="Position"/>
         <text name="crp_settings_position_tooltip"      text="Where the crop rotation plan is shown: at the top of the screen or on the left side. Display and position are your own and saved on your PC."/>
         <text name="crp_settings_key"                   text="Show / minimize key"/>
@@ -51,8 +51,6 @@
         <text name="crp_position_top"                   text="Top"/>
         <text name="crp_position_left"                  text="Left"/>
         <text name="crp_display_full"                   text="Full"/>
-        <text name="crp_display_compact"                 text="Compact"/>
-        <text name="crp_compactEmpty"                    text="No work this month or next"/>
         <text name="crp_display_minimized"              text="Minimized"/>
         <text name="crp_display_hidden"                 text="Hidden"/>
 

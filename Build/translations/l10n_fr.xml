@@ -29,7 +29,7 @@
         <text name="crp_section_crops"                  text="Cultures"/>
         <text name="crp_section_multiplayer"            text="Multijoueur"/>
         <text name="crp_settings_display"               text="Affichage"/>
-        <text name="crp_settings_display_tooltip"       text="Complet montre chaque groupe de champs. Compact montre seulement les groupes avec du travail ce mois-ci ou le mois prochain, avec les icônes du jeu. Réduit montre une icône : jaune = travail ce mois-ci (avec le nombre de champs), vert = travail le mois prochain, gris = rien à faire. Alt+R bascule entre Complet, Compact et Réduit. La position de chaque groupe dans son plan se règle sous Groupes de champs."/>
+        <text name="crp_settings_display_tooltip"       text="Complet montre chaque groupe de champs. Réduit montre une icône : jaune = travail ce mois-ci (avec le nombre de champs), vert = travail le mois prochain, gris = rien à faire. La position de chaque groupe dans son plan se règle sous Groupes de champs."/>
         <text name="crp_settings_position"              text="Position"/>
         <text name="crp_settings_position_tooltip"      text="Où le plan de rotation est affiché : en haut de l'écran ou à gauche. Affichage et position sont vos propres réglages, enregistrés sur votre PC."/>
         <text name="crp_settings_key"                   text="Touche afficher / réduire"/>
@@ -51,8 +51,6 @@
         <text name="crp_position_top"                   text="En haut"/>
         <text name="crp_position_left"                  text="À gauche"/>
         <text name="crp_display_full"                   text="Complet"/>
-        <text name="crp_display_compact"                 text="Compact"/>
-        <text name="crp_compactEmpty"                    text="Aucun travail ce mois-ci ni le mois prochain"/>
         <text name="crp_display_minimized"              text="Réduit"/>
         <text name="crp_display_hidden"                 text="Masqué"/>
 
