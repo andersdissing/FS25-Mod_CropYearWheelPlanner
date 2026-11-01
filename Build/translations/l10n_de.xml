@@ -29,7 +29,7 @@
         <text name="cywp_section_crops"                  text="Feldfrüchte"/>
         <text name="cywp_section_multiplayer"            text="Mehrspieler"/>
         <text name="cywp_settings_display"               text="Anzeige"/>
-        <text name="cywp_settings_display_tooltip"       text="Voll zeigt jede Feldgruppe. Minimiert zeigt ein Symbol: gelb = Arbeit in diesem Monat (mit Anzahl der Felder), grün = Arbeit im nächsten Monat, grau = nichts zu tun. Wo jede Feldgruppe in ihrem Plan steht, wird unter Feldgruppen eingestellt."/>
+        <text name="cywp_settings_display_tooltip"       text="Voll zeigt jede Feldgruppe. Kompakt zeigt nur Gruppen mit Arbeit in diesem oder im nächsten Monat, mit den Symbolen des Spiels. Minimiert zeigt ein Symbol: gelb = Arbeit in diesem Monat (mit Anzahl der Felder), grün = Arbeit im nächsten Monat, grau = nichts zu tun. Alt+R wechselt zwischen Voll, Kompakt und Minimiert. Wo jede Feldgruppe in ihrem Plan steht, wird unter Feldgruppen eingestellt."/>
         <text name="cywp_settings_position"              text="Position"/>
         <text name="cywp_settings_position_tooltip"      text="Wo der Fruchtfolge-Jahresrad angezeigt wird: oben am Bildschirm oder links. Anzeige und Position sind deine eigenen Einstellungen und werden auf deinem PC gespeichert."/>
         <text name="cywp_settings_key"                   text="Taste anzeigen / minimieren"/>
@@ -51,6 +51,8 @@
         <text name="cywp_position_top"                   text="Oben"/>
         <text name="cywp_position_left"                  text="Links"/>
         <text name="cywp_display_full"                   text="Voll"/>
+        <text name="cywp_display_compact"                 text="Kompakt"/>
+        <text name="cywp_compactEmpty"                    text="Keine Arbeit in diesem oder im nächsten Monat"/>
         <text name="cywp_display_minimized"              text="Minimiert"/>
         <text name="cywp_display_hidden"                 text="Ausgeblendet"/>
 

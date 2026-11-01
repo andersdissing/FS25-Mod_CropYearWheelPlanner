@@ -300,19 +300,20 @@ end
 
 UI.icons = {}
 
-local function getIconOverlay(crop)
-    if crop.iconFilename == nil then
+-- One Overlay per image file, created on first use
+local function getOverlay(filename)
+    if filename == nil then
         return nil
     end
-    local overlay = UI.icons[crop.iconFilename]
+    local overlay = UI.icons[filename]
     if overlay == nil then
-        local result = Overlay.new(crop.iconFilename, 0, 0, 0, 0)
+        local result = Overlay.new(filename, 0, 0, 0, 0)
         if result == nil then
-            UI.icons[crop.iconFilename] = false
+            UI.icons[filename] = false
             return nil
         end
         overlay = result
-        UI.icons[crop.iconFilename] = overlay
+        UI.icons[filename] = overlay
     end
     if overlay == false then
         return nil
@@ -320,12 +321,24 @@ local function getIconOverlay(crop)
     return overlay
 end
 
+local function getIconOverlay(crop)
+    return getOverlay(crop.iconFilename)
+end
+
+local GREY = { 0.5, 0.5, 0.5 }
+
 -- Square of size s (height in screen units; width corrected for the screen aspect)
 function UI.cropSquare(crop, x, y, s, alpha)
     alpha = alpha or 1
     local w = s * (UI.px(1) / UI.py(1))
-    local c = crop.color or { 0.5, 0.5, 0.5 }
-    UI.rect(x, y, w, s, { c[1], c[2], c[3], alpha })
+    local c = crop.color or GREY
+    if alpha == 1 then
+        -- Reused colour table: the on-screen plan draws this every frame
+        crop.rgba = crop.rgba or { c[1], c[2], c[3], 1 }
+        UI.rect(x, y, w, s, crop.rgba)
+    else
+        UI.rect(x, y, w, s, { c[1], c[2], c[3], alpha })
+    end
     local overlay = getIconOverlay(crop)
     if overlay ~= nil then
         local inset = s * 0.12
@@ -337,6 +350,62 @@ function UI.cropSquare(crop, x, y, s, alpha)
     return w
 end
 
+-- Draws an image file (e.g. a game icon) of height s, tinted with colour c = { r, g, b, a }
+function UI.drawIcon(filename, x, y, s, c)
+    local overlay = getOverlay(filename)
+    if overlay == nil then
+        return 0
+    end
+    local w = s * (UI.px(1) / UI.py(1))
+    overlay:setPosition(x, y)
+    overlay:setDimension(w, s)
+    overlay:setColor(c[1], c[2], c[3], c[4] or 1)
+    overlay:render()
+    return w
+end
+
+-- Icons for the actions on the compact on-screen plan (issue #4): the game's own shop category
+-- icons (sowing machines, harvesters, mowers). Where this game has no such shop category, the
+-- game's fill type icon instead (seeds, grass windrow); a harvest without an icon shows only the
+-- crop icon. Looked up once; the result is logged so it can be checked in the game.
+UI.ACTION_ICON_SOURCES = {
+    sow = { categories = { "SEEDERS", "PLANTERS", "SOWINGMACHINES" }, fillType = "SEEDS" },
+    harvest = { categories = { "HARVESTERS" }, fillType = nil },
+    cut = { categories = { "MOWERS", "MOWERVEHICLES" }, fillType = "GRASS_WINDROW" },
+}
+UI.actionIcons = nil
+
+local function findActionIcon(source)
+    if g_storeManager ~= nil and g_storeManager.getCategoryByName ~= nil then
+        for _, name in ipairs(source.categories) do
+            local category = g_storeManager:getCategoryByName(name)
+            if type(category) == "table" and type(category.image) == "string" and category.image ~= "" then
+                return category.image
+            end
+        end
+    end
+    if source.fillType ~= nil and g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeByName ~= nil then
+        local fillType = g_fillTypeManager:getFillTypeByName(source.fillType)
+        if type(fillType) == "table" and type(fillType.hudOverlayFilename) == "string" and fillType.hudOverlayFilename ~= "" then
+            return fillType.hudOverlayFilename
+        end
+    end
+    return nil
+end
+
+-- Image file for "sow", "harvest" or "cut", or nil
+function UI.getActionIcon(action)
+    if UI.actionIcons == nil then
+        UI.actionIcons = {}
+        for name, source in pairs(UI.ACTION_ICON_SOURCES) do
+            local filename = findActionIcon(source)
+            UI.actionIcons[name] = filename or false
+            Logging.info("[CropYearWheelPlanner] Icon for %s: %s", name, tostring(filename))
+        end
+    end
+    return UI.actionIcons[action] or nil
+end
+
 function UI.deleteIcons()
     for _, overlay in pairs(UI.icons) do
         if overlay then
@@ -344,6 +413,7 @@ function UI.deleteIcons()
         end
     end
     UI.icons = {}
+    UI.actionIcons = nil
 end
 
 ---------------------------------------------------------------------------

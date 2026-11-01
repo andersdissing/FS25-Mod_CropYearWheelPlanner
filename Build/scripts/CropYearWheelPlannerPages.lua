@@ -56,6 +56,50 @@ end
 
 local OP = CropYearWheelPlannerSync.OP
 
+---------------------------------------------------------------------------
+-- Cache (issue #5): values derived from a plan are kept until one of their keys changes,
+-- instead of being computed again every frame while the menu is open.
+-- Stored plans are versioned by CropYearWheelPlanner.dataVersion, the plan editor's working copy by
+-- editor.version (raised on every change in the editor).
+---------------------------------------------------------------------------
+
+local function cacheSlot(state, name, k1, k2, k3, k4)
+    state.memo = state.memo or {}
+    local slot = state.memo[name]
+    if slot == nil then
+        slot = {}
+        state.memo[name] = slot
+    end
+    if not CropYearWheelPlanner.cacheEnabled or slot.k1 ~= k1 or slot.k2 ~= k2 or slot.k3 ~= k3 or slot.k4 ~= k4 then
+        slot.k1, slot.k2, slot.k3, slot.k4, slot.value = k1, k2, k3, k4, nil
+    end
+    return slot
+end
+
+local function planVersion(state, plan)
+    local ed = state.editor
+    if ed ~= nil and ed.plan == plan then
+        return ed.version
+    end
+    return CropYearWheelPlanner.dataVersion
+end
+
+local function cachedRows(state, plan, crops)
+    local slot = cacheSlot(state, "rows", plan, planVersion(state, plan), plan.years, crops)
+    if slot.value == nil then
+        slot.value = LG.getRows(plan, crops)
+    end
+    return slot.value
+end
+
+local function cachedGapRows(state, plan, crops)
+    local slot = cacheSlot(state, "gapRows", plan, planVersion(state, plan), plan.years, crops)
+    if slot.value == nil then
+        slot.value = LG.getGapRows(plan, crops)
+    end
+    return slot.value
+end
+
 local function request(op)
     if CropYearWheelPlanner:canEdit() then
         CropYearWheelPlannerSync.request(op)
@@ -178,8 +222,8 @@ local function drawWheel(state, plan, crops, x, y, w, h, opts)
         UI.text(gx + (m - 0.5) * colW, y + h - py(16), py(12), string.upper(monthName(m)), C.muted, "center", true)
     end
 
-    local rows = LG.getRows(plan, crops)
-    local gapRows = opts.editor ~= nil and LG.getGapRows(plan, crops) or nil
+    local rows = cachedRows(state, plan, crops)
+    local gapRows = opts.editor ~= nil and cachedGapRows(state, plan, crops) or nil
     local Lm = plan.years * 12
     local laneH = (rowH - py(14)) / 2
 
@@ -276,7 +320,7 @@ function P.openEditor(state, plan, sel)
             sel = { type = "none" }
         end
     end
-    state.editor = { plan = copy, sel = sel, panelScroll = 0 }
+    state.editor = { plan = copy, sel = sel, panelScroll = 0, version = 0 }
 end
 
 -- Asks for a name, then asks the server for the plan. The new plan is selected when it
@@ -310,8 +354,8 @@ local function drawColumns(state, plan, crops, x, y, w, h)
     local n = plan.years
     local gap = px(12)
     local cw = (w - gap * (n - 1)) / n
-    local rows = LG.getRows(plan, crops)
-    local gapRows = LG.getGapRows(plan, crops)
+    local rows = cachedRows(state, plan, crops)
+    local gapRows = cachedGapRows(state, plan, crops)
     for yr = 1, n do
         local cx = x + (yr - 1) * (cw + gap)
         UI.rect(cx, y, cw, h, C.panel)
@@ -552,14 +596,21 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
         end
         cursor = cursor - py(14)
 
-        local fit, noFit = {}, {}
-        for _, crop in ipairs(cropList) do
-            if LG.cropFits(crop, gap.a, gap.b) then
-                table.insert(fit, crop)
-            else
-                table.insert(noFit, crop)
+        local fitSlot = cacheSlot(state, "fit", ed, ed.version, gap.a, cropList)
+        if fitSlot.value == nil then
+            local value = { fit = {}, noFit = {}, choices = {} }
+            for _, c in ipairs(cropList) do
+                local choices = LG.getSowChoices(c, gap.a, gap.b)
+                if #choices > 0 then
+                    table.insert(value.fit, c)
+                    value.choices[c.name] = choices
+                else
+                    table.insert(value.noFit, c)
+                end
             end
+            fitSlot.value = value
         end
+        local fit, noFit, sowChoices = fitSlot.value.fit, fitSlot.value.noFit, fitSlot.value.choices
 
         local crop = nil
         if ed.crop ~= nil then
@@ -598,7 +649,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                 local tx = bx + px(14) + sq
                 local tw = bx + bw - tx - px(6)
                 UI.text(tx, cursor + bh - py(21), py(14), UI.fit(crop.title, py(14), tw, true), C.text, "left", true)
-                local choices = LG.getSowChoices(crop, gap.a, gap.b)
+                local choices = sowChoices[crop.name]
                 local sowText
                 if #choices > 4 then
                     sowText = monthName(LG.monthOf(choices[1])) .. "-" .. monthName(LG.monthOf(choices[#choices]))
@@ -666,7 +717,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                 UI.text(cx, cursor, py(13), t("cywp_pickCrop"), C.muted)
             end
         else
-            local choices = LG.getSowChoices(crop, gap.a, gap.b)
+            local choices = sowChoices[crop.name]
             local sow = choices[1]
             for _, s in ipairs(choices) do
                 if s == ed.sow then
@@ -810,6 +861,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                     onClick = function()
                         local seed = LG.makeSeed(plan, crop, sow, dur, cut)
                         table.insert(plan.seeds, seed)
+                        ed.version = ed.version + 1
                         ed.sel = { type = "seed", i = #plan.seeds }
                         ed.crop = nil
                         ed.sow = nil
@@ -851,6 +903,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             ring = C.danger, fg = C.dangerFg, bold = true,
             onClick = function()
                 table.remove(plan.seeds, seed.i)
+                ed.version = ed.version + 1
                 -- Select the gap the removed seed leaves behind
                 ed.sel = { type = "none" }
                 local Lm = plan.years * 12
@@ -869,7 +922,11 @@ end
 function P.drawEditor(state, area)
     local ed = state.editor
     local plan = ed.plan
-    local crops = CropYearWheelPlannerCrops.getLookup({ plan })
+    local cropsSlot = cacheSlot(state, "editorCrops", ed, ed.version, CropYearWheelPlannerCrops.version)
+    if cropsSlot.value == nil then
+        cropsSlot.value = CropYearWheelPlannerCrops.getLookup({ plan })
+    end
+    local crops = cropsSlot.value
     local cropList = CropYearWheelPlannerCrops.getEditorList(CropYearWheelPlanner:getGrassInRotation())
     local top = area.y + area.h
     local x = area.x
@@ -893,10 +950,12 @@ function P.drawEditor(state, area)
     UI.stepper(state, sx, hy, px(170), py(40), tostring(plan.years),
         LG.canRemoveYear(plan, crops) and function()
             plan.years = plan.years - 1
+            ed.version = ed.version + 1
             ed.sel = { type = "none" }
         end or nil,
         LG.canAddYear(plan) and function()
             plan.years = plan.years + 1
+            ed.version = ed.version + 1
             ed.sel = { type = "none" }
         end or nil,
         { ring = C.green, id = "years" })
@@ -1099,7 +1158,11 @@ function P.drawGroups(state, area)
                 plan.years > 1 and function()
                     setYear((planYear % plan.years) + 1)
                 end or nil, { id = "groupYear:" .. tostring(i), edit = true })
-            local cropsText = CropYearWheelPlanner.cropsText(LG.getCropsInYear(plan, crops, planYear))
+            local textSlot = cacheSlot(state, "groupCrops" .. tostring(group.id), plan, CropYearWheelPlanner.dataVersion, planYear, crops)
+            if textSlot.value == nil then
+                textSlot.value = CropYearWheelPlanner.cropsText(LG.getCropsInYear(plan, crops, planYear))
+            end
+            local cropsText = textSlot.value
             UI.textIn(xCrops, ry, rowH, py(14), UI.fit(cropsText, py(14), cropsW), C.text)
         else
             UI.stepper(state, xYear, stepY, yearW, stepH, "-", nil, nil)

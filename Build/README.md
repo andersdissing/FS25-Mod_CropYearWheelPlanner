@@ -10,9 +10,9 @@ Aktivér moddet når du indlæser savegamet.
 ## Menuen (Esc) > Afgrødeårshjul
 
 ### Indstillinger
-- Visning: Fuld, Minimeret eller Skjult.
+- Visning: Fuld, Kompakt, Minimeret eller Skjult.
 - Placering: Top eller Venstre.
-- Tast: Alt+R skifter mellem fuld og minimeret (ændres under Indstillinger > Styring).
+- Tast: Alt+R skifter Fuld > Kompakt > Minimeret (ændres under Indstillinger > Styring).
 - Græs i sædskiftet: Til / Fra.
 
 ### Planer
@@ -37,6 +37,8 @@ En række pr. gruppe: marker, plan, "Planår nu" og årets afgrøder.
 ## På skærmen
 Fuld visning: en linje pr. markgruppe under planens navn med planår, årets afgrøder og
 "Nu: Høst Hvede" (gult) eller "Næste: Så Raps (aug)".
+Kompakt: kun markgrupper med arbejde denne eller næste måned: marknumre, spillets ikoner for arbejdet
+(så, høst, slå) og afgrøden, og "Nu" (gult) eller måneden (grønt).
 Minimeret: ét ikon. Gult med tal = opgaver denne måned (antal marker), grønt = opgaver næste måned, gråt = intet.
 
 ## Gemt i savegamet

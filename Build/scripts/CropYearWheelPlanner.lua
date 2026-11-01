@@ -26,6 +26,7 @@ CropYearWheelPlanner = {}
 CropYearWheelPlanner.modDirectory = modDirectory
 
 CropYearWheelPlanner.DISPLAY_FULL = "full"
+CropYearWheelPlanner.DISPLAY_COMPACT = "compact"
 CropYearWheelPlanner.DISPLAY_MINIMIZED = "minimized"
 CropYearWheelPlanner.DISPLAY_HIDDEN = "hidden"
 -- Order used by the settings option (state 1..3)
@@ -40,6 +41,15 @@ CropYearWheelPlanner.ANCHORS = {
 
 CropYearWheelPlanner.data = CropYearWheelPlannerData.new()
 CropYearWheelPlanner.settings = CropYearWheelPlannerData.newLocalSettings()
+
+-- Caches (issue #5). dataVersion goes up whenever plans or field groups change (edit applied on the
+-- server, state received on a client, load, example). The on-screen plan and the menu pages keep
+-- what they computed and only rebuild it when a key they depend on changes, instead of every frame.
+-- cacheEnabled = false turns all caches off (used by tests/smoke_test.py to compare the output).
+CropYearWheelPlanner.dataVersion = 0
+CropYearWheelPlanner.cacheEnabled = true
+CropYearWheelPlanner.hudCache = nil
+CropYearWheelPlanner.cropsCache = nil
 
 -- Layout (normalized screen coordinates, origin bottom-left)
 CropYearWheelPlanner.UI = {
@@ -167,8 +177,26 @@ function CropYearWheelPlanner:getFarm()
     return CropYearWheelPlannerData.getFarm(self.data, self:getFarmId(), true)
 end
 
+-- Plans or field groups changed: every cache is rebuilt on next use
+function CropYearWheelPlanner:dataChanged()
+    self.dataVersion = self.dataVersion + 1
+end
+
+-- Crop lookup (name -> crop) incl. stand-ins for crops in the farm's plans that this map lacks
 function CropYearWheelPlanner:getCrops()
-    return CropYearWheelPlannerCrops.getLookup(self:getFarm().plans)
+    local farmId = self:getFarmId()
+    local c = self.cropsCache
+    if c == nil or not self.cacheEnabled or c.farmId ~= farmId or c.version ~= self.dataVersion
+        or c.cropsVersion ~= CropYearWheelPlannerCrops.version then
+        c = {
+            farmId = farmId,
+            version = self.dataVersion,
+            cropsVersion = CropYearWheelPlannerCrops.version,
+            value = CropYearWheelPlannerCrops.getLookup(self:getFarm().plans),
+        }
+        self.cropsCache = c
+    end
+    return c.value
 end
 
 ---------------------------------------------------------------------------
@@ -238,6 +266,7 @@ function CropYearWheelPlanner:loadMap(filename)
     end
     -- A client keeps self.data: it is filled by the server's CropYearWheelPlannerStateEvent
     CropYearWheelPlannerCrops.load()
+    self:dataChanged()
     -- A dedicated server has no screen: no on-screen plan and no menu tab there
     if g_dedicatedServer == nil then
         self.iconOverlay = Overlay.new(modDirectory .. "icon_minimized.dds", 0, 0, 0, 0)
@@ -264,6 +293,7 @@ function CropYearWheelPlanner:consoleLoadExample()
     end
     local farm = self:getFarm()
     CropYearWheelPlannerData.loadExample(farm, self:getCalendarYear())
+    self:dataChanged()
     self:save()
     CropYearWheelPlannerSync.broadcastFarm(self:getFarmId())
     return string.format("Crop Year Wheel Planner: example loaded for farm %d (%d plans, %d field groups)", self:getFarmId(), #farm.plans, #farm.groups)
@@ -271,6 +301,7 @@ end
 
 function CropYearWheelPlanner:consoleReloadCrops()
     CropYearWheelPlannerCrops.load()
+    self:dataChanged()
     local lines = {}
     for _, crop in ipairs(CropYearWheelPlannerCrops.list) do
         local months = {}
@@ -299,9 +330,11 @@ function CropYearWheelPlanner.registerActionEvents()
     end
 end
 
--- Full -> minimized -> full. From hidden the key brings it back as minimized.
+-- Full -> compact -> minimized -> full. From hidden the key brings it back as minimized.
 function CropYearWheelPlanner:onToggleSize()
     if self.settings.displayMode == CropYearWheelPlanner.DISPLAY_FULL then
+        self:setDisplayMode(CropYearWheelPlanner.DISPLAY_COMPACT)
+    elseif self.settings.displayMode == CropYearWheelPlanner.DISPLAY_COMPACT then
         self:setDisplayMode(CropYearWheelPlanner.DISPLAY_MINIMIZED)
     elseif self.settings.displayMode == CropYearWheelPlanner.DISPLAY_MINIMIZED then
         self:setDisplayMode(CropYearWheelPlanner.DISPLAY_FULL)
@@ -369,6 +402,8 @@ function CropYearWheelPlanner:buildGroups()
                 local s = CropYearWheelPlannerLogic.getGroupStatus(plan, crops, group, calendarYear, month)
                 local row = {
                     name = fieldsText(group.fields),
+                    fieldsShort = table.concat(group.fields, " "),
+                    tasks = {},
                     yearText = string.format(t("cywp_cycleYear"), s.planYear, plan.years),
                     crops = CropYearWheelPlanner.cropsText(s.cropsThisYear),
                     status = "",
@@ -382,6 +417,10 @@ function CropYearWheelPlanner:buildGroups()
                     end
                     row.status = t("cywp_now") .. ": " .. table.concat(parts, ", ")
                     row.isNow = true
+                    row.whenShort = t("cywp_now")
+                    for k = 1, math.min(2, #s.nowTasks) do
+                        table.insert(row.tasks, s.nowTasks[k])
+                    end
                 elseif s.nextTask ~= nil then
                     local when = monthName(s.nextMonth)
                     if s.nextIsNextYear then
@@ -389,6 +428,8 @@ function CropYearWheelPlanner:buildGroups()
                     end
                     row.status = string.format("%s: %s (%s)", t("cywp_next"), CropYearWheelPlanner.taskText(s.nextTask), when)
                     row.nextIn = s.nextIn
+                    row.whenShort = monthName(s.nextMonth)
+                    table.insert(row.tasks, s.nextTask)
                 end
                 table.insert(entry.groups, row)
             end
@@ -436,7 +477,32 @@ function CropYearWheelPlanner:getTitle()
     return string.format(t("cywp_title"), self:getCurrentYear(), monthName(self:getCurrentMonth()))
 end
 
-function CropYearWheelPlanner:drawFull(plans)
+-- On-screen plan data, cached: rebuilt only when the farm, the game year, the month, the plans
+-- (dataVersion) or the crops change. Checking costs a few comparisons per frame and no new tables.
+function CropYearWheelPlanner:getHudCache()
+    local c = self.hudCache
+    local farmId = self:getFarmId()
+    local year = self:getCurrentYear()
+    local period = self:getCurrentPeriod()
+    if c ~= nil and self.cacheEnabled and c.farmId == farmId and c.year == year and c.period == period
+        and c.version == self.dataVersion and c.cropsVersion == CropYearWheelPlannerCrops.version then
+        return c
+    end
+    c = {
+        farmId = farmId,
+        year = year,
+        period = period,
+        version = self.dataVersion,
+        cropsVersion = CropYearWheelPlannerCrops.version,
+    }
+    c.plans = self:buildGroups()
+    c.attention, c.attentionCount = self:getAttention(c.plans)
+    self.hudCache = c
+    return c
+end
+
+-- Texts and sizes of the full view; computed once per cache rebuild
+function CropYearWheelPlanner:layoutFull(plans)
     local U = CropYearWheelPlanner.UI
     local size = U.textSize
     local title = self:getTitle()
@@ -472,6 +538,22 @@ function CropYearWheelPlanner:drawFull(plans)
     if footer ~= nil then
         height = height + lineH + U.groupGap
     end
+    return {
+        title = title, footer = footer, width = width, height = height, lineH = lineH,
+        wName = wName, wYear = wYear, wCrops = wCrops,
+    }
+end
+
+function CropYearWheelPlanner:drawFull(cache)
+    local U = CropYearWheelPlanner.UI
+    if cache.full == nil then
+        cache.full = self:layoutFull(cache.plans)
+    end
+    local L = cache.full
+    local plans = cache.plans
+    local size = U.textSize
+    local title, footer, width, height, lineH = L.title, L.footer, L.width, L.height, L.lineH
+    local wName, wYear, wCrops = L.wName, L.wYear, L.wCrops
     local bottomY = U.topY - height
 
     drawFilledRect(U.x, bottomY, width, height, U.bgColor[1], U.bgColor[2], U.bgColor[3], U.bgColor[4])
@@ -523,13 +605,103 @@ function CropYearWheelPlanner:drawFull(plans)
     end
 end
 
-function CropYearWheelPlanner:drawMinimized(plans)
+-- Compact view (issue #4): one row per field group with work this month or next month:
+-- field numbers, action icon + crop icon per task (at most two), "Now" or the month.
+-- Layout computed once per cache rebuild, like the full view.
+function CropYearWheelPlanner:layoutCompact(plans)
+    local U = CropYearWheelPlanner.UI
+    local size = U.textSize
+    local rows = {}
+    local maxTasks = 1
+    for _, p in ipairs(plans) do
+        for _, r in ipairs(p.groups) do
+            if (r.isNow or r.nextIn == 1) and #r.tasks > 0 then
+                table.insert(rows, r)
+                maxTasks = math.max(maxTasks, #r.tasks)
+            end
+        end
+    end
+    local iconH = size * 1.6
+    local aspect = 1
+    if g_screenWidth ~= nil and g_screenHeight ~= nil and g_screenWidth > 0 then
+        aspect = g_screenHeight / g_screenWidth
+    end
+    local iconW = iconH * aspect
+    local iconGap = iconW * 0.25
+    local wFields, wWhen = 0, 0
+    setTextBold(true)
+    for _, r in ipairs(rows) do
+        wFields = math.max(wFields, getTextWidth(size, r.fieldsShort))
+        wWhen = math.max(wWhen, getTextWidth(size, r.whenShort))
+    end
+    setTextBold(false)
+    local empty = nil
+    local width
+    if #rows == 0 then
+        empty = t("cywp_compactEmpty")
+        width = getTextWidth(size, empty) + 2 * U.padding
+    else
+        local wTasks = maxTasks * (2 * iconW + iconGap) + (maxTasks - 1) * iconGap
+        width = 2 * U.padding + wFields + U.colGap + wTasks + U.colGap + wWhen
+    end
+    local rowH = iconH + U.lineGap
+    local height = 2 * U.padding + math.max(1, #rows) * rowH - U.lineGap
+    return {
+        rows = rows, empty = empty, width = width, height = height, rowH = rowH,
+        iconW = iconW, iconH = iconH, iconGap = iconGap, wFields = wFields, maxTasks = maxTasks,
+    }
+end
+
+function CropYearWheelPlanner:drawCompact(cache)
+    local U = CropYearWheelPlanner.UI
+    if cache.compact == nil then
+        cache.compact = self:layoutCompact(cache.plans)
+    end
+    local L = cache.compact
+    local size = U.textSize
+    local bottomY = U.topY - L.height
+    drawFilledRect(U.x, bottomY, L.width, L.height, U.bgColor[1], U.bgColor[2], U.bgColor[3], U.bgColor[4])
+    setTextAlignment(RenderText.ALIGN_LEFT)
+
+    local x = U.x + U.padding
+    if L.empty ~= nil then
+        setColor(U.colorMuted)
+        renderText(x, U.topY - U.padding - L.iconH + (L.iconH - size) * 0.5 + size * 0.15, size, L.empty)
+        return
+    end
+
+    local y = U.topY - U.padding - L.iconH
+    for _, r in ipairs(L.rows) do
+        local textY = y + (L.iconH - size) * 0.5 + size * 0.15
+        setTextBold(true)
+        setColor(U.colorText)
+        renderText(x, textY, size, r.fieldsShort)
+        local ix = x + L.wFields + U.colGap
+        local tint = r.isNow and U.colorNow or U.colorTitle
+        for _, task in ipairs(r.tasks) do
+            local icon = CropYearWheelPlannerUI.getActionIcon(task.action)
+            if icon ~= nil then
+                CropYearWheelPlannerUI.drawIcon(icon, ix, y, L.iconH, tint)
+            end
+            ix = ix + L.iconW
+            CropYearWheelPlannerUI.cropSquare(CropYearWheelPlannerCrops.get(task.crop), ix, y, L.iconH)
+            ix = ix + L.iconW + L.iconGap * 2
+        end
+        local wx = x + L.wFields + U.colGap + L.maxTasks * (2 * L.iconW + L.iconGap) + (L.maxTasks - 1) * L.iconGap + U.colGap
+        setColor(tint)
+        renderText(wx, textY, size, r.whenShort)
+        setTextBold(false)
+        y = y - L.rowH
+    end
+end
+
+function CropYearWheelPlanner:drawMinimized(cache)
     local U = CropYearWheelPlanner.UI
     if self.iconOverlay == nil then
         return
     end
 
-    local state, count = self:getAttention(plans)
+    local state, count = cache.attention, cache.attentionCount
     local color = U.iconColorIdle
     local bgAlpha = U.bgColor[4]
     if state == "now" then
@@ -589,11 +761,13 @@ function CropYearWheelPlanner:draw()
     CropYearWheelPlanner.UI.x = anchor.x
     CropYearWheelPlanner.UI.topY = anchor.topY
 
-    local plans = self:buildGroups()
+    local cache = self:getHudCache()
     if self.settings.displayMode == CropYearWheelPlanner.DISPLAY_MINIMIZED then
-        self:drawMinimized(plans)
+        self:drawMinimized(cache)
+    elseif self.settings.displayMode == CropYearWheelPlanner.DISPLAY_COMPACT then
+        self:drawCompact(cache)
     else
-        self:drawFull(plans)
+        self:drawFull(cache)
     end
 
     -- Reset render state for other mods

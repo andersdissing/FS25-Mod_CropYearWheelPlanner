@@ -86,6 +86,8 @@ CropYearWheelPlannerCrops.FALLBACK_COLORS = {
 
 CropYearWheelPlannerCrops.list = {}   -- sorted by title
 CropYearWheelPlannerCrops.byName = {}
+-- Goes up every time the crops are read again; caches of derived data compare it
+CropYearWheelPlannerCrops.version = 0
 
 local function readPeriods(fruitDesc, predicate, growthMode)
     local periods = {}
@@ -236,6 +238,8 @@ function CropYearWheelPlannerCrops.load()
     end)
     CropYearWheelPlannerCrops.list = list
     CropYearWheelPlannerCrops.byName = byName
+    CropYearWheelPlannerCrops.version = CropYearWheelPlannerCrops.version + 1
+    CropYearWheelPlannerCrops.editorLists = {}
     Logging.info("[CropYearWheelPlanner] %d crops read from the game", #list)
 end
 
@@ -270,8 +274,16 @@ function CropYearWheelPlannerCrops.getLookup(plans)
     return CropYearWheelPlannerCrops.byName
 end
 
--- Crops for the plan editor: grass is blocked when "Grass in rotation" is off
+-- Crops for the plan editor: grass is blocked when "Grass in rotation" is off.
+-- Built once per setting (and again after the crops are read again).
+CropYearWheelPlannerCrops.editorLists = {}
+
 function CropYearWheelPlannerCrops.getEditorList(grassAllowed)
+    local key = grassAllowed and "grass" or "noGrass"
+    local cached = CropYearWheelPlannerCrops.editorLists[key]
+    if cached ~= nil and (CropYearWheelPlanner == nil or CropYearWheelPlanner.cacheEnabled ~= false) then
+        return cached
+    end
     local out = {}
     for _, crop in ipairs(CropYearWheelPlannerCrops.list) do
         if crop.ley and not grassAllowed and crop.block == nil then
@@ -285,6 +297,7 @@ function CropYearWheelPlannerCrops.getEditorList(grassAllowed)
             table.insert(out, crop)
         end
     end
+    CropYearWheelPlannerCrops.editorLists[key] = out
     return out
 end
 

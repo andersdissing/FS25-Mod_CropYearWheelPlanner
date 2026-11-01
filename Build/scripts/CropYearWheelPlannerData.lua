@@ -34,7 +34,7 @@ CropYearWheelPlannerData.LEGACY_FILENAME = "cropRotationPlan.xml"
 CropYearWheelPlannerData.LEGACY_XML_ROOT = "cropRotationPlan"
 CropYearWheelPlannerData.LEGACY_LOCAL_FOLDER = "modSettings/FS25_CropRotationPlan/"
 
-CropYearWheelPlannerData.DISPLAY_MODES = { "full", "minimized", "hidden" }
+CropYearWheelPlannerData.DISPLAY_MODES = { "full", "compact", "minimized", "hidden" }
 -- Who may edit a farm's plans in multiplayer: only the farm manager (default) or everyone on the farm
 CropYearWheelPlannerData.EDIT_MANAGER = "manager"
 CropYearWheelPlannerData.EDIT_EVERYONE = "everyone"

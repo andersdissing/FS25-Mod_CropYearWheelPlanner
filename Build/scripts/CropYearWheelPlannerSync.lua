@@ -288,6 +288,7 @@ function S.apply(op, farmId, userId, connection)
         end
         return false
     end
+    CropYearWheelPlanner:dataChanged()
     CropYearWheelPlanner:save()
     S.broadcastFarm(farmId)
     return true
@@ -350,6 +351,7 @@ function CropYearWheelPlannerStateEvent:run(connection)
         for farmId, farm in pairs(self.farms) do
             CropYearWheelPlanner.data.farms[farmId] = farm
         end
+        CropYearWheelPlanner:dataChanged()
     end
 end
 

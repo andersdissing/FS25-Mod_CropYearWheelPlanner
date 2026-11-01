@@ -29,7 +29,7 @@
         <text name="cywp_section_crops"                  text="Afgrøder"/>
         <text name="cywp_section_multiplayer"            text="Multiplayer"/>
         <text name="cywp_settings_display"               text="Visning"/>
-        <text name="cywp_settings_display_tooltip"       text="Fuld viser alle markgrupper. Minimeret viser ét ikon: gult = opgaver denne måned (med antal marker), grønt = opgaver næste måned, gråt = intet at gøre. Hvor hver markgruppe er i sin plan sættes under Markgrupper."/>
+        <text name="cywp_settings_display_tooltip"       text="Fuld viser alle markgrupper. Kompakt viser kun grupper med arbejde denne eller næste måned, med spillets ikoner. Minimeret viser ét ikon: gult = opgaver denne måned (med antal marker), grønt = opgaver næste måned, gråt = intet at gøre. Alt+R skifter mellem Fuld, Kompakt og Minimeret. Hvor hver markgruppe er i sin plan sættes under Markgrupper."/>
         <text name="cywp_settings_position"              text="Placering"/>
         <text name="cywp_settings_position_tooltip"      text="Hvor sædskifteplanen vises: øverst på skærmen eller i venstre side. Visning og placering er dine egne og gemmes på din pc."/>
         <text name="cywp_settings_key"                   text="Tast for vis / minimér"/>
@@ -51,6 +51,8 @@
         <text name="cywp_position_top"                   text="Top"/>
         <text name="cywp_position_left"                  text="Venstre"/>
         <text name="cywp_display_full"                   text="Fuld"/>
+        <text name="cywp_display_compact"                 text="Kompakt"/>
+        <text name="cywp_compactEmpty"                    text="Intet arbejde denne eller næste måned"/>
         <text name="cywp_display_minimized"              text="Minimeret"/>
         <text name="cywp_display_hidden"                 text="Skjult"/>
 
