@@ -99,6 +99,10 @@ for f in glob.glob(root + "/scripts/*.lua"):
     for pattern, what in ((r"\bgoto\b", "goto"), (r"//", "integer division //"), (r"table\.unpack", "table.unpack")):
         if re.search(pattern, code):
             fail("LUA 5.1", f, "uses", what)
+    # TestRunner PublicLuaCheck warns about lines of 200 characters or more ([Long-Line])
+    for n, line in enumerate(src.splitlines(), 1):
+        if len(line) >= 200:
+            fail("TESTRUNNER", f, f"line {n} has {len(line)} characters (Long-Line warning at 200)")
     # The ModHub TestRunner (PublicLuaCheck) fails a mod that uses pcall/xpcall: they hide errors from the log
     if re.search(r"\bx?pcall\s*\(", code):
         fail("TESTRUNNER", f, "uses pcall/xpcall")
