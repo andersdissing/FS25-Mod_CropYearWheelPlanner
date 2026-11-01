@@ -103,9 +103,12 @@ function XMLFile:save() FILES[self.path] = self.values end
 function XMLFile:delete() end
 function fileExists(path) return FILES[path] ~= nil end
 
+-- Icons drawn: ICONS_RENDERED gets the file name of every Overlay:render()
+ICONS_RENDERED = {}
 Overlay = { new = function(file, x, y, w, h)
   if type(file) ~= "string" then error("Overlay.new without file") end
-  return { setPosition = function() end, setDimension = function() end, setColor = function() end, render = function() end, delete = function() end }
+  return { setPosition = function() end, setDimension = function() end, setColor = function() end,
+    render = function() table.insert(ICONS_RENDERED, file) end, delete = function() end }
 end }
 
 Utils = { appendedFunction = function(f, g) return function(...) f(...) g(...) end end }
@@ -576,6 +579,12 @@ click("CANCEL")
 click("COLUMNS")
 cards = [i for i in ids() if i.startswith("card:")]
 check("crop cards", len(cards) > 0)
+lua.execute("ICONS_RENDERED = {}")
+G.drawFrame()
+icons = [G.ICONS_RENDERED[i] for i in range(1, len(G.ICONS_RENDERED) + 1)]
+card_crops = [c.split(":")[1] for c in cards]
+check("columns view: a crop icon on every card",
+      all(f"data/fillTypes/{crop}.dds" in icons for crop in card_crops) and len(icons) >= len(cards), (card_crops, icons))
 click(cards[0])
 click("CANCEL")
 click("addCrop:1")
