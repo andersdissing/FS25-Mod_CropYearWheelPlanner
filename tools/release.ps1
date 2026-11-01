@@ -4,11 +4,14 @@
 # publishes the release.
 #
 # Usage:
-#   pwsh -File tools\release.ps1 1.3.3.0     set the version, commit, tag, push
-#   pwsh -File tools\release.ps1             release the version already in modDesc.xml
+#   pwsh -File tools\release.ps1 1.3.3.0          set the version, commit, tag, push
+#   pwsh -File tools\release.ps1                  release the version already in modDesc.xml
+#   pwsh -File tools\release.ps1 -Beta 1          test build: tag v<version>-beta.1, GitHub pre-release
+#                                                 (modDesc keeps the 4-number version ModHub needs)
 
 param(
-    [string]$Version
+    [string]$Version,
+    [int]$Beta = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -31,6 +34,9 @@ try {
         throw "Version '$Version' must look like 1.3.2.0"
     }
     $tag = "v$Version"
+    if ($Beta -gt 0) {
+        $tag = "v$Version-beta.$Beta"
+    }
 
     if (git tag --list $tag) {
         throw "Tag $tag already exists"
@@ -57,7 +63,8 @@ try {
         Write-Host 'luaparser not installed (pip install luaparser), static checks run in the workflow only'
     }
 
-    git tag -a $tag -m "Release $Version"
+    $message = if ($Beta -gt 0) { "Test build $Version beta $Beta" } else { "Release $Version" }
+    git tag -a $tag -m $message
     git push origin HEAD
     git push origin $tag
     Write-Host "Pushed $tag. Follow the release build with: gh run watch"
