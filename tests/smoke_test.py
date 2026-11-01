@@ -108,7 +108,7 @@ ICONS_RENDERED = {}
 Overlay = { new = function(file, x, y, w, h)
   if type(file) ~= "string" then error("Overlay.new without file") end
   return { setPosition = function() end, setDimension = function() end, setColor = function() end,
-    render = function() table.insert(ICONS_RENDERED, file) end, delete = function() end }
+    render = function() if ICONS_RENDERED ~= nil then table.insert(ICONS_RENDERED, file) end end, delete = function() end }
 end }
 
 Utils = { appendedFunction = function(f, g) return function(...) f(...) g(...) end end }

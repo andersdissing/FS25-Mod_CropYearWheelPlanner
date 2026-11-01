@@ -241,7 +241,8 @@ local function drawWheel(state, plan, crops, x, y, w, h, opts)
                     opts.onBar(seed)
                 end
             end
-            UI.hit(state, bx, by, bw, laneH - py(2), onBar, tf("cywp_barTip", crop.title, monthYear(seed.t, plan.years), monthYear(seed.e, plan.years)), "bar:" .. seed.crop .. ":" .. tostring(seed.t))
+            local barTip = tf("cywp_barTip", crop.title, monthYear(seed.t, plan.years), monthYear(seed.e, plan.years))
+            UI.hit(state, bx, by, bw, laneH - py(2), onBar, barTip, "bar:" .. seed.crop .. ":" .. tostring(seed.t))
         end
 
         if #rows[yr] == 0 and opts.editor == nil then
