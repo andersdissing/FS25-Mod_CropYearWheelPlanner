@@ -306,8 +306,8 @@ local function getIconOverlay(crop)
     end
     local overlay = UI.icons[crop.iconFilename]
     if overlay == nil then
-        local ok, result = pcall(Overlay.new, crop.iconFilename, 0, 0, 0, 0)
-        if not ok or result == nil then
+        local result = Overlay.new(crop.iconFilename, 0, 0, 0, 0)
+        if result == nil then
             UI.icons[crop.iconFilename] = false
             return nil
         end

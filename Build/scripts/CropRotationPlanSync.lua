@@ -45,11 +45,11 @@ function S.isFarmManager(farmId, userId)
     if userId == nil then
         return false
     end
-    local ok, result = pcall(function()
-        local farm = g_farmManager:getFarmById(farmId)
-        return farm ~= nil and farm:isUserFarmManager(userId)
-    end)
-    return ok and result == true
+    if g_farmManager == nil or g_farmManager.getFarmById == nil then
+        return false
+    end
+    local farm = g_farmManager:getFarmById(farmId)
+    return farm ~= nil and farm.isUserFarmManager ~= nil and farm:isUserFarmManager(userId) == true
 end
 
 -- True if the user may edit the farm's plans (rules at the top of this file)
@@ -87,37 +87,40 @@ function S.request(op)
     end
 end
 
--- Server: farm of the player behind a connection
-function S.getFarmIdOfConnection(connection)
-    local ok, farmId = pcall(function()
-        local userId = g_currentMission.userManager:getUserIdByConnection(connection)
-        if userId == nil then
-            return nil
-        end
-        local farm = g_farmManager:getFarmByUserId(userId)
-        return farm ~= nil and farm.farmId or nil
-    end)
-    if ok then
-        return farmId
+-- Server: user id of the player behind a connection, or nil
+function S.getUserIdOfConnection(connection)
+    local userManager = g_currentMission ~= nil and g_currentMission.userManager or nil
+    if userManager == nil or userManager.getUserIdByConnection == nil then
+        return nil
     end
-    return nil
+    return userManager:getUserIdByConnection(connection)
+end
+
+-- Server: farm of the player behind a connection, or nil
+function S.getFarmIdOfConnection(connection)
+    local userId = S.getUserIdOfConnection(connection)
+    if userId == nil or g_farmManager == nil or g_farmManager.getFarmByUserId == nil then
+        return nil
+    end
+    local farm = g_farmManager:getFarmByUserId(userId)
+    return farm ~= nil and farm.farmId or nil
 end
 
 -- True if the field exists and its farmland belongs to the farm
 function S.isFieldOfFarm(fieldId, farmId)
-    local ok, result = pcall(function()
-        local fields = g_fieldManager.fields
-        if fields == nil and g_fieldManager.getFields ~= nil then
-            fields = g_fieldManager:getFields()
-        end
-        for _, field in pairs(fields or {}) do
-            if field.getId ~= nil and field:getId() == fieldId then
-                return field.farmland ~= nil and g_farmlandManager:getFarmlandOwner(field.farmland.id) == farmId
-            end
-        end
+    if g_fieldManager == nil or g_farmlandManager == nil then
         return false
-    end)
-    return ok and result == true
+    end
+    local fields = g_fieldManager.fields
+    if fields == nil and g_fieldManager.getFields ~= nil then
+        fields = g_fieldManager:getFields()
+    end
+    for _, field in pairs(fields or {}) do
+        if field.getId ~= nil and field:getId() == fieldId then
+            return field.farmland ~= nil and g_farmlandManager:getFarmlandOwner(field.farmland.id) == farmId
+        end
+    end
+    return false
 end
 
 -- Shortens a name to the limit without cutting a UTF-8 character in half
@@ -412,11 +415,7 @@ end
 function CropRotationPlanEditEvent:run(connection)
     if not connection:getIsServer() then
         -- Server: the player and farm come from the connection, never from the event
-        local userId = nil
-        pcall(function()
-            userId = g_currentMission.userManager:getUserIdByConnection(connection)
-        end)
-        S.apply(self.op, S.getFarmIdOfConnection(connection), userId, connection)
+        S.apply(self.op, S.getFarmIdOfConnection(connection), S.getUserIdOfConnection(connection), connection)
     end
 end
 

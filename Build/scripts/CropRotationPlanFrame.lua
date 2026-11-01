@@ -455,17 +455,7 @@ function CropRotationPlanFrame:draw(...)
     state.scrollRegion = nil
     state.panelRegion = nil
     local drawPage = page == CropRotationPlanFrame.SUB_PAGE.PLANS and CropRotationPlanPages.drawPlans or CropRotationPlanPages.drawGroups
-    local ok, err = pcall(drawPage, state, area)
-    if not ok then
-        -- Log once, not every frame
-        if state.lastError ~= err then
-            state.lastError = err
-            Logging.error("[CropRotationPlan] Drawing page %d failed: %s", page, tostring(err))
-        end
-        if page == CropRotationPlanFrame.SUB_PAGE.PLANS and state.editor ~= nil then
-            state.editor = nil
-        end
-    end
+    drawPage(state, area)
     CropRotationPlanUI.drawTooltip(state)
     CropRotationPlanUI.finish()
 end
@@ -482,12 +472,7 @@ function CropRotationPlanFrame:mouseEvent(posX, posY, isDown, isUp, button, even
     local custom = page == CropRotationPlanFrame.SUB_PAGE.PLANS or page == CropRotationPlanFrame.SUB_PAGE.GROUPS
     if custom and not eventUsed and isDown and self:getIsVisible() then
         if button == Input.MOUSE_BUTTON_LEFT then
-            local ok, hit = pcall(CropRotationPlanUI.click, state, posX, posY)
-            if not ok then
-                Logging.error("[CropRotationPlan] Click failed: %s", tostring(hit))
-                return true
-            end
-            if hit then
+            if CropRotationPlanUI.click(state, posX, posY) then
                 return true
             end
         elseif button == Input.MOUSE_BUTTON_WHEEL_UP or button == Input.MOUSE_BUTTON_WHEEL_DOWN then

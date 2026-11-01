@@ -10,7 +10,7 @@ Checklist and rules: `Docs/PUBLISHING.md`.
 | Mod Icon (512x512) | `Docs/modhub/icon_512.png` |
 | Title English | `Crop Rotation Plan` |
 | Title German | `Fruchtfolgeplan` |
-| Title French | `Plan de rotation des cultures` |
+| Title French | `Plan De Rotation Des Cultures` (every word capitalised: TestRunner rule) |
 | Version | `1` `0` `0` `0` |
 | Author | `Anders Dissing` |
 | Manufacturer | `Lizard` (GIANTS: no fantasy brands, use "Lizard" where a brand is asked for) |
