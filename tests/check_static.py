@@ -10,6 +10,7 @@ Needs: pip install luaparser
 """
 import glob
 import re
+import struct
 import sys
 import xml.etree.ElementTree as ET
 
@@ -98,6 +99,9 @@ for f in glob.glob(root + "/scripts/*.lua"):
     for pattern, what in ((r"\bgoto\b", "goto"), (r"//", "integer division //"), (r"table\.unpack", "table.unpack")):
         if re.search(pattern, code):
             fail("LUA 5.1", f, "uses", what)
+    # The ModHub TestRunner (PublicLuaCheck) fails a mod that uses pcall/xpcall: they hide errors from the log
+    if re.search(r"\bx?pcall\s*\(", code):
+        fail("TESTRUNNER", f, "uses pcall/xpcall")
     for key in re.findall(r'\b(?:t|tf|getText)\("([A-Za-z_]+)"', src):
         used.add((f, key))
     for key in re.findall(r'"(crp_[A-Za-z_]+)"', src):
@@ -111,6 +115,24 @@ for f, key in sorted(used):
 for prefix in PREFIXES:
     if not any(name.startswith(prefix) for name in texts):
         fail("MISSING l10n prefix", prefix)
+
+# Mod icon: the TestRunner (ModDescCheck) wants 512x512; guideline 5.1: BC1 (DXT1) without mipmaps
+icon = desc.findtext("iconFilename")
+try:
+    head = open(f"{root}/{icon}", "rb").read(128)
+    height, width = struct.unpack("<II", head[12:20])
+    mips = struct.unpack("<I", head[28:32])[0]
+    if (width, height) != (512, 512) or head[84:88] != b"DXT1" or mips > 1:
+        fail("MOD ICON", icon, f"{width}x{height}", head[84:88], f"mipmaps {mips}", "(want 512x512 DXT1, no mipmaps)")
+except OSError as e:
+    fail("MOD ICON", icon, e)
+
+# Titles: every word starts with a capital letter (TestRunner ModDescCheck)
+title = desc.find("title")
+for lang_element in list(title) if title is not None else []:
+    for word in (lang_element.text or "").split():
+        if word[:1].isalpha() and word[:1] != word[:1].upper():
+            fail("TITLE", lang_element.tag, f"'{lang_element.text}': '{word}' does not start with a capital letter")
 
 print("OK" if ok else "FAILED")
 sys.exit(0 if ok else 1)

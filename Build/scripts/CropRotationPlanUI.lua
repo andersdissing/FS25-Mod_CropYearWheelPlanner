@@ -307,8 +307,8 @@ local function getOverlay(filename)
     end
     local overlay = UI.icons[filename]
     if overlay == nil then
-        local ok, result = pcall(Overlay.new, filename, 0, 0, 0, 0)
-        if not ok or result == nil then
+        local result = Overlay.new(filename, 0, 0, 0, 0)
+        if result == nil then
             UI.icons[filename] = false
             return nil
         end
@@ -378,15 +378,15 @@ UI.actionIcons = nil
 local function findActionIcon(source)
     if g_storeManager ~= nil and g_storeManager.getCategoryByName ~= nil then
         for _, name in ipairs(source.categories) do
-            local ok, category = pcall(g_storeManager.getCategoryByName, g_storeManager, name)
-            if ok and type(category) == "table" and type(category.image) == "string" and category.image ~= "" then
+            local category = g_storeManager:getCategoryByName(name)
+            if type(category) == "table" and type(category.image) == "string" and category.image ~= "" then
                 return category.image
             end
         end
     end
     if source.fillType ~= nil and g_fillTypeManager ~= nil and g_fillTypeManager.getFillTypeByName ~= nil then
-        local ok, fillType = pcall(g_fillTypeManager.getFillTypeByName, g_fillTypeManager, source.fillType)
-        if ok and type(fillType) == "table" and type(fillType.hudOverlayFilename) == "string" and fillType.hudOverlayFilename ~= "" then
+        local fillType = g_fillTypeManager:getFillTypeByName(source.fillType)
+        if type(fillType) == "table" and type(fillType.hudOverlayFilename) == "string" and fillType.hudOverlayFilename ~= "" then
             return fillType.hudOverlayFilename
         end
     end

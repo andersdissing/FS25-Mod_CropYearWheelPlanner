@@ -299,6 +299,7 @@ local function fruit(index, name, sow, harvest, opts)
   local p, h = periods(sow), periods(harvest)
   return {
     index = index, name = name, shownOnMap = opts.shownOnMap ~= false,
+    growthDataSeasonal = { periods = {} },
     getIsPlantableInPeriod = function(self, mode, period) return p[period] == true end,
     getIsHarvestableInPeriod = function(self, mode, period) return h[period] == true end,
     getIsCatchCrop = function(self) return opts.catch == true end,

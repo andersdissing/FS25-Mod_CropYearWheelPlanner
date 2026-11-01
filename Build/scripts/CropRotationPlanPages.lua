@@ -186,8 +186,8 @@ end
 
 function P.refreshOwnedFields(state)
     local owned = {}
-    local ok, err = pcall(function()
-        local farmId = g_currentMission:getFarmId()
+    if g_fieldManager ~= nil and g_farmlandManager ~= nil then
+        local farmId = CropRotationPlan:getFarmId()
         local fields = g_fieldManager.fields
         if fields == nil and g_fieldManager.getFields ~= nil then
             fields = g_fieldManager:getFields()
@@ -199,9 +199,6 @@ function P.refreshOwnedFields(state)
                 table.insert(owned, id)
             end
         end
-    end)
-    if not ok then
-        Logging.warning("[CropRotationPlan] Could not read owned fields: %s", tostring(err))
     end
     table.sort(owned)
     state.ownedFields = owned

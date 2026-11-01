@@ -61,6 +61,6 @@ You: self-test with TestRunner  ->  Upload (New)  ->  Pending  ->  Data check (G
 4. Test the UI at 4:3, 16:10 and 21:9 (`tools/screen-shape.ps1`).
 5. Proofread the German texts.
 6. Check `descVersion` again after the next game patch.
-7. Run TestRunner on `Build/` until it is clean.
+7. Run TestRunner on `Build/` until it is clean. Done 2026-11-01: TestRunner 0.9.23 PASS, 0 errors, 0 warnings (`Docs/testrunner/`). It required: icon 512x512 (not 256), no pcall/xpcall in Lua, every word of every title capitalised.
 8. Screenshots (image-task.md, 6 shots).
 9. Release on GitHub (`tools/release.ps1`), then upload that zip to the ModHub.

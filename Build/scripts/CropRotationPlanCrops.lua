@@ -4,7 +4,8 @@
 -- Reads the same data as the game's own crop calendar (InGameMenuCalendarFrame):
 -- g_fruitTypeManager:getFruitTypes() filtered to shownOnMap, and for every period
 -- getIsPlantableInPeriod / getIsHarvestableInPeriod with missionInfo.growthMode.
--- Every call is pcall-guarded: getIsPlantableInPeriod throws on maps without seasonal growth data.
+-- getIsPlantableInPeriod indexes growthDataSeasonal without a nil check, so it is only called
+-- for fruit types that have seasonal growth data (no protected calls: the ModHub TestRunner forbids them).
 --
 -- Growth time = months from the first month of the sowing window to the first harvest month
 -- after it (wheat: Sep -> Jul = 10). Outside seasonal growth every period answers "yes", so the
@@ -90,9 +91,11 @@ CropRotationPlanCrops.version = 0
 
 local function readPeriods(fruitDesc, predicate, growthMode)
     local periods = {}
+    if predicate == nil or fruitDesc.growthDataSeasonal == nil then
+        return periods
+    end
     for period = 1, 12 do
-        local ok, allowed = pcall(predicate, fruitDesc, growthMode, period)
-        if ok and allowed then
+        if predicate(fruitDesc, growthMode, period) then
             periods[period] = true
         end
     end
@@ -145,8 +148,11 @@ local function buildCrop(fruitDesc, mode, colorIndex)
 
     local title = name
     local iconFilename = nil
-    local okFill, fillType = pcall(g_fruitTypeManager.getFillTypeByFruitTypeIndex, g_fruitTypeManager, fruitDesc.index)
-    if okFill and type(fillType) == "table" then
+    local fillType = nil
+    if fruitDesc.index ~= nil and g_fruitTypeManager.getFillTypeByFruitTypeIndex ~= nil then
+        fillType = g_fruitTypeManager:getFillTypeByFruitTypeIndex(fruitDesc.index)
+    end
+    if type(fillType) == "table" then
         if type(fillType.title) == "string" and fillType.title ~= "" then
             title = fillType.title
         end
@@ -166,8 +172,8 @@ local function buildCrop(fruitDesc, mode, colorIndex)
         iconFilename = iconFilename,
     }
 
-    local okCatch, isCatchCrop = pcall(fruitDesc.getIsCatchCrop, fruitDesc)
-    if crop.block == nil and okCatch and isCatchCrop == true then
+    local isCatchCrop = fruitDesc.getIsCatchCrop ~= nil and fruitDesc:getIsCatchCrop()
+    if crop.block == nil and isCatchCrop == true then
         crop.block = "crp_block_catchCrop"
     end
 
@@ -209,22 +215,20 @@ end
 -- Reads the crops from the game. Call after the map is loaded.
 function CropRotationPlanCrops.load()
     local list, byName = {}, {}
-    local okTypes, fruitTypes = false, nil
-    if g_fruitTypeManager ~= nil then
-        okTypes, fruitTypes = pcall(g_fruitTypeManager.getFruitTypes, g_fruitTypeManager)
+    local fruitTypes = nil
+    if g_fruitTypeManager ~= nil and g_fruitTypeManager.getFruitTypes ~= nil then
+        fruitTypes = g_fruitTypeManager:getFruitTypes()
     end
-    if okTypes and type(fruitTypes) == "table" then
+    if type(fruitTypes) == "table" then
         local mode = growthMode()
         local colorIndex = 0
         for _, fruitDesc in pairs(fruitTypes) do
             if type(fruitDesc) == "table" and fruitDesc.shownOnMap then
-                local ok, crop = pcall(buildCrop, fruitDesc, mode, colorIndex)
-                if ok and crop ~= nil and byName[crop.name] == nil then
+                local crop = buildCrop(fruitDesc, mode, colorIndex)
+                if crop ~= nil and byName[crop.name] == nil then
                     colorIndex = colorIndex + 1
                     table.insert(list, crop)
                     byName[crop.name] = crop
-                elseif not ok then
-                    Logging.warning("[CropRotationPlan] Crop %s skipped: %s", tostring(fruitDesc.name), tostring(crop))
                 end
             end
         end

@@ -130,8 +130,8 @@ end
 -- Farm of the local player (1 in single player; 0 = spectator)
 function CropRotationPlan:getFarmId()
     if g_currentMission ~= nil and g_currentMission.getFarmId ~= nil then
-        local ok, farmId = pcall(g_currentMission.getFarmId, g_currentMission)
-        if ok and farmId ~= nil then
+        local farmId = g_currentMission:getFarmId()
+        if farmId ~= nil then
             return farmId
         end
     end
