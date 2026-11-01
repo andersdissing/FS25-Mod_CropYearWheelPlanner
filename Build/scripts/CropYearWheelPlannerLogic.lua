@@ -1,4 +1,4 @@
--- CropRotationPlanLogic.lua
+-- CropYearWheelPlannerLogic.lua
 -- Pure functions: no game API calls, so the logic can be tested outside the game (tests/test_logic.py).
 --
 -- Time in a plan is counted in absolute months: t = 0 is January of plan year 1,
@@ -11,7 +11,7 @@
 --   dur   only grass (ley): months the ley stays; other crops use the crop's growth time
 --   cut   only grass: cut every 2 ("ready to harvest") or 3 ("fully grown") growing months
 --
--- A crop (from CropRotationPlanCrops): { name, sow = { months 1..12 }, grow, ley, block }
+-- A crop (from CropYearWheelPlannerCrops): { name, sow = { months 1..12 }, grow, ley, block }
 --   grow   months from sowing to harvest
 --   ley    true for grass: the player chooses how long it stays
 --   block  l10n key of the reason it cannot be used in a rotation, or nil
@@ -22,17 +22,17 @@
 --   * a gap is the time between a harvest and the next sowing, shown when at least
 --     one month in between is free.
 
-CropRotationPlanLogic = {}
+CropYearWheelPlannerLogic = {}
 
-CropRotationPlanLogic.MAX_YEARS = 8
-CropRotationPlanLogic.LEY_DURATIONS = { 3, 6, 12, 24, 36 }
-CropRotationPlanLogic.CUT_INTERVALS = { 2, 3 }
-CropRotationPlanLogic.DEFAULT_CUT = 2
+CropYearWheelPlannerLogic.MAX_YEARS = 8
+CropYearWheelPlannerLogic.LEY_DURATIONS = { 3, 6, 12, 24, 36 }
+CropYearWheelPlannerLogic.CUT_INTERVALS = { 2, 3 }
+CropYearWheelPlannerLogic.DEFAULT_CUT = 2
 -- Grass grows from March to October; no growth November to February
-CropRotationPlanLogic.FIRST_GROWING_MONTH = 3
-CropRotationPlanLogic.LAST_GROWING_MONTH = 10
+CropYearWheelPlannerLogic.FIRST_GROWING_MONTH = 3
+CropYearWheelPlannerLogic.LAST_GROWING_MONTH = 10
 
-local L = CropRotationPlanLogic
+local L = CropYearWheelPlannerLogic
 
 ---------------------------------------------------------------------------
 -- Months and periods

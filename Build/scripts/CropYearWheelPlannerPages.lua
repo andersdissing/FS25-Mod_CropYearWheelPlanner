@@ -1,19 +1,19 @@
--- CropRotationPlanPages.lua
+-- CropYearWheelPlannerPages.lua
 -- The Plans, plan editor and Field groups pages of the menu tab (mockups 2, 3 and 4).
--- Drawn with CropRotationPlanUI inside the sub-page container's area; `state` is the frame's
+-- Drawn with CropYearWheelPlannerUI inside the sub-page container's area; `state` is the frame's
 -- page state (mouse position, clickable boxes, selection, editor working copy).
 --
 -- The pages never change the data themselves: every edit is a request to the server
--- (CropRotationPlanSync.request), which applies it, saves it and sends it to all players.
+-- (CropYearWheelPlannerSync.request), which applies it, saves it and sends it to all players.
 -- In single player and on the host that happens at once. The plan editor works on a copy
 -- that is only sent when the player presses Save plan.
 
-CropRotationPlanPages = {}
-local P = CropRotationPlanPages
-local UI = CropRotationPlanUI
+CropYearWheelPlannerPages = {}
+local P = CropYearWheelPlannerPages
+local UI = CropYearWheelPlannerUI
 local C = UI.C
 local px, py = UI.px, UI.py
-local LG = CropRotationPlanLogic
+local LG = CropYearWheelPlannerLogic
 
 local function t(key)
     return g_i18n:getText(key)
@@ -24,21 +24,21 @@ local function tf(key, ...)
 end
 
 local function monthName(m)
-    return t("crp_month_" .. tostring(m))
+    return t("cywp_month_" .. tostring(m))
 end
 
 -- "Jun year 1"
 local function monthYear(tAbs, years)
-    return tf("crp_monthYear", monthName(LG.monthOf(tAbs)), LG.yearOf(tAbs, years))
+    return tf("cywp_monthYear", monthName(LG.monthOf(tAbs)), LG.yearOf(tAbs, years))
 end
 
 local function durationText(d)
     if d < 12 then
-        return tf("crp_durMonths", d)
+        return tf("cywp_durMonths", d)
     elseif d == 12 then
-        return t("crp_durYear")
+        return t("cywp_durYear")
     end
-    return tf("crp_durYears", d / 12)
+    return tf("cywp_durYears", d / 12)
 end
 
 local function monthsList(months)
@@ -51,33 +51,33 @@ end
 
 -- Plans and field groups of the local player's farm
 local function data()
-    return CropRotationPlan:getFarm()
+    return CropYearWheelPlanner:getFarm()
 end
 
-local OP = CropRotationPlanSync.OP
+local OP = CropYearWheelPlannerSync.OP
 
 local function request(op)
-    if CropRotationPlan:canEdit() then
-        CropRotationPlanSync.request(op)
+    if CropYearWheelPlanner:canEdit() then
+        CropYearWheelPlannerSync.request(op)
     end
 end
 
 -- Read-only state for this draw: no edit rights means edit buttons are disabled.
 -- Returns true when the page is read-only (and draws a notice in the top right corner).
 local function updateReadOnly(state, area)
-    state.readOnly = not CropRotationPlan:canEdit()
-    state.readOnlyText = t("crp_status_managerOnly")
+    state.readOnly = not CropYearWheelPlanner:canEdit()
+    state.readOnlyText = t("cywp_status_managerOnly")
     if state.readOnly then
         state.editor = nil
         state.addTo = nil
-        UI.text(area.x + area.w, area.y + area.h - py(14), py(13), t("crp_status_managerOnly"), C.warnFg, "right", true)
+        UI.text(area.x + area.w, area.y + area.h - py(14), py(13), t("cywp_status_managerOnly"), C.warnFg, "right", true)
     end
     return state.readOnly
 end
 
 -- Sends a changed copy of a stored plan
 local function requestPlanChange(plan, change)
-    local copy = CropRotationPlanData.copyPlan(plan)
+    local copy = CropYearWheelPlannerData.copyPlan(plan)
     change(copy)
     request({ type = OP.PUT_PLAN, plan = copy })
 end
@@ -88,14 +88,14 @@ end
 
 local function cropLabel(crop)
     if crop.ley then
-        return string.format(t("crp_leyCrop"), crop.title)
+        return string.format(t("cywp_leyCrop"), crop.title)
     end
     return crop.title
 end
 
 local function seedLabel(seed, crop)
     if crop.ley then
-        return tf("crp_leyBar", crop.title, seed.cut or LG.DEFAULT_CUT)
+        return tf("cywp_leyBar", crop.title, seed.cut or LG.DEFAULT_CUT)
     end
     return crop.title
 end
@@ -104,7 +104,7 @@ end
 local function planStatus(plan, crops, withCounts)
     local overlaps = LG.getOverlaps(plan, crops)
     if #overlaps > 0 then
-        return t("crp_statusOverlap"), false
+        return t("cywp_statusOverlap"), false
     end
     local empty = LG.getEmptyYears(plan, crops)
     if #empty > 0 then
@@ -112,17 +112,17 @@ local function planStatus(plan, crops, withCounts)
         for _, y in ipairs(empty) do
             table.insert(parts, tostring(y))
         end
-        return tf("crp_statusEmptyYears", table.concat(parts, ", ")), false
+        return tf("cywp_statusEmptyYears", table.concat(parts, ", ")), false
     end
     if withCounts then
-        return tf("crp_statusCounts", #plan.seeds, LG.getFreeMonths(plan, crops)), true
+        return tf("cywp_statusCounts", #plan.seeds, LG.getFreeMonths(plan, crops)), true
     end
-    return t("crp_statusOk"), true
+    return t("cywp_statusOk"), true
 end
 
 local function showTextInput(title, default, onText)
     if TextInputDialog == nil or TextInputDialog.show == nil then
-        Logging.warning("[CropRotationPlan] TextInputDialog not available")
+        Logging.warning("[CropYearWheelPlanner] TextInputDialog not available")
         return
     end
     TextInputDialog.show(function(_, text, clickOk)
@@ -143,7 +143,7 @@ end
 function P.refreshOwnedFields(state)
     local owned = {}
     if g_fieldManager ~= nil and g_farmlandManager ~= nil then
-        local farmId = CropRotationPlan:getFarmId()
+        local farmId = CropYearWheelPlanner:getFarmId()
         local fields = g_fieldManager.fields
         if fields == nil and g_fieldManager.getFields ~= nil then
             fields = g_fieldManager:getFields()
@@ -185,7 +185,7 @@ local function drawWheel(state, plan, crops, x, y, w, h, opts)
 
     for yr = 1, plan.years do
         local ry = y + h - headH - yr * (rowH + rowGap) + rowGap
-        UI.textIn(x, ry, rowH, py(14), string.upper(tf("crp_yearN", yr)), C.green, "left", true)
+        UI.textIn(x, ry, rowH, py(14), string.upper(tf("cywp_yearN", yr)), C.green, "left", true)
         UI.rect(gx, ry, gw, rowH, C.row)
 
         if gapRows ~= nil then
@@ -200,7 +200,7 @@ local function drawWheel(state, plan, crops, x, y, w, h, opts)
                 end
                 UI.button(state, bx, ry + py(4), bw, rowH - py(8), "+", {
                     id = "gap:" .. tostring(gap.a % Lm), dashed = true, ring = on and C.green or C.lineLight, fg = C.green, bold = true,
-                    tooltip = tf("crp_gapTip", monthYear(gap.a + 1, plan.years), monthYear(gap.b - 1, plan.years)),
+                    tooltip = tf("cywp_gapTip", monthYear(gap.a + 1, plan.years), monthYear(gap.b - 1, plan.years)),
                     onClick = function()
                         opts.editor.sel = { type = "gap", a = gap.a }
                         opts.editor.crop = nil
@@ -213,7 +213,7 @@ local function drawWheel(state, plan, crops, x, y, w, h, opts)
 
         for _, bar in ipairs(rows[yr]) do
             local seed = bar.seed
-            local crop = crops[seed.crop] or CropRotationPlanCrops.get(seed.crop)
+            local crop = crops[seed.crop] or CropYearWheelPlannerCrops.get(seed.crop)
             local bx = gx + bar.from * colW + px(1)
             local bw = (bar.to - bar.from + 1) * colW - px(3)
             local by = ry + rowH - py(6) - bar.lane * laneH
@@ -241,11 +241,11 @@ local function drawWheel(state, plan, crops, x, y, w, h, opts)
                     opts.onBar(seed)
                 end
             end
-            UI.hit(state, bx, by, bw, laneH - py(2), onBar, tf("crp_barTip", crop.title, monthYear(seed.t, plan.years), monthYear(seed.e, plan.years)), "bar:" .. seed.crop .. ":" .. tostring(seed.t))
+            UI.hit(state, bx, by, bw, laneH - py(2), onBar, tf("cywp_barTip", crop.title, monthYear(seed.t, plan.years), monthYear(seed.e, plan.years)), "bar:" .. seed.crop .. ":" .. tostring(seed.t))
         end
 
         if #rows[yr] == 0 and opts.editor == nil then
-            UI.textIn(gx + px(12), ry, rowH, py(13), t("crp_noCropsYet"), C.muted)
+            UI.textIn(gx + px(12), ry, rowH, py(13), t("cywp_noCropsYet"), C.muted)
         end
     end
 end
@@ -256,7 +256,7 @@ end
 
 local function getSelectedPlan(state)
     local d = data()
-    local plan = CropRotationPlanData.getPlan(d, state.selectedPlanId)
+    local plan = CropYearWheelPlannerData.getPlan(d, state.selectedPlanId)
     if plan == nil and #d.plans > 0 then
         plan = d.plans[1]
         state.selectedPlanId = plan.id
@@ -265,8 +265,8 @@ local function getSelectedPlan(state)
 end
 
 function P.openEditor(state, plan, sel)
-    local copy = CropRotationPlanData.copyPlan(plan)
-    local crops = CropRotationPlanCrops.getLookup({ copy })
+    local copy = CropYearWheelPlannerData.copyPlan(plan)
+    local crops = CropYearWheelPlannerCrops.getLookup({ copy })
     if sel == nil then
         local gaps = LG.getGaps(copy, crops)
         if #gaps > 0 then
@@ -282,7 +282,7 @@ end
 -- arrives (see drawPlans).
 local function newPlan(state)
     local d = data()
-    showTextInput(t("crp_planName"), tf("crp_newPlanName", #d.plans + 1), function(text)
+    showTextInput(t("cywp_planName"), tf("cywp_newPlanName", #d.plans + 1), function(text)
         state.waitForPlan = d.nextPlanId
         request({ type = OP.NEW_PLAN, name = text })
     end)
@@ -293,14 +293,14 @@ local function cardLines(seed, crop, yr, years)
     local harvestRow = LG.yearOf(seed.e, years)
     local line1, line2
     if sowRow == yr then
-        line1 = tf("crp_sowIn", monthName(LG.monthOf(seed.t)))
+        line1 = tf("cywp_sowIn", monthName(LG.monthOf(seed.t)))
     else
-        line1 = tf("crp_sownInYear", sowRow)
+        line1 = tf("cywp_sownInYear", sowRow)
     end
     if harvestRow == yr then
-        line2 = tf(crop.ley and "crp_lastCutIn" or "crp_harvestIn", monthName(LG.monthOf(seed.e)))
+        line2 = tf(crop.ley and "cywp_lastCutIn" or "cywp_harvestIn", monthName(LG.monthOf(seed.e)))
     else
-        line2 = tf(crop.ley and "crp_lastCutInYear" or "crp_harvestedInYear", harvestRow)
+        line2 = tf(crop.ley and "cywp_lastCutInYear" or "cywp_harvestedInYear", harvestRow)
     end
     return line1, line2
 end
@@ -314,7 +314,7 @@ local function drawColumns(state, plan, crops, x, y, w, h)
     for yr = 1, n do
         local cx = x + (yr - 1) * (cw + gap)
         UI.rect(cx, y, cw, h, C.panel)
-        UI.text(cx + px(12), y + h - py(28), py(14), string.upper(tf("crp_yearN", yr)), C.green, "left", true)
+        UI.text(cx + px(12), y + h - py(28), py(14), string.upper(tf("cywp_yearN", yr)), C.green, "left", true)
         local cy = y + h - py(40)
         local cardH = py(66)
         for _, bar in ipairs(rows[yr]) do
@@ -323,7 +323,7 @@ local function drawColumns(state, plan, crops, x, y, w, h)
             end
             cy = cy - cardH
             local seed = bar.seed
-            local crop = crops[seed.crop] or CropRotationPlanCrops.get(seed.crop)
+            local crop = crops[seed.crop] or CropYearWheelPlannerCrops.get(seed.crop)
             local line1, line2 = cardLines(seed, crop, yr, n)
             UI.button(state, cx + px(10), cy, cw - px(20), cardH, nil, {
                 id = "card:" .. seed.crop .. ":" .. tostring(yr), edit = "show", bg = C.card,
@@ -339,7 +339,7 @@ local function drawColumns(state, plan, crops, x, y, w, h)
             UI.text(cx + px(40), cy + py(8), py(12), UI.fit(line2, py(12), textW), C.muted)
             cy = cy - py(8)
         end
-        UI.button(state, cx + px(10), y + py(10), cw - px(20), py(38), t("crp_addCrop"), {
+        UI.button(state, cx + px(10), y + py(10), cw - px(20), py(38), t("cywp_addCrop"), {
             id = "addCrop:" .. tostring(yr), edit = true, dashed = true, ring = C.lineLight, fg = C.green, bold = true, size = py(13),
             onClick = function()
                 local first = gapRows[yr][1]
@@ -359,11 +359,11 @@ function P.drawPlans(state, area)
         return
     end
     local d = data()
-    local crops = CropRotationPlan:getCrops()
+    local crops = CropYearWheelPlanner:getCrops()
     local top = area.y + area.h
     local left = area.x
-    if CropRotationPlan:isSpectator() then
-        UI.paragraph(left, top - py(10), area.w * 0.6, py(16), t("crp_spectator"), C.muted)
+    if CropYearWheelPlanner:isSpectator() then
+        UI.paragraph(left, top - py(10), area.w * 0.6, py(16), t("cywp_spectator"), C.muted)
         return
     end
     updateReadOnly(state, area)
@@ -385,7 +385,7 @@ function P.drawPlans(state, area)
     -- Left: list of plans
     local colW = px(270)
     local y = top - py(30)
-    UI.text(left, y, py(16), string.upper(t("crp_plans")), C.text, "left", true)
+    UI.text(left, y, py(16), string.upper(t("cywp_plans")), C.text, "left", true)
     y = y - py(14)
     local reserved = py(44) * 3 + py(40)
     for _, p in ipairs(d.plans) do
@@ -403,11 +403,11 @@ function P.drawPlans(state, area)
             end,
         })
         UI.text(left + px(16), y + bh - py(28), py(16), UI.fit(p.name, py(16), colW - px(32), true), C.text, "left", true)
-        UI.text(left + px(16), y + py(12), py(13), tf("crp_planMeta", p.years, CropRotationPlanData.countGroupsForPlan(d, p.id)), C.muted)
+        UI.text(left + px(16), y + py(12), py(13), tf("cywp_planMeta", p.years, CropYearWheelPlannerData.countGroupsForPlan(d, p.id)), C.muted)
         y = y - py(8)
     end
     y = y - py(44)
-    UI.button(state, left, y, colW, py(44), string.upper(t("crp_newPlan")), {
+    UI.button(state, left, y, colW, py(44), string.upper(t("cywp_newPlan")), {
         edit = true, dashed = true, ring = C.lineLight, fg = C.green, bold = true,
         onClick = function()
             newPlan(state)
@@ -417,12 +417,12 @@ function P.drawPlans(state, area)
     local rx = left + colW + px(28)
     local rw = area.x + area.w - rx
     if plan == nil then
-        UI.paragraph(rx, top - py(10), rw * 0.6, py(16), t("crp_noPlans"), C.muted)
+        UI.paragraph(rx, top - py(10), rw * 0.6, py(16), t("cywp_noPlans"), C.muted)
         return
     end
 
     y = y - py(54)
-    UI.button(state, left, y, colW, py(44), string.upper(t("crp_editPlan")), {
+    UI.button(state, left, y, colW, py(44), string.upper(t("cywp_editPlan")), {
         edit = true, bg = C.green, fg = C.dark, bold = true,
         onClick = function()
             P.openEditor(state, plan, nil)
@@ -430,9 +430,9 @@ function P.drawPlans(state, area)
     })
     y = y - py(54)
     local confirming = state.confirmDelete == plan.id
-    UI.button(state, left, y, colW, py(44), string.upper(t(confirming and "crp_deleteConfirm" or "crp_deletePlan")), {
+    UI.button(state, left, y, colW, py(44), string.upper(t(confirming and "cywp_deleteConfirm" or "cywp_deletePlan")), {
         edit = true, ring = C.danger, fg = C.dangerFg, bold = true, bg = confirming and C.warnBg or nil,
-        tooltip = t("crp_deletePlanTip"),
+        tooltip = t("cywp_deletePlanTip"),
         onClick = function()
             if confirming then
                 request({ type = OP.DELETE_PLAN, id = plan.id })
@@ -446,11 +446,11 @@ function P.drawPlans(state, area)
 
     -- Right: header controls
     local hy = top - py(62)
-    UI.label(rx, top - py(14), t("crp_planName"))
+    UI.label(rx, top - py(14), t("cywp_planName"))
     UI.button(state, rx, hy, px(320), py(40), plan.name, {
-        edit = "show", bg = C.panelDark, ring = C.lineLight, align = "left", size = py(16), tooltip = t("crp_renameTip"),
+        edit = "show", bg = C.panelDark, ring = C.lineLight, align = "left", size = py(16), tooltip = t("cywp_renameTip"),
         onClick = function()
-            showTextInput(t("crp_planName"), plan.name, function(text)
+            showTextInput(t("cywp_planName"), plan.name, function(text)
                 requestPlanChange(plan, function(copy)
                     copy.name = text
                 end)
@@ -458,7 +458,7 @@ function P.drawPlans(state, area)
         end,
     })
     local sx = rx + px(340)
-    UI.label(sx, top - py(14), t("crp_yearsInCycle"))
+    UI.label(sx, top - py(14), t("cywp_yearsInCycle"))
     UI.stepper(state, sx, hy, px(170), py(40), tostring(plan.years),
         LG.canRemoveYear(plan, crops) and function()
             requestPlanChange(plan, function(copy)
@@ -472,16 +472,16 @@ function P.drawPlans(state, area)
         end or nil,
         { ring = C.green, id = "years", edit = true })
     local vx = sx + px(190)
-    UI.label(vx, top - py(14), t("crp_view"))
+    UI.label(vx, top - py(14), t("cywp_view"))
     local columns = state.plansView ~= "rows"
     UI.rect(vx, hy, px(250), py(40), C.panelDark)
-    UI.button(state, vx, hy, px(120), py(40), string.upper(t("crp_viewColumns")), {
+    UI.button(state, vx, hy, px(120), py(40), string.upper(t("cywp_viewColumns")), {
         bg = columns and C.green or nil, fg = columns and C.dark or C.text, bold = true, size = py(13),
         onClick = function()
             state.plansView = "columns"
         end,
     })
-    UI.button(state, vx + px(120), hy, px(130), py(40), string.upper(t("crp_viewRows")), {
+    UI.button(state, vx + px(120), hy, px(130), py(40), string.upper(t("cywp_viewRows")), {
         bg = (not columns) and C.green or nil, fg = (not columns) and C.dark or C.text, bold = true, size = py(13),
         onClick = function()
             state.plansView = "rows"
@@ -504,7 +504,7 @@ function P.drawPlans(state, area)
             end,
         })
     end
-    UI.text(rx, area.y + py(8), py(13), t(columns and "crp_columnsHint" or "crp_rowsHint"), C.muted)
+    UI.text(rx, area.y + py(8), py(13), t(columns and "cywp_columnsHint" or "cywp_rowsHint"), C.muted)
 end
 
 ---------------------------------------------------------------------------
@@ -537,9 +537,9 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
 
         cursor = cursor - py(20)
         if visible(cursor, py(20)) then
-            UI.text(cx, cursor, py(18), string.upper(t("crp_addSeed")), C.text, "left", true)
+            UI.text(cx, cursor, py(18), string.upper(t("cywp_addSeed")), C.text, "left", true)
         end
-        local lines = UI.wrap(tf("crp_gapText", monthYear(gap.a + 1, plan.years), monthYear(gap.b - 1, plan.years)), py(13), cw)
+        local lines = UI.wrap(tf("cywp_gapText", monthYear(gap.a + 1, plan.years), monthYear(gap.b - 1, plan.years)), py(13), cw)
         for _, line in ipairs(lines) do
             cursor = cursor - py(19)
             if visible(cursor, py(16)) then
@@ -605,14 +605,14 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                     end
                     sowText = table.concat(parts, "/")
                 end
-                local sub = (crop.ley and t("crp_leySub") or tf("crp_monthsSub", crop.grow)) .. " - " .. tf("crp_sowSub", sowText)
+                local sub = (crop.ley and t("cywp_leySub") or tf("cywp_monthsSub", crop.grow)) .. " - " .. tf("cywp_sowSub", sowText)
                 UI.text(tx, cursor + py(8), py(11), UI.fit(sub, py(11), tw), C.muted)
             end
         end
 
         if crop ~= nil then
             if visible(cursor, bh) then
-                UI.button(state, cx + bw + px(6), cursor, bw, bh, t("crp_changeCrop"), {
+                UI.button(state, cx + bw + px(6), cursor, bw, bh, t("cywp_changeCrop"), {
                     id = "changeCrop", dashed = true, ring = C.lineLight, fg = C.green, bold = true, size = py(13),
                     onClick = function()
                         ed.crop = nil
@@ -626,7 +626,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             -- Crops that do not fit: greyed icons with the reason on hover
             cursor = cursor - py(28)
             if visible(cursor, py(14)) then
-                UI.text(cx, cursor, py(12), string.upper(tf("crp_noFit", #noFit)), C.faint, "left", true)
+                UI.text(cx, cursor, py(12), string.upper(tf("cywp_noFit", #noFit)), C.faint, "left", true)
             end
             local iconS = py(26)
             local iconW = iconS * (px(1) / py(1))
@@ -643,7 +643,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                     if other.block ~= nil then
                         reason = t(other.block)
                     else
-                        reason = tf("crp_needs", other.grow, monthsList(other.sow))
+                        reason = tf("cywp_needs", other.grow, monthsList(other.sow))
                     end
                     UI.hit(state, ix, cursor, iconW, iconS, nil, other.title .. ": " .. reason)
                 end
@@ -654,12 +654,12 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             cursor = cursor - py(56)
             if visible(cursor, py(48)) then
                 UI.rect(cx, cursor, cw, py(48), C.noteBg)
-                UI.textIn(cx + px(12), cursor, py(48), py(13), t("crp_nothingFits"), C.noteFg)
+                UI.textIn(cx + px(12), cursor, py(48), py(13), t("cywp_nothingFits"), C.noteFg)
             end
         elseif crop == nil then
             cursor = cursor - py(36)
             if visible(cursor, py(16)) then
-                UI.text(cx, cursor, py(13), t("crp_pickCrop"), C.muted)
+                UI.text(cx, cursor, py(13), t("cywp_pickCrop"), C.muted)
             end
         else
             local choices = LG.getSowChoices(crop, gap.a, gap.b)
@@ -700,7 +700,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
 
             cursor = cursor - py(30)
             if visible(cursor, py(14)) then
-                UI.text(cx, cursor, py(13), string.upper(t("crp_sowInLabel")), C.muted, "left", true)
+                UI.text(cx, cursor, py(13), string.upper(t("cywp_sowInLabel")), C.muted, "left", true)
             end
             choiceRow(choices, function(s)
                 return monthYear(s, plan.years)
@@ -725,7 +725,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                 end
                 cursor = cursor - py(26)
                 if visible(cursor, py(14)) then
-                    UI.text(cx, cursor, py(13), string.upper(t("crp_keepAsLey")), C.muted, "left", true)
+                    UI.text(cx, cursor, py(13), string.upper(t("cywp_keepAsLey")), C.muted, "left", true)
                 end
                 choiceRow(durations, durationText, function(d)
                     return d == dur
@@ -735,7 +735,7 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
 
                 cursor = cursor - py(26)
                 if visible(cursor, py(14)) then
-                    UI.text(cx, cursor, py(13), string.upper(t("crp_cutWhen")), C.muted, "left", true)
+                    UI.text(cx, cursor, py(13), string.upper(t("cywp_cutWhen")), C.muted, "left", true)
                 end
                 local kw = (cw - px(6)) / 2
                 local kh = py(52)
@@ -750,8 +750,8 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
                                 ed.cut = k
                             end,
                         })
-                        UI.text(kx + px(10), cursor + kh - py(22), py(13), UI.fit(t(k == 2 and "crp_cutReady" or "crp_cutFull"), py(13), kw - px(20), true), C.text, "left", true)
-                        UI.text(kx + px(10), cursor + py(10), py(11), UI.fit(tf("crp_cutSub", k, LG.getCutCount(sow, dur, k)), py(11), kw - px(20)), C.muted)
+                        UI.text(kx + px(10), cursor + kh - py(22), py(13), UI.fit(t(k == 2 and "cywp_cutReady" or "cywp_cutFull"), py(13), kw - px(20), true), C.text, "left", true)
+                        UI.text(kx + px(10), cursor + py(10), py(11), UI.fit(tf("cywp_cutSub", k, LG.getCutCount(sow, dur, k)), py(11), kw - px(20)), C.muted)
                     end
                 end
             end
@@ -760,9 +760,9 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             local h = sow + dur
             local result
             if crop.ley then
-                result = tf("crp_resultLey", crop.title, monthYear(sow, plan.years), dur, cut, LG.getCutCount(sow, dur, cut), monthYear(h, plan.years))
+                result = tf("cywp_resultLey", crop.title, monthYear(sow, plan.years), dur, cut, LG.getCutCount(sow, dur, cut), monthYear(h, plan.years))
             else
-                result = tf("crp_resultCrop", crop.title, monthYear(sow, plan.years), crop.grow, monthYear(h, plan.years))
+                result = tf("cywp_resultCrop", crop.title, monthYear(sow, plan.years), crop.grow, monthYear(h, plan.years))
             end
             local resultLines = UI.wrap(result, py(13), cw - px(24))
             local rh = #resultLines * py(19) + py(18)
@@ -781,27 +781,27 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             if #follow > 0 then
                 cursor = cursor - py(30)
                 if visible(cursor, py(24)) then
-                    local label = t("crp_followUps")
+                    local label = t("cywp_followUps")
                     UI.text(cx, cursor + py(7), py(12), label, C.muted)
                     local fx = cx + getTextWidth(py(12), label) + px(8)
                     for _, name in ipairs(follow) do
-                        local fc = CropRotationPlanCrops.get(name)
+                        local fc = CropYearWheelPlannerCrops.get(name)
                         local fw = py(24) * (px(1) / py(1))
                         if fx + fw > cx + cw then
                             break
                         end
                         UI.cropSquare(fc, fx, cursor, py(24))
-                        UI.hit(state, fx, cursor, fw, py(24), nil, tf("crp_followTip", fc.title, monthName(LG.monthOf(h))))
+                        UI.hit(state, fx, cursor, fw, py(24), nil, tf("cywp_followTip", fc.title, monthName(LG.monthOf(h))))
                         fx = fx + fw + px(5)
                     end
                 end
             end
 
             if cursor < contentBottom then
-                UI.text(cx + cw, contentBottom - py(16), py(11), t("crp_scrollMore"), C.faint, "right")
+                UI.text(cx + cw, contentBottom - py(16), py(11), t("cywp_scrollMore"), C.faint, "right")
             end
             do
-                UI.button(state, cx, y + py(16), cw, buttonH, string.upper(t("crp_addSeedButton")), {
+                UI.button(state, cx, y + py(16), cw, buttonH, string.upper(t("cywp_addSeedButton")), {
                     bg = C.green, fg = C.dark, bold = true,
                     onClick = function()
                         local seed = LG.makeSeed(plan, crop, sow, dur, cut)
@@ -828,22 +828,22 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             ed.sel = { type = "none" }
             return
         end
-        local crop = crops[seed.crop] or CropRotationPlanCrops.get(seed.crop)
+        local crop = crops[seed.crop] or CropYearWheelPlannerCrops.get(seed.crop)
         cursor = cursor - py(26)
         local sq = UI.cropSquare(crop, cx, cursor - py(2), py(24))
         UI.text(cx + sq + px(10), cursor + py(2), py(18), string.upper(crop.title), C.text, "left", true)
         local text
         if crop.ley then
-            text = tf("crp_seedLeyText", monthYear(seed.t, plan.years), seed.e - seed.t, seed.cut or LG.DEFAULT_CUT, monthYear(seed.e, plan.years))
+            text = tf("cywp_seedLeyText", monthYear(seed.t, plan.years), seed.e - seed.t, seed.cut or LG.DEFAULT_CUT, monthYear(seed.e, plan.years))
         else
-            text = tf("crp_seedText", monthYear(seed.t, plan.years), monthYear(seed.e, plan.years), seed.e - seed.t)
+            text = tf("cywp_seedText", monthYear(seed.t, plan.years), monthYear(seed.e, plan.years), seed.e - seed.t)
         end
         cursor = UI.paragraph(cx, cursor - py(14), cw, py(14), text, C.text)
-        if crop.block == "crp_block_notOnMap" then
-            cursor = UI.paragraph(cx, cursor - py(6), cw, py(13), t("crp_block_notOnMap"), C.warnFg)
+        if crop.block == "cywp_block_notOnMap" then
+            cursor = UI.paragraph(cx, cursor - py(6), cw, py(13), t("cywp_block_notOnMap"), C.warnFg)
         end
         cursor = cursor - py(20) - py(44)
-        UI.button(state, cx, cursor, cw, py(44), string.upper(t("crp_removeSeed")), {
+        UI.button(state, cx, cursor, cw, py(44), string.upper(t("cywp_removeSeed")), {
             ring = C.danger, fg = C.dangerFg, bold = true,
             onClick = function()
                 table.remove(plan.seeds, seed.i)
@@ -858,34 +858,34 @@ local function drawSidePanel(state, ed, crops, cropList, x, y, w, h)
             end,
         })
     else
-        UI.paragraph(cx, cursor, cw, py(14), t("crp_editorHint"), C.muted)
+        UI.paragraph(cx, cursor, cw, py(14), t("cywp_editorHint"), C.muted)
     end
 end
 
 function P.drawEditor(state, area)
     local ed = state.editor
     local plan = ed.plan
-    local crops = CropRotationPlanCrops.getLookup({ plan })
-    local cropList = CropRotationPlanCrops.getEditorList(CropRotationPlan:getGrassInRotation())
+    local crops = CropYearWheelPlannerCrops.getLookup({ plan })
+    local cropList = CropYearWheelPlannerCrops.getEditorList(CropYearWheelPlanner:getGrassInRotation())
     local top = area.y + area.h
     local x = area.x
 
     -- Header
-    UI.text(x, top - py(18), py(13), string.upper(t("crp_tab_title") .. " > " .. t("crp_subtab_plans")), C.green, "left", true)
-    UI.text(x, top - py(50), py(26), string.upper(t("crp_editPlan")), C.text, "left", true)
+    UI.text(x, top - py(18), py(13), string.upper(t("cywp_tab_title") .. " > " .. t("cywp_subtab_plans")), C.green, "left", true)
+    UI.text(x, top - py(50), py(26), string.upper(t("cywp_editPlan")), C.text, "left", true)
     local hx = x + px(300)
     local hy = top - py(58)
-    UI.label(hx, top - py(14), t("crp_planName"))
+    UI.label(hx, top - py(14), t("cywp_planName"))
     UI.button(state, hx, hy, px(300), py(40), plan.name, {
-        bg = C.panelDark, ring = C.lineLight, align = "left", size = py(16), tooltip = t("crp_renameTip"),
+        bg = C.panelDark, ring = C.lineLight, align = "left", size = py(16), tooltip = t("cywp_renameTip"),
         onClick = function()
-            showTextInput(t("crp_planName"), plan.name, function(text)
+            showTextInput(t("cywp_planName"), plan.name, function(text)
                 plan.name = text
             end)
         end,
     })
     local sx = hx + px(324)
-    UI.label(sx, top - py(14), t("crp_yearsInCycle"))
+    UI.label(sx, top - py(14), t("cywp_yearsInCycle"))
     UI.stepper(state, sx, hy, px(170), py(40), tostring(plan.years),
         LG.canRemoveYear(plan, crops) and function()
             plan.years = plan.years - 1
@@ -902,20 +902,20 @@ function P.drawEditor(state, area)
     -- Footer: Cancel and Save plan
     local fh = py(60)
     UI.rect(area.x, area.y, area.w, fh, C.footer)
-    UI.textIn(area.x + px(20), area.y, fh, py(13), t("crp_editorFooter"), C.muted)
+    UI.textIn(area.x + px(20), area.y, fh, py(13), t("cywp_editorFooter"), C.muted)
     local bw = px(170)
-    UI.button(state, area.x + area.w - px(20) - bw, area.y + py(8), bw, py(44), string.upper(t("crp_savePlan")), {
+    UI.button(state, area.x + area.w - px(20) - bw, area.y + py(8), bw, py(44), string.upper(t("cywp_savePlan")), {
         bg = C.green, fg = C.dark, bold = true,
         onClick = function()
             -- The edit right is checked here, in request() and again by the server
-            if CropRotationPlan:canEdit() then
-                request({ type = OP.PUT_PLAN, plan = CropRotationPlanData.copyPlan(plan) })
+            if CropYearWheelPlanner:canEdit() then
+                request({ type = OP.PUT_PLAN, plan = CropYearWheelPlannerData.copyPlan(plan) })
             end
             state.selectedPlanId = plan.id
             state.editor = nil
         end,
     })
-    UI.button(state, area.x + area.w - px(32) - 2 * bw, area.y + py(8), bw, py(44), string.upper(t("crp_cancel")), {
+    UI.button(state, area.x + area.w - px(32) - 2 * bw, area.y + py(8), bw, py(44), string.upper(t("cywp_cancel")), {
         bg = C.chip, fg = C.text, bold = true,
         onClick = function()
             state.editor = nil
@@ -939,7 +939,7 @@ function P.drawEditor(state, area)
             ed.panelScroll = 0
         end,
     })
-    local hint = UI.wrap(t("crp_wheelHint"), py(13), wheelW - px(86))
+    local hint = UI.wrap(t("cywp_wheelHint"), py(13), wheelW - px(86))
     local ly = bodyY + py(24)
     for i, line in ipairs(hint) do
         if i <= 2 then
@@ -964,14 +964,14 @@ end
 
 function P.drawGroups(state, area)
     local d = data()
-    local crops = CropRotationPlan:getCrops()
-    local calendarYear = CropRotationPlan:getCalendarYear()
+    local crops = CropYearWheelPlanner:getCrops()
+    local calendarYear = CropYearWheelPlanner:getCalendarYear()
     local top = area.y + area.h
     local panelW = px(300)
     local listW = area.w - panelW - px(28)
     local x = area.x
-    if CropRotationPlan:isSpectator() then
-        UI.paragraph(x, top - py(10), area.w * 0.6, py(16), t("crp_spectator"), C.muted)
+    if CropYearWheelPlanner:isSpectator() then
+        UI.paragraph(x, top - py(10), area.w * 0.6, py(16), t("cywp_spectator"), C.muted)
         return
     end
     updateReadOnly(state, area)
@@ -996,10 +996,10 @@ function P.drawGroups(state, area)
     local xDel = xCrops + cropsW + colGap
 
     local hy = top - py(24)
-    UI.text(xFields, hy, py(13), string.upper(t("crp_colFields")), C.muted, "left", true)
-    UI.text(xPlan, hy, py(13), string.upper(t("crp_colPlan")), C.muted, "left", true)
-    UI.text(xYear, hy, py(13), string.upper(t("crp_colPlanYear")), C.muted, "left", true)
-    UI.text(xCrops, hy, py(13), UI.fit(string.upper(tf("crp_colCrops", calendarYear)), py(13), cropsW + delW, true), C.muted, "left", true)
+    UI.text(xFields, hy, py(13), string.upper(t("cywp_colFields")), C.muted, "left", true)
+    UI.text(xPlan, hy, py(13), string.upper(t("cywp_colPlan")), C.muted, "left", true)
+    UI.text(xYear, hy, py(13), string.upper(t("cywp_colPlanYear")), C.muted, "left", true)
+    UI.text(xCrops, hy, py(13), UI.fit(string.upper(tf("cywp_colCrops", calendarYear)), py(13), cropsW + delW, true), C.muted, "left", true)
 
     local rowH = py(58)
     local rowGap = py(6)
@@ -1015,7 +1015,7 @@ function P.drawGroups(state, area)
         local group = d.groups[i]
         ry = ry - rowH
         UI.rect(x, ry, listW, rowH, C.panel)
-        local plan = CropRotationPlanData.getPlan(d, group.planId)
+        local plan = CropYearWheelPlannerData.getPlan(d, group.planId)
 
         -- Field chips (click to remove) and +
         local chipH = py(30)
@@ -1032,7 +1032,7 @@ function P.drawGroups(state, area)
                 break
             end
             UI.button(state, cx, chipY, cw, chipH, label, {
-                id = "chip:" .. label, edit = "show", bg = C.chip, bold = true, tooltip = tf("crp_removeFieldTip", id),
+                id = "chip:" .. label, edit = "show", bg = C.chip, bold = true, tooltip = tf("cywp_removeFieldTip", id),
                 onClick = function()
                     request({ type = OP.ASSIGN_FIELD, groupId = 0, fieldId = id })
                 end,
@@ -1048,7 +1048,7 @@ function P.drawGroups(state, area)
         local adding = state.addTo == group.id
         UI.button(state, cx, chipY, px(34), chipH, "+", {
             id = "addField:" .. tostring(i), edit = true, dashed = not adding, ring = C.lineLight, bg = adding and C.green or nil,
-            fg = adding and C.dark or C.green, bold = true, tooltip = t("crp_addFieldTip"),
+            fg = adding and C.dark or C.green, bold = true, tooltip = t("cywp_addFieldTip"),
             onClick = function()
                 if state.addTo == group.id then
                     state.addTo = nil
@@ -1074,7 +1074,7 @@ function P.drawGroups(state, area)
         end
         local stepH = py(38)
         local stepY = ry + (rowH - stepH) * 0.5
-        UI.stepper(state, xPlan, stepY, planW, stepH, plan ~= nil and plan.name or t("crp_noPlan"),
+        UI.stepper(state, xPlan, stepY, planW, stepH, plan ~= nil and plan.name or t("cywp_noPlan"),
             #planIds > 1 and function()
                 setPlan(((current - 2) % #planIds) + 1)
             end or nil,
@@ -1088,25 +1088,25 @@ function P.drawGroups(state, area)
             local function setYear(y)
                 requestGroupChange(group, group.planId, y)
             end
-            UI.stepper(state, xYear, stepY, yearW, stepH, tf("crp_yearN", planYear),
+            UI.stepper(state, xYear, stepY, yearW, stepH, tf("cywp_yearN", planYear),
                 plan.years > 1 and function()
                     setYear(((planYear - 2) % plan.years) + 1)
                 end or nil,
                 plan.years > 1 and function()
                     setYear((planYear % plan.years) + 1)
                 end or nil, { id = "groupYear:" .. tostring(i), edit = true })
-            local cropsText = CropRotationPlan.cropsText(LG.getCropsInYear(plan, crops, planYear))
+            local cropsText = CropYearWheelPlanner.cropsText(LG.getCropsInYear(plan, crops, planYear))
             UI.textIn(xCrops, ry, rowH, py(14), UI.fit(cropsText, py(14), cropsW), C.text)
         else
             UI.stepper(state, xYear, stepY, yearW, stepH, "-", nil, nil)
-            UI.textIn(xCrops, ry, rowH, py(14), t("crp_pickPlan"), C.muted)
+            UI.textIn(xCrops, ry, rowH, py(14), t("cywp_pickPlan"), C.muted)
         end
 
         -- Remove group (click twice)
         local confirming = state.confirmGroup == group.id
         UI.button(state, xDel, stepY, delW, stepH, confirming and "?" or "X", {
             id = "delGroup:" .. tostring(i), edit = true, ring = C.danger, fg = C.dangerFg, bold = true, bg = confirming and C.warnBg or nil,
-            tooltip = t(confirming and "crp_removeGroupConfirm" or "crp_removeGroupTip"),
+            tooltip = t(confirming and "cywp_removeGroupConfirm" or "cywp_removeGroupTip"),
             onClick = function()
                 if confirming then
                     request({ type = OP.DELETE_GROUP, id = group.id })
@@ -1121,12 +1121,12 @@ function P.drawGroups(state, area)
     end
 
     if #d.groups == 0 then
-        UI.paragraph(x, listTop, listW * 0.8, py(15), t("crp_noGroups"), C.muted)
+        UI.paragraph(x, listTop, listW * 0.8, py(15), t("cywp_noGroups"), C.muted)
     elseif #d.groups > maxRows then
-        UI.text(x + listW, listBottom - py(18), py(12), tf("crp_scrollHint", scroll + 1, math.min(#d.groups, scroll + maxRows), #d.groups), C.muted, "right")
+        UI.text(x + listW, listBottom - py(18), py(12), tf("cywp_scrollHint", scroll + 1, math.min(#d.groups, scroll + maxRows), #d.groups), C.muted, "right")
     end
 
-    UI.button(state, x, area.y + py(10), px(260), py(44), string.upper(t("crp_newGroup")), {
+    UI.button(state, x, area.y + py(10), px(260), py(44), string.upper(t("cywp_newGroup")), {
         edit = true, dashed = true, ring = C.lineLight, fg = C.green, bold = true,
         onClick = function()
             state.waitForGroup = d.nextGroupId
@@ -1141,12 +1141,12 @@ function P.drawGroups(state, area)
     local cx = px0 + px(26)
     local cw = panelW - px(26)
     local y = top - py(20)
-    UI.text(cx, y, py(16), string.upper(t("crp_yourFields")), C.text, "left", true)
-    local addGroup = state.addTo ~= nil and CropRotationPlanData.getGroup(d, state.addTo) or nil
+    UI.text(cx, y, py(16), string.upper(t("cywp_yourFields")), C.text, "left", true)
+    local addGroup = state.addTo ~= nil and CropYearWheelPlannerData.getGroup(d, state.addTo) or nil
     if addGroup ~= nil then
-        y = UI.paragraph(cx, y - py(6), cw, py(13), t("crp_addFieldHint"), C.green)
+        y = UI.paragraph(cx, y - py(6), cw, py(13), t("cywp_addFieldHint"), C.green)
     else
-        y = UI.paragraph(cx, y - py(6), cw, py(13), t("crp_yourFieldsText"), C.muted)
+        y = UI.paragraph(cx, y - py(6), cw, py(13), t("cywp_yourFieldsText"), C.muted)
     end
     y = y - py(8)
 
@@ -1155,7 +1155,7 @@ function P.drawGroups(state, area)
     local gap = px(8)
     local cellW = (cw - gap * (cols - 1)) / cols
     local cellH = py(34)
-    local helpLines = UI.wrap(t("crp_planYearHelp"), py(13), cw)
+    local helpLines = UI.wrap(t("cywp_planYearHelp"), py(13), cw)
     local helpH = #helpLines * py(13) * 1.45 + py(10)
     local gridBottom = area.y + helpH + py(10)
     local shownFields = 0
@@ -1167,13 +1167,13 @@ function P.drawGroups(state, area)
         if y < gridBottom then
             break
         end
-        local inGroup = CropRotationPlanData.getGroupOfField(d, id)
+        local inGroup = CropYearWheelPlannerData.getGroupOfField(d, id)
         local isInAddGroup = inGroup ~= nil and inGroup == addGroup
         local bg = inGroup ~= nil and C.greenSel or C.chip
         local fg = inGroup ~= nil and C.greenLight or C.muted
         UI.button(state, cx + col * (cellW + gap), y, cellW, cellH, tostring(id), {
             id = "field:" .. tostring(id), bg = bg, fg = fg, bold = true, ring = isInAddGroup and C.green or nil,
-            tooltip = t(inGroup ~= nil and "crp_fieldInGroup" or "crp_fieldFree"),
+            tooltip = t(inGroup ~= nil and "cywp_fieldInGroup" or "cywp_fieldFree"),
             onClick = addGroup ~= nil and function()
                 request({ type = OP.ASSIGN_FIELD, groupId = isInAddGroup and 0 or addGroup.id, fieldId = id })
             end or nil,
@@ -1181,9 +1181,9 @@ function P.drawGroups(state, area)
         shownFields = shownFields + 1
     end
     if #owned == 0 then
-        y = UI.paragraph(cx, y, cw, py(13), t("crp_noOwnedFields"), C.warnFg)
+        y = UI.paragraph(cx, y, cw, py(13), t("cywp_noOwnedFields"), C.warnFg)
     elseif shownFields < #owned then
-        UI.text(cx, gridBottom - py(4), py(12), tf("crp_moreFields", #owned - shownFields), C.muted)
+        UI.text(cx, gridBottom - py(4), py(12), tf("cywp_moreFields", #owned - shownFields), C.muted)
     end
-    UI.paragraph(cx, area.y + helpH, cw, py(13), t("crp_planYearHelp"), C.muted)
+    UI.paragraph(cx, area.y + helpH, cw, py(13), t("cywp_planYearHelp"), C.muted)
 end

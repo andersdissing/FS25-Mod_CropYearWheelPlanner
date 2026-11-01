@@ -1,175 +1,175 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- FS25_CropRotationPlan: English texts. Same keys in every l10n_*.xml file;
+<!-- FS25_CropYearWheelPlanner: English texts. Same keys in every l10n_*.xml file;
      %d and %s are filled in by the mod and must stay in the same order. -->
 <l10n>
     <texts>
-        <text name="input_CRP_TOGGLE_SIZE"              text="Crop rotation plan: full/minimized"/>
+        <text name="input_CYWP_TOGGLE_SIZE"              text="Crop Year Wheel Planner: full/minimized"/>
 
         <!-- On-screen plan -->
-        <text name="crp_title"                          text="Crop rotation plan | game year %d | %s"/>
-        <text name="crp_hudEmpty"                       text="No field groups yet. Make plans and field groups in the menu (Esc) &gt; Crop rotation plan"/>
-        <text name="crp_field"                          text="Field"/>
-        <text name="crp_fields"                         text="Fields"/>
-        <text name="crp_cycleYear"                      text="Year %d/%d"/>
-        <text name="crp_now"                            text="Now"/>
-        <text name="crp_next"                           text="Next"/>
-        <text name="crp_whenNextYear"                   text="%s next year"/>
-        <text name="crp_action_sow"                     text="Sow"/>
-        <text name="crp_action_harvest"                 text="Harvest"/>
-        <text name="crp_action_cut"                     text="Cut"/>
-        <text name="crp_leyCrop"                        text="%s (ley)"/>
+        <text name="cywp_title"                          text="Crop Year Wheel Planner | game year %d | %s"/>
+        <text name="cywp_hudEmpty"                       text="No field groups yet. Make plans and field groups in the menu (Esc) &gt; Crop Year Wheel Planner"/>
+        <text name="cywp_field"                          text="Field"/>
+        <text name="cywp_fields"                         text="Fields"/>
+        <text name="cywp_cycleYear"                      text="Year %d/%d"/>
+        <text name="cywp_now"                            text="Now"/>
+        <text name="cywp_next"                           text="Next"/>
+        <text name="cywp_whenNextYear"                   text="%s next year"/>
+        <text name="cywp_action_sow"                     text="Sow"/>
+        <text name="cywp_action_harvest"                 text="Harvest"/>
+        <text name="cywp_action_cut"                     text="Cut"/>
+        <text name="cywp_leyCrop"                        text="%s (ley)"/>
 
         <!-- Menu tab and Settings -->
-        <text name="ui_cropRotationPlan"                text="Crop rotation plan"/>
-        <text name="crp_tab_title"                      text="Crop rotation plan"/>
-        <text name="crp_subtab_settings"                text="Settings"/>
-        <text name="crp_subtab_plans"                   text="Plans"/>
-        <text name="crp_subtab_groups"                  text="Field groups"/>
-        <text name="crp_section_display"                text="Display"/>
-        <text name="crp_section_crops"                  text="Crops"/>
-        <text name="crp_section_multiplayer"            text="Multiplayer"/>
-        <text name="crp_settings_display"               text="Display"/>
-        <text name="crp_settings_display_tooltip"       text="Full shows every field group. Minimized shows one icon: yellow = work this month (with number of fields), green = work next month, grey = nothing to do. Where each field group is in its plan is set under Field groups."/>
-        <text name="crp_settings_position"              text="Position"/>
-        <text name="crp_settings_position_tooltip"      text="Where the crop rotation plan is shown: at the top of the screen or on the left side. Display and position are your own and saved on your PC."/>
-        <text name="crp_settings_key"                   text="Show / minimize key"/>
-        <text name="crp_settings_key_value"             text="Alt + R (change in Settings &gt; Controls)"/>
-        <text name="crp_settings_key_tooltip"           text="Switches the on-screen plan between full and minimized."/>
-        <text name="crp_settings_grass"                 text="Grass in rotation"/>
-        <text name="crp_settings_grass_tooltip"         text="When on, grass can be added to a plan as a ley: you choose how long it stays and how often it is cut. Applies to everyone on your farm."/>
-        <text name="crp_settings_edit"                  text="Who can edit the plan"/>
-        <text name="crp_settings_edit_manager"          text="Farm manager only"/>
-        <text name="crp_settings_edit_everyone"         text="Everyone on the farm"/>
-        <text name="crp_settings_edit_tooltip"          text="Each farm has its own plans and field groups. Only the farm manager can change this setting. The server checks every change and shares it with all players."/>
-        <text name="crp_settings_editStatus"            text="Your rights"/>
-        <text name="crp_settings_editStatus_tooltip"    text="Whether you can change the plans and field groups of your farm."/>
-        <text name="crp_status_canEdit"                 text="You can edit the plans"/>
-        <text name="crp_status_managerOnly"             text="View only: only the farm manager can edit"/>
-        <text name="crp_spectator"                      text="Join a farm to see and edit its crop rotation plans."/>
-        <text name="crp_on"                             text="On"/>
-        <text name="crp_off"                            text="Off"/>
-        <text name="crp_position_top"                   text="Top"/>
-        <text name="crp_position_left"                  text="Left"/>
-        <text name="crp_display_full"                   text="Full"/>
-        <text name="crp_display_minimized"              text="Minimized"/>
-        <text name="crp_display_hidden"                 text="Hidden"/>
+        <text name="ui_cropYearWheelPlanner"                text="Crop Year Wheel Planner"/>
+        <text name="cywp_tab_title"                      text="Crop Year Wheel Planner"/>
+        <text name="cywp_subtab_settings"                text="Settings"/>
+        <text name="cywp_subtab_plans"                   text="Plans"/>
+        <text name="cywp_subtab_groups"                  text="Field groups"/>
+        <text name="cywp_section_display"                text="Display"/>
+        <text name="cywp_section_crops"                  text="Crops"/>
+        <text name="cywp_section_multiplayer"            text="Multiplayer"/>
+        <text name="cywp_settings_display"               text="Display"/>
+        <text name="cywp_settings_display_tooltip"       text="Full shows every field group. Minimized shows one icon: yellow = work this month (with number of fields), green = work next month, grey = nothing to do. Where each field group is in its plan is set under Field groups."/>
+        <text name="cywp_settings_position"              text="Position"/>
+        <text name="cywp_settings_position_tooltip"      text="Where the crop rotation plan is shown: at the top of the screen or on the left side. Display and position are your own and saved on your PC."/>
+        <text name="cywp_settings_key"                   text="Show / minimize key"/>
+        <text name="cywp_settings_key_value"             text="Alt + R (change in Settings &gt; Controls)"/>
+        <text name="cywp_settings_key_tooltip"           text="Switches the on-screen plan between full and minimized."/>
+        <text name="cywp_settings_grass"                 text="Grass in rotation"/>
+        <text name="cywp_settings_grass_tooltip"         text="When on, grass can be added to a plan as a ley: you choose how long it stays and how often it is cut. Applies to everyone on your farm."/>
+        <text name="cywp_settings_edit"                  text="Who can edit the plan"/>
+        <text name="cywp_settings_edit_manager"          text="Farm manager only"/>
+        <text name="cywp_settings_edit_everyone"         text="Everyone on the farm"/>
+        <text name="cywp_settings_edit_tooltip"          text="Each farm has its own plans and field groups. Only the farm manager can change this setting. The server checks every change and shares it with all players."/>
+        <text name="cywp_settings_editStatus"            text="Your rights"/>
+        <text name="cywp_settings_editStatus_tooltip"    text="Whether you can change the plans and field groups of your farm."/>
+        <text name="cywp_status_canEdit"                 text="You can edit the plans"/>
+        <text name="cywp_status_managerOnly"             text="View only: only the farm manager can edit"/>
+        <text name="cywp_spectator"                      text="Join a farm to see and edit its crop rotation plans."/>
+        <text name="cywp_on"                             text="On"/>
+        <text name="cywp_off"                            text="Off"/>
+        <text name="cywp_position_top"                   text="Top"/>
+        <text name="cywp_position_left"                  text="Left"/>
+        <text name="cywp_display_full"                   text="Full"/>
+        <text name="cywp_display_minimized"              text="Minimized"/>
+        <text name="cywp_display_hidden"                 text="Hidden"/>
 
         <!-- Plans -->
-        <text name="crp_plans"                          text="Plans"/>
-        <text name="crp_newPlan"                        text="+ New plan"/>
-        <text name="crp_newPlanName"                    text="Plan %d"/>
-        <text name="crp_editPlan"                       text="Edit plan"/>
-        <text name="crp_deletePlan"                     text="Delete plan"/>
-        <text name="crp_deleteConfirm"                  text="Click again to delete"/>
-        <text name="crp_deletePlanTip"                  text="Field groups that use the plan keep their fields but get no plan."/>
-        <text name="crp_noPlans"                        text="No plans yet. Click + New plan to make one."/>
-        <text name="crp_planMeta"                       text="%d years - %d field groups"/>
-        <text name="crp_planName"                       text="Plan name"/>
-        <text name="crp_renameTip"                      text="Click to rename the plan"/>
-        <text name="crp_yearsInCycle"                   text="Years in cycle"/>
-        <text name="crp_view"                           text="View"/>
-        <text name="crp_viewColumns"                    text="Columns"/>
-        <text name="crp_viewRows"                       text="Year rows"/>
-        <text name="crp_yearN"                          text="Year %d"/>
-        <text name="crp_addCrop"                        text="+ Add crop"/>
-        <text name="crp_sowIn"                          text="Sow %s"/>
-        <text name="crp_sownInYear"                     text="Sown in year %d"/>
-        <text name="crp_harvestIn"                      text="Harvest %s"/>
-        <text name="crp_harvestedInYear"                text="Harvested in year %d"/>
-        <text name="crp_lastCutIn"                      text="Last cut %s"/>
-        <text name="crp_lastCutInYear"                  text="Last cut in year %d"/>
-        <text name="crp_noCropsYet"                     text="No crops yet. Click Edit plan to add one."/>
-        <text name="crp_columnsHint"                    text="Click a crop to open it in the plan editor."/>
-        <text name="crp_rowsHint"                       text="Bars run from sowing to harvest. A bar that reaches the edge continues in the next year's row."/>
-        <text name="crp_statusOk"                       text="Plan OK"/>
-        <text name="crp_statusCounts"                   text="%d seeds - %d free months"/>
-        <text name="crp_statusEmptyYears"               text="Year %s has no crops"/>
-        <text name="crp_statusOverlap"                  text="Crops overlap"/>
+        <text name="cywp_plans"                          text="Plans"/>
+        <text name="cywp_newPlan"                        text="+ New plan"/>
+        <text name="cywp_newPlanName"                    text="Plan %d"/>
+        <text name="cywp_editPlan"                       text="Edit plan"/>
+        <text name="cywp_deletePlan"                     text="Delete plan"/>
+        <text name="cywp_deleteConfirm"                  text="Click again to delete"/>
+        <text name="cywp_deletePlanTip"                  text="Field groups that use the plan keep their fields but get no plan."/>
+        <text name="cywp_noPlans"                        text="No plans yet. Click + New plan to make one."/>
+        <text name="cywp_planMeta"                       text="%d years - %d field groups"/>
+        <text name="cywp_planName"                       text="Plan name"/>
+        <text name="cywp_renameTip"                      text="Click to rename the plan"/>
+        <text name="cywp_yearsInCycle"                   text="Years in cycle"/>
+        <text name="cywp_view"                           text="View"/>
+        <text name="cywp_viewColumns"                    text="Columns"/>
+        <text name="cywp_viewRows"                       text="Year rows"/>
+        <text name="cywp_yearN"                          text="Year %d"/>
+        <text name="cywp_addCrop"                        text="+ Add crop"/>
+        <text name="cywp_sowIn"                          text="Sow %s"/>
+        <text name="cywp_sownInYear"                     text="Sown in year %d"/>
+        <text name="cywp_harvestIn"                      text="Harvest %s"/>
+        <text name="cywp_harvestedInYear"                text="Harvested in year %d"/>
+        <text name="cywp_lastCutIn"                      text="Last cut %s"/>
+        <text name="cywp_lastCutInYear"                  text="Last cut in year %d"/>
+        <text name="cywp_noCropsYet"                     text="No crops yet. Click Edit plan to add one."/>
+        <text name="cywp_columnsHint"                    text="Click a crop to open it in the plan editor."/>
+        <text name="cywp_rowsHint"                       text="Bars run from sowing to harvest. A bar that reaches the edge continues in the next year's row."/>
+        <text name="cywp_statusOk"                       text="Plan OK"/>
+        <text name="cywp_statusCounts"                   text="%d seeds - %d free months"/>
+        <text name="cywp_statusEmptyYears"               text="Year %s has no crops"/>
+        <text name="cywp_statusOverlap"                  text="Crops overlap"/>
 
         <!-- Plan editor -->
-        <text name="crp_monthYear"                      text="%s year %d"/>
-        <text name="crp_wheelHint"                      text="Bars run from sowing to harvest and continue in the next row when they cross the new year. Click a dashed gap to add a seed, or a bar to remove it."/>
-        <text name="crp_editorFooter"                   text="Changes are kept until you press Save plan."/>
-        <text name="crp_editorHint"                     text="Click a dashed gap to add a seed, or a bar to see it."/>
-        <text name="crp_savePlan"                       text="Save plan"/>
-        <text name="crp_cancel"                         text="Cancel"/>
-        <text name="crp_gapTip"                         text="Free from %s to %s"/>
-        <text name="crp_barTip"                         text="%s: sow %s, harvest %s"/>
-        <text name="crp_leyBar"                         text="%s (ley, cut every %d m)"/>
-        <text name="crp_addSeed"                        text="Add seed"/>
-        <text name="crp_gapText"                        text="Free from %s to %s. Sowing may start in the harvest month before, harvest may share the sowing month after."/>
-        <text name="crp_monthsSub"                      text="%d months"/>
-        <text name="crp_leySub"                         text="Ley, you choose how long"/>
-        <text name="crp_sowSub"                         text="Sow %s"/>
-        <text name="crp_noFit"                          text="Does not fit this gap (%d)"/>
-        <text name="crp_needs"                          text="Needs %d months from a sowing month in %s"/>
-        <text name="crp_nothingFits"                    text="No crop can grow in this gap. It stays free."/>
-        <text name="crp_pickCrop"                       text="Pick a crop above."/>
-        <text name="crp_sowInLabel"                     text="Sow in"/>
-        <text name="crp_keepAsLey"                      text="Keep as ley for"/>
-        <text name="crp_durMonths"                      text="%d months"/>
-        <text name="crp_durYear"                        text="1 year"/>
-        <text name="crp_durYears"                       text="%d years"/>
-        <text name="crp_cutWhen"                        text="Cut when"/>
-        <text name="crp_cutReady"                       text="Ready to harvest"/>
-        <text name="crp_cutFull"                        text="Fully grown"/>
-        <text name="crp_cutSub"                         text="Every %d growing months - about %d cuts"/>
-        <text name="crp_resultCrop"                     text="%s sown %s grows %d months: harvest %s."/>
-        <text name="crp_resultLey"                      text="%s sown %s stays as a ley for %d months, cut every %d growing months (about %d cuts, no growth Nov-Feb). Last cut %s, then the field is free again."/>
-        <text name="crp_followUps"                      text="Can be sown after the harvest:"/>
-        <text name="crp_followTip"                      text="%s can be sown in %s"/>
-        <text name="crp_changeCrop"                     text="Change crop"/>
-        <text name="crp_scrollMore"                     text="Scroll for more"/>
-        <text name="crp_addSeedButton"                  text="Add seed to plan"/>
-        <text name="crp_seedText"                       text="Sow %s - harvest %s - grows %d months."/>
-        <text name="crp_seedLeyText"                    text="Sow %s - ley for %d months - cut every %d growing months - last cut %s."/>
-        <text name="crp_removeSeed"                     text="Remove seed from plan"/>
+        <text name="cywp_monthYear"                      text="%s year %d"/>
+        <text name="cywp_wheelHint"                      text="Bars run from sowing to harvest and continue in the next row when they cross the new year. Click a dashed gap to add a seed, or a bar to remove it."/>
+        <text name="cywp_editorFooter"                   text="Changes are kept until you press Save plan."/>
+        <text name="cywp_editorHint"                     text="Click a dashed gap to add a seed, or a bar to see it."/>
+        <text name="cywp_savePlan"                       text="Save plan"/>
+        <text name="cywp_cancel"                         text="Cancel"/>
+        <text name="cywp_gapTip"                         text="Free from %s to %s"/>
+        <text name="cywp_barTip"                         text="%s: sow %s, harvest %s"/>
+        <text name="cywp_leyBar"                         text="%s (ley, cut every %d m)"/>
+        <text name="cywp_addSeed"                        text="Add seed"/>
+        <text name="cywp_gapText"                        text="Free from %s to %s. Sowing may start in the harvest month before, harvest may share the sowing month after."/>
+        <text name="cywp_monthsSub"                      text="%d months"/>
+        <text name="cywp_leySub"                         text="Ley, you choose how long"/>
+        <text name="cywp_sowSub"                         text="Sow %s"/>
+        <text name="cywp_noFit"                          text="Does not fit this gap (%d)"/>
+        <text name="cywp_needs"                          text="Needs %d months from a sowing month in %s"/>
+        <text name="cywp_nothingFits"                    text="No crop can grow in this gap. It stays free."/>
+        <text name="cywp_pickCrop"                       text="Pick a crop above."/>
+        <text name="cywp_sowInLabel"                     text="Sow in"/>
+        <text name="cywp_keepAsLey"                      text="Keep as ley for"/>
+        <text name="cywp_durMonths"                      text="%d months"/>
+        <text name="cywp_durYear"                        text="1 year"/>
+        <text name="cywp_durYears"                       text="%d years"/>
+        <text name="cywp_cutWhen"                        text="Cut when"/>
+        <text name="cywp_cutReady"                       text="Ready to harvest"/>
+        <text name="cywp_cutFull"                        text="Fully grown"/>
+        <text name="cywp_cutSub"                         text="Every %d growing months - about %d cuts"/>
+        <text name="cywp_resultCrop"                     text="%s sown %s grows %d months: harvest %s."/>
+        <text name="cywp_resultLey"                      text="%s sown %s stays as a ley for %d months, cut every %d growing months (about %d cuts, no growth Nov-Feb). Last cut %s, then the field is free again."/>
+        <text name="cywp_followUps"                      text="Can be sown after the harvest:"/>
+        <text name="cywp_followTip"                      text="%s can be sown in %s"/>
+        <text name="cywp_changeCrop"                     text="Change crop"/>
+        <text name="cywp_scrollMore"                     text="Scroll for more"/>
+        <text name="cywp_addSeedButton"                  text="Add seed to plan"/>
+        <text name="cywp_seedText"                       text="Sow %s - harvest %s - grows %d months."/>
+        <text name="cywp_seedLeyText"                    text="Sow %s - ley for %d months - cut every %d growing months - last cut %s."/>
+        <text name="cywp_removeSeed"                     text="Remove seed from plan"/>
 
         <!-- Reasons a crop cannot be used -->
-        <text name="crp_block_tree"                     text="Trees and orchards are not part of a rotation"/>
-        <text name="crp_block_regrows"                  text="Regrows every year, not part of a rotation"/>
-        <text name="crp_block_meadow"                   text="Permanent meadow, not part of a rotation"/>
-        <text name="crp_block_paddy"                    text="Needs a rice paddy field"/>
-        <text name="crp_block_catchCrop"                text="Cover crop"/>
-        <text name="crp_block_allYear"                  text="Harvested all year"/>
-        <text name="crp_block_unknown"                  text="No sowing and harvest time in this game"/>
-        <text name="crp_block_grassOff"                 text="Grass in rotation is off in Settings"/>
-        <text name="crp_block_notOnMap"                 text="This crop is not on this map"/>
+        <text name="cywp_block_tree"                     text="Trees and orchards are not part of a rotation"/>
+        <text name="cywp_block_regrows"                  text="Regrows every year, not part of a rotation"/>
+        <text name="cywp_block_meadow"                   text="Permanent meadow, not part of a rotation"/>
+        <text name="cywp_block_paddy"                    text="Needs a rice paddy field"/>
+        <text name="cywp_block_catchCrop"                text="Cover crop"/>
+        <text name="cywp_block_allYear"                  text="Harvested all year"/>
+        <text name="cywp_block_unknown"                  text="No sowing and harvest time in this game"/>
+        <text name="cywp_block_grassOff"                 text="Grass in rotation is off in Settings"/>
+        <text name="cywp_block_notOnMap"                 text="This crop is not on this map"/>
 
         <!-- Field groups -->
-        <text name="crp_colFields"                      text="Fields"/>
-        <text name="crp_colPlan"                        text="Plan"/>
-        <text name="crp_colPlanYear"                    text="Plan year now"/>
-        <text name="crp_colCrops"                       text="Crops this game year (%d)"/>
-        <text name="crp_noPlan"                         text="No plan"/>
-        <text name="crp_pickPlan"                       text="Pick a plan"/>
-        <text name="crp_newGroup"                       text="+ New field group"/>
-        <text name="crp_noGroups"                       text="No field groups yet. Click + New field group, then click your fields on the right to add them."/>
-        <text name="crp_addFieldTip"                    text="Add fields: click your fields on the right"/>
-        <text name="crp_removeFieldTip"                 text="Field %d: click to take it out of the group"/>
-        <text name="crp_removeGroupTip"                 text="Remove field group"/>
-        <text name="crp_removeGroupConfirm"             text="Click again to remove the field group"/>
-        <text name="crp_scrollHint"                     text="%d-%d of %d (scroll)"/>
-        <text name="crp_yourFields"                     text="Your fields"/>
-        <text name="crp_yourFieldsText"                 text="Fields your farm owns, read from the game. Grey ones are not in any group yet."/>
-        <text name="crp_addFieldHint"                   text="Click a field to add it to the selected group (it leaves any other group). Click it again to take it out."/>
-        <text name="crp_fieldInGroup"                   text="In a field group"/>
-        <text name="crp_fieldFree"                      text="Not in a group"/>
-        <text name="crp_noOwnedFields"                  text="Your farm owns no fields."/>
-        <text name="crp_moreFields"                     text="+%d more"/>
-        <text name="crp_planYearHelp"                   text="&quot;Plan year now&quot; is where the group is in its plan this year. It moves on by itself every new year. Groups in the same plan at different plan years spread the crops, so the mills get every crop every year."/>
+        <text name="cywp_colFields"                      text="Fields"/>
+        <text name="cywp_colPlan"                        text="Plan"/>
+        <text name="cywp_colPlanYear"                    text="Plan year now"/>
+        <text name="cywp_colCrops"                       text="Crops this game year (%d)"/>
+        <text name="cywp_noPlan"                         text="No plan"/>
+        <text name="cywp_pickPlan"                       text="Pick a plan"/>
+        <text name="cywp_newGroup"                       text="+ New field group"/>
+        <text name="cywp_noGroups"                       text="No field groups yet. Click + New field group, then click your fields on the right to add them."/>
+        <text name="cywp_addFieldTip"                    text="Add fields: click your fields on the right"/>
+        <text name="cywp_removeFieldTip"                 text="Field %d: click to take it out of the group"/>
+        <text name="cywp_removeGroupTip"                 text="Remove field group"/>
+        <text name="cywp_removeGroupConfirm"             text="Click again to remove the field group"/>
+        <text name="cywp_scrollHint"                     text="%d-%d of %d (scroll)"/>
+        <text name="cywp_yourFields"                     text="Your fields"/>
+        <text name="cywp_yourFieldsText"                 text="Fields your farm owns, read from the game. Grey ones are not in any group yet."/>
+        <text name="cywp_addFieldHint"                   text="Click a field to add it to the selected group (it leaves any other group). Click it again to take it out."/>
+        <text name="cywp_fieldInGroup"                   text="In a field group"/>
+        <text name="cywp_fieldFree"                      text="Not in a group"/>
+        <text name="cywp_noOwnedFields"                  text="Your farm owns no fields."/>
+        <text name="cywp_moreFields"                     text="+%d more"/>
+        <text name="cywp_planYearHelp"                   text="&quot;Plan year now&quot; is where the group is in its plan this year. It moves on by itself every new year. Groups in the same plan at different plan years spread the crops, so the mills get every crop every year."/>
 
-        <text name="crp_month_1"                        text="Jan"/>
-        <text name="crp_month_2"                        text="Feb"/>
-        <text name="crp_month_3"                        text="Mar"/>
-        <text name="crp_month_4"                        text="Apr"/>
-        <text name="crp_month_5"                        text="May"/>
-        <text name="crp_month_6"                        text="Jun"/>
-        <text name="crp_month_7"                        text="Jul"/>
-        <text name="crp_month_8"                        text="Aug"/>
-        <text name="crp_month_9"                        text="Sep"/>
-        <text name="crp_month_10"                       text="Oct"/>
-        <text name="crp_month_11"                       text="Nov"/>
-        <text name="crp_month_12"                       text="Dec"/>
+        <text name="cywp_month_1"                        text="Jan"/>
+        <text name="cywp_month_2"                        text="Feb"/>
+        <text name="cywp_month_3"                        text="Mar"/>
+        <text name="cywp_month_4"                        text="Apr"/>
+        <text name="cywp_month_5"                        text="May"/>
+        <text name="cywp_month_6"                        text="Jun"/>
+        <text name="cywp_month_7"                        text="Jul"/>
+        <text name="cywp_month_8"                        text="Aug"/>
+        <text name="cywp_month_9"                        text="Sep"/>
+        <text name="cywp_month_10"                       text="Oct"/>
+        <text name="cywp_month_11"                       text="Nov"/>
+        <text name="cywp_month_12"                       text="Dec"/>
     </texts>
 </l10n>

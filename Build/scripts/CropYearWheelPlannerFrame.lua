@@ -1,26 +1,26 @@
--- CropRotationPlanFrame.lua
+-- CropYearWheelPlannerFrame.lua
 -- Own tab in the in-game menu (Esc), placed directly above the base game Settings tab.
 -- Three sub-tabs:
 --   Settings:     display full / minimized / hidden, position top / left, the show/minimize key,
 --                 grass in rotation; in multiplayer also who can edit (farm manager only /
 --                 everyone on the farm) and whether this player can edit (base game option rows)
---   Plans:        list of plans and the plan editor (CropRotationPlanPages, drawn in :draw)
---   Field groups: field groups and the farm's own fields (CropRotationPlanPages, drawn in :draw)
+--   Plans:        list of plans and the plan editor (CropYearWheelPlannerPages, drawn in :draw)
+--   Field groups: field groups and the farm's own fields (CropYearWheelPlannerPages, drawn in :draw)
 --
 -- The page is added to the in-game menu when the savegame loads and removed again
 -- when it is closed.
 
-CropRotationPlanFrame = {}
-CropRotationPlanFrame.GUI_NAME = "CropRotationPlanFrame"
+CropYearWheelPlannerFrame = {}
+CropYearWheelPlannerFrame.GUI_NAME = "CropYearWheelPlannerFrame"
 
-CropRotationPlanFrame.SUB_PAGE = {
+CropYearWheelPlannerFrame.SUB_PAGE = {
     SETTINGS = 1,
     PLANS = 2,
     GROUPS = 3
 }
-CropRotationPlanFrame.SUB_PAGE_TEXTS = { "crp_subtab_settings", "crp_subtab_plans", "crp_subtab_groups" }
+CropYearWheelPlannerFrame.SUB_PAGE_TEXTS = { "cywp_subtab_settings", "cywp_subtab_plans", "cywp_subtab_groups" }
 
-local CropRotationPlanFrame_mt = Class(CropRotationPlanFrame, TabbedMenuFrameElement)
+local CropYearWheelPlannerFrame_mt = Class(CropYearWheelPlannerFrame, TabbedMenuFrameElement)
 
 local function t(key)
     return g_i18n:getText(key)
@@ -88,9 +88,9 @@ local function moveBefore(list, item, anchor, getElement)
     table.insert(list, entry)
 end
 
-function CropRotationPlanFrame.new(target, customMt)
-    local self = TabbedMenuFrameElement.new(target, customMt or CropRotationPlanFrame_mt)
-    self.currentSubPage = CropRotationPlanFrame.SUB_PAGE.SETTINGS
+function CropYearWheelPlannerFrame.new(target, customMt)
+    local self = TabbedMenuFrameElement.new(target, customMt or CropYearWheelPlannerFrame_mt)
+    self.currentSubPage = CropYearWheelPlannerFrame.SUB_PAGE.SETTINGS
     -- Plans / Field groups pages: mouse, clickable boxes, selection, plan editor copy
     self.pageState = { hits = {} }
     return self
@@ -107,34 +107,34 @@ end
 -- pageFrames so the tab sits directly above the base game Settings tab.
 -- (TabbedMenu:addPage registers the frame's root element as page instead, which makes
 -- the menu fail to find the page: "PagingElement ... attempt to index nil with 'disabled'".)
-function CropRotationPlanFrame.install(modDirectory)
+function CropYearWheelPlannerFrame.install(modDirectory)
     local menu = g_inGameMenu
     if menu == nil or g_gui == nil or menu.pagingElement == nil then
-        Logging.warning("[CropRotationPlan] In-game menu not available, settings tab not added")
+        Logging.warning("[CropYearWheelPlanner] In-game menu not available, settings tab not added")
         return
     end
 
     -- Leftover from an earlier savegame in the same game run
-    if g_gui.frames ~= nil and g_gui.frames[CropRotationPlanFrame.GUI_NAME] ~= nil then
-        g_gui.frames[CropRotationPlanFrame.GUI_NAME] = nil
+    if g_gui.frames ~= nil and g_gui.frames[CropYearWheelPlannerFrame.GUI_NAME] ~= nil then
+        g_gui.frames[CropYearWheelPlannerFrame.GUI_NAME] = nil
     end
 
-    local frame = CropRotationPlanFrame.new()
-    g_gui:loadGui(modDirectory .. "gui/CropRotationPlanFrame.xml", CropRotationPlanFrame.GUI_NAME, frame, true)
+    local frame = CropYearWheelPlannerFrame.new()
+    g_gui:loadGui(modDirectory .. "gui/CropYearWheelPlannerFrame.xml", CropYearWheelPlannerFrame.GUI_NAME, frame, true)
     if frame.elements[1] == nil then
-        Logging.warning("[CropRotationPlan] Settings tab GUI could not be loaded")
+        Logging.warning("[CropYearWheelPlanner] Settings tab GUI could not be loaded")
         return
     end
-    frame.elements[1].title = t("crp_tab_title")
+    frame.elements[1].title = t("cywp_tab_title")
     frame.modDirectory = modDirectory
 
     -- The base game Settings page; the tab goes directly above it. nil = last, as before.
     local anchor = menu.pageSettings
     if anchor == nil then
-        Logging.warning("[CropRotationPlan] Settings page not found, tab added at the end")
+        Logging.warning("[CropYearWheelPlanner] Settings page not found, tab added at the end")
     end
 
-    menu.pageCropRotationPlan = frame
+    menu.pageCropYearWheelPlanner = frame
     menu.pagingElement:addElement(frame)
     moveBefore(menu.pagingElement.elements, frame, anchor)
     moveBefore(menu.pagingElement.pages, frame, anchor, function(page) return page.element end)
@@ -152,15 +152,15 @@ function CropRotationPlanFrame.install(modDirectory)
 
     frame:initializeSubPages()
 
-    CropRotationPlanFrame.instance = frame
+    CropYearWheelPlannerFrame.instance = frame
 end
 
-function CropRotationPlanFrame.uninstall()
-    local frame = CropRotationPlanFrame.instance
+function CropYearWheelPlannerFrame.uninstall()
+    local frame = CropYearWheelPlannerFrame.instance
     if frame == nil then
         return
     end
-    CropRotationPlanFrame.instance = nil
+    CropYearWheelPlannerFrame.instance = nil
 
     -- Quitting a savegame logged TabbedMenu.lua:285 "attempt to index nil with 'iconFilename'"
     -- (GitHub issue #2): the menu's tab list still had our page after its tab was gone.
@@ -171,7 +171,7 @@ function CropRotationPlanFrame.uninstall()
     if menu ~= nil then
         local byClass = false
         if menu.unregisterPage ~= nil then
-            local class = CropRotationPlanFrame
+            local class = CropYearWheelPlannerFrame
             if frame.class ~= nil then
                 class = frame:class()
             end
@@ -207,13 +207,13 @@ function CropRotationPlanFrame.uninstall()
             menu.restorePageIndex = 1
             menu.restorePageScrollOffset = 0
         end
-        menu.pageCropRotationPlan = nil
-        Logging.info("[CropRotationPlan] Menu tab removed (unregistered by class: %s, left in page list: %s, menu open: %s)",
+        menu.pageCropYearWheelPlanner = nil
+        Logging.info("[CropYearWheelPlanner] Menu tab removed (unregistered by class: %s, left in page list: %s, menu open: %s)",
             tostring(byClass), tostring(leftover), tostring(g_gui ~= nil and g_gui:getIsGuiVisible()))
     end
     frame:delete()
     if g_gui ~= nil and g_gui.frames ~= nil then
-        g_gui.frames[CropRotationPlanFrame.GUI_NAME] = nil
+        g_gui.frames[CropYearWheelPlannerFrame.GUI_NAME] = nil
     end
 end
 
@@ -223,11 +223,11 @@ end
 
 -- Sub-tab bar: texts on the tab buttons, and one entry per sub-tab in the paging option
 -- (that is what the gamepad shoulder buttons step through). As Courseplay's CpGlobalSettingsFrame.
-function CropRotationPlanFrame:initializeSubPages()
+function CropYearWheelPlannerFrame:initializeSubPages()
     self.subPages = { self.subPageSettings, self.subPagePlans, self.subPageGroups }
     self.subTabs = { self.tabSettings, self.tabPlans, self.tabGroups }
 
-    for i, key in ipairs(CropRotationPlanFrame.SUB_PAGE_TEXTS) do
+    for i, key in ipairs(CropYearWheelPlannerFrame.SUB_PAGE_TEXTS) do
         local tab = self.subTabs[i]
         setText(tab, t(key))
         -- The button grows with its text, its green background does not (v1.3.2 covered
@@ -251,8 +251,8 @@ function CropRotationPlanFrame:initializeSubPages()
     end
 end
 
-function CropRotationPlanFrame:onFrameOpen()
-    CropRotationPlanFrame:superClass().onFrameOpen(self)
+function CropYearWheelPlannerFrame:onFrameOpen()
+    CropYearWheelPlannerFrame:superClass().onFrameOpen(self)
 
     self:updateTexts()
     self:updateValues()
@@ -261,12 +261,12 @@ function CropRotationPlanFrame:onFrameOpen()
         self.settingsLayout:invalidateLayout()
     end
     self:updateRowColors()
-    CropRotationPlanPages.refreshOwnedFields(self.pageState)
+    CropYearWheelPlannerPages.refreshOwnedFields(self.pageState)
     self:updateSubCategoryPages(self.currentSubPage)
 end
 
 -- Called by the paging option (gamepad shoulder buttons) and by the tab buttons.
-function CropRotationPlanFrame:updateSubCategoryPages(state)
+function CropYearWheelPlannerFrame:updateSubCategoryPages(state)
     if self.subPages == nil or self.subPages[state] == nil then
         return
     end
@@ -284,28 +284,28 @@ function CropRotationPlanFrame:updateSubCategoryPages(state)
         self.subCategoryPaging:setState(state, false)
     end
 
-    if FocusManager ~= nil and state == CropRotationPlanFrame.SUB_PAGE.SETTINGS and self.displayOption ~= nil then
+    if FocusManager ~= nil and state == CropYearWheelPlannerFrame.SUB_PAGE.SETTINGS and self.displayOption ~= nil then
         FocusManager:setFocus(self.displayOption)
     end
 end
 
-function CropRotationPlanFrame:onClickTabSettings()
-    self:updateSubCategoryPages(CropRotationPlanFrame.SUB_PAGE.SETTINGS)
+function CropYearWheelPlannerFrame:onClickTabSettings()
+    self:updateSubCategoryPages(CropYearWheelPlannerFrame.SUB_PAGE.SETTINGS)
 end
 
-function CropRotationPlanFrame:onClickTabPlans()
-    self:updateSubCategoryPages(CropRotationPlanFrame.SUB_PAGE.PLANS)
+function CropYearWheelPlannerFrame:onClickTabPlans()
+    self:updateSubCategoryPages(CropYearWheelPlannerFrame.SUB_PAGE.PLANS)
 end
 
-function CropRotationPlanFrame:onClickTabGroups()
-    self:updateSubCategoryPages(CropRotationPlanFrame.SUB_PAGE.GROUPS)
+function CropYearWheelPlannerFrame:onClickTabGroups()
+    self:updateSubCategoryPages(CropYearWheelPlannerFrame.SUB_PAGE.GROUPS)
 end
 
 -- The row profile (fs25_multiTextOptionContainer) is white; the base game settings page
 -- colours the rows in Lua with alternating dark colours, starting again after each section
 -- header. Without this the rows render white and the white text cannot be read (v1.3.1).
 -- Same as FS25_AutoDrive's ADSettingsPage and FS25_AdvancedDamageSystem's settings page.
-function CropRotationPlanFrame:updateRowColors()
+function CropYearWheelPlannerFrame:updateRowColors()
     if self.settingsLayout == nil or InGameMenuSettingsFrame == nil or InGameMenuSettingsFrame.COLOR_ALTERNATING == nil then
         return
     end
@@ -323,28 +323,28 @@ function CropRotationPlanFrame:updateRowColors()
     end
 end
 
-function CropRotationPlanFrame:updateTexts()
-    setText(self.headerTitle, t("crp_tab_title"))
+function CropYearWheelPlannerFrame:updateTexts()
+    setText(self.headerTitle, t("cywp_tab_title"))
     if self.modDirectory ~= nil then
         setImage(self.headerIcon, self.modDirectory .. "icon_minimized.dds", 256)
     end
 
-    setText(self.sectionDisplay, t("crp_section_display"))
-    setText(self.sectionCrops, t("crp_section_crops"))
-    setText(self.sectionMultiplayer, t("crp_section_multiplayer"))
+    setText(self.sectionDisplay, t("cywp_section_display"))
+    setText(self.sectionCrops, t("cywp_section_crops"))
+    setText(self.sectionMultiplayer, t("cywp_section_multiplayer"))
 
-    setText(self.displayTitle, t("crp_settings_display"))
-    setText(self.displayTooltip, t("crp_settings_display_tooltip"))
-    setText(self.positionTitle, t("crp_settings_position"))
-    setText(self.positionTooltip, t("crp_settings_position_tooltip"))
-    setText(self.keyTitle, t("crp_settings_key"))
-    setText(self.keyTooltip, t("crp_settings_key_tooltip"))
-    setText(self.grassTitle, t("crp_settings_grass"))
-    setText(self.grassTooltip, t("crp_settings_grass_tooltip"))
-    setText(self.editTitle, t("crp_settings_edit"))
-    setText(self.editTooltip, t("crp_settings_edit_tooltip"))
-    setText(self.editStatusTitle, t("crp_settings_editStatus"))
-    setText(self.editStatusTooltip, t("crp_settings_editStatus_tooltip"))
+    setText(self.displayTitle, t("cywp_settings_display"))
+    setText(self.displayTooltip, t("cywp_settings_display_tooltip"))
+    setText(self.positionTitle, t("cywp_settings_position"))
+    setText(self.positionTooltip, t("cywp_settings_position_tooltip"))
+    setText(self.keyTitle, t("cywp_settings_key"))
+    setText(self.keyTooltip, t("cywp_settings_key_tooltip"))
+    setText(self.grassTitle, t("cywp_settings_grass"))
+    setText(self.grassTooltip, t("cywp_settings_grass_tooltip"))
+    setText(self.editTitle, t("cywp_settings_edit"))
+    setText(self.editTooltip, t("cywp_settings_edit_tooltip"))
+    setText(self.editStatusTitle, t("cywp_settings_editStatus"))
+    setText(self.editStatusTooltip, t("cywp_settings_editStatus_tooltip"))
 end
 
 -- An option row that only shows a text (the key, who can edit)
@@ -355,79 +355,79 @@ local function setInfo(option, text)
     end
 end
 
-function CropRotationPlanFrame:updateValues()
+function CropYearWheelPlannerFrame:updateValues()
     if self.displayOption ~= nil then
         local texts = {}
-        for _, mode in ipairs(CropRotationPlan.DISPLAY_MODES) do
-            table.insert(texts, t("crp_display_" .. mode))
+        for _, mode in ipairs(CropYearWheelPlanner.DISPLAY_MODES) do
+            table.insert(texts, t("cywp_display_" .. mode))
         end
         self.displayOption:setTexts(texts)
-        self.displayOption:setState(CropRotationPlan:getDisplayModeIndex(), false)
+        self.displayOption:setState(CropYearWheelPlanner:getDisplayModeIndex(), false)
     end
 
     if self.positionOption ~= nil then
         local texts = {}
-        for _, pos in ipairs(CropRotationPlan.POSITIONS) do
-            table.insert(texts, t("crp_position_" .. pos))
+        for _, pos in ipairs(CropYearWheelPlanner.POSITIONS) do
+            table.insert(texts, t("cywp_position_" .. pos))
         end
         self.positionOption:setTexts(texts)
-        self.positionOption:setState(CropRotationPlan:getPositionIndex(), false)
+        self.positionOption:setState(CropYearWheelPlanner:getPositionIndex(), false)
     end
 
-    local canEdit = CropRotationPlan:canEdit()
+    local canEdit = CropYearWheelPlanner:canEdit()
     if self.grassOption ~= nil then
-        self.grassOption:setTexts({ t("crp_on"), t("crp_off") })
-        self.grassOption:setState(CropRotationPlan:getGrassInRotation() and 1 or 2, false)
+        self.grassOption:setTexts({ t("cywp_on"), t("cywp_off") })
+        self.grassOption:setState(CropYearWheelPlanner:getGrassInRotation() and 1 or 2, false)
         self.grassOption:setDisabled(not canEdit)
     end
 
-    setInfo(self.keyOption, t("crp_settings_key_value"))
+    setInfo(self.keyOption, t("cywp_settings_key_value"))
 
     -- Multiplayer section: only in multiplayer
-    local multiplayer = CropRotationPlan:isMultiplayer()
+    local multiplayer = CropYearWheelPlanner:isMultiplayer()
     for _, element in ipairs({ self.sectionMultiplayer, self.editRow, self.editStatusRow }) do
         if element ~= nil then
             element:setVisible(multiplayer)
         end
     end
     if self.editOption ~= nil then
-        self.editOption:setTexts({ t("crp_settings_edit_manager"), t("crp_settings_edit_everyone") })
-        self.editOption:setState(CropRotationPlan:getEveryoneCanEdit() and 2 or 1, false)
+        self.editOption:setTexts({ t("cywp_settings_edit_manager"), t("cywp_settings_edit_everyone") })
+        self.editOption:setState(CropYearWheelPlanner:getEveryoneCanEdit() and 2 or 1, false)
         -- Only the farm manager can change who can edit
-        self.editOption:setDisabled(not CropRotationPlan:canChangePermission())
+        self.editOption:setDisabled(not CropYearWheelPlanner:canChangePermission())
     end
-    setInfo(self.editStatusOption, t(canEdit and "crp_status_canEdit" or "crp_status_managerOnly"))
+    setInfo(self.editStatusOption, t(canEdit and "cywp_status_canEdit" or "cywp_status_managerOnly"))
 end
 
-function CropRotationPlanFrame:onClickEditPermission(state)
-    if CropRotationPlan:canChangePermission() then
-        CropRotationPlan:setEveryoneCanEdit(state == 2)
+function CropYearWheelPlannerFrame:onClickEditPermission(state)
+    if CropYearWheelPlanner:canChangePermission() then
+        CropYearWheelPlanner:setEveryoneCanEdit(state == 2)
     end
 end
 
-function CropRotationPlanFrame:onClickDisplay(state)
-    local mode = CropRotationPlan.DISPLAY_MODES[state]
+function CropYearWheelPlannerFrame:onClickDisplay(state)
+    local mode = CropYearWheelPlanner.DISPLAY_MODES[state]
     if mode ~= nil then
-        CropRotationPlan:setDisplayMode(mode)
+        CropYearWheelPlanner:setDisplayMode(mode)
     end
 end
 
-function CropRotationPlanFrame:onClickPosition(state)
-    local position = CropRotationPlan.POSITIONS[state]
+function CropYearWheelPlannerFrame:onClickPosition(state)
+    local position = CropYearWheelPlanner.POSITIONS[state]
     if position ~= nil then
-        CropRotationPlan:setPosition(position)
+        CropYearWheelPlanner:setPosition(position)
     end
 end
 
-function CropRotationPlanFrame:onClickGrass(state)
-    CropRotationPlan:setGrassInRotation(state == 1)
+function CropYearWheelPlannerFrame:onClickGrass(state)
+    CropYearWheelPlanner:setGrassInRotation(state == 1)
 end
 
 ---------------------------------------------------------------------------
 -- Plans and Field groups: drawn here, clicks matched against the drawn boxes
 ---------------------------------------------------------------------------
 
-function CropRotationPlanFrame:getCustomPageArea()
+function CropYearWheelPlannerFrame:getCustomPageArea()
     local container = self.subPages ~= nil and self.subPages[self.currentSubPage] or nil
     if container == nil or container.absPosition == nil or container.absSize == nil then
         return nil
@@ -438,11 +438,11 @@ function CropRotationPlanFrame:getCustomPageArea()
     return { x = container.absPosition[1], y = container.absPosition[2], w = container.absSize[1], h = container.absSize[2] }
 end
 
-function CropRotationPlanFrame:draw(...)
-    CropRotationPlanFrame:superClass().draw(self, ...)
+function CropYearWheelPlannerFrame:draw(...)
+    CropYearWheelPlannerFrame:superClass().draw(self, ...)
 
     local page = self.currentSubPage
-    if page ~= CropRotationPlanFrame.SUB_PAGE.PLANS and page ~= CropRotationPlanFrame.SUB_PAGE.GROUPS then
+    if page ~= CropYearWheelPlannerFrame.SUB_PAGE.PLANS and page ~= CropYearWheelPlannerFrame.SUB_PAGE.GROUPS then
         return
     end
     local area = self:getCustomPageArea()
@@ -451,42 +451,42 @@ function CropRotationPlanFrame:draw(...)
     end
 
     local state = self.pageState
-    CropRotationPlanUI.begin(state)
+    CropYearWheelPlannerUI.begin(state)
     state.scrollRegion = nil
     state.panelRegion = nil
-    local drawPage = page == CropRotationPlanFrame.SUB_PAGE.PLANS and CropRotationPlanPages.drawPlans or CropRotationPlanPages.drawGroups
+    local drawPage = page == CropYearWheelPlannerFrame.SUB_PAGE.PLANS and CropYearWheelPlannerPages.drawPlans or CropYearWheelPlannerPages.drawGroups
     drawPage(state, area)
-    CropRotationPlanUI.drawTooltip(state)
-    CropRotationPlanUI.finish()
+    CropYearWheelPlannerUI.drawTooltip(state)
+    CropYearWheelPlannerUI.finish()
 end
 
 local function isInside(region, x, y)
     return region ~= nil and x >= region.x and x <= region.x + region.w and y >= region.y and y <= region.y + region.h
 end
 
-function CropRotationPlanFrame:mouseEvent(posX, posY, isDown, isUp, button, eventUsed)
+function CropYearWheelPlannerFrame:mouseEvent(posX, posY, isDown, isUp, button, eventUsed)
     local state = self.pageState
     state.mouseX, state.mouseY = posX, posY
 
     local page = self.currentSubPage
-    local custom = page == CropRotationPlanFrame.SUB_PAGE.PLANS or page == CropRotationPlanFrame.SUB_PAGE.GROUPS
+    local custom = page == CropYearWheelPlannerFrame.SUB_PAGE.PLANS or page == CropYearWheelPlannerFrame.SUB_PAGE.GROUPS
     if custom and not eventUsed and isDown and self:getIsVisible() then
         if button == Input.MOUSE_BUTTON_LEFT then
-            if CropRotationPlanUI.click(state, posX, posY) then
+            if CropYearWheelPlannerUI.click(state, posX, posY) then
                 return true
             end
         elseif button == Input.MOUSE_BUTTON_WHEEL_UP or button == Input.MOUSE_BUTTON_WHEEL_DOWN then
             local dir = button == Input.MOUSE_BUTTON_WHEEL_UP and -1 or 1
             local ed = state.editor
-            if page == CropRotationPlanFrame.SUB_PAGE.PLANS and ed ~= nil and isInside(state.panelRegion, posX, posY) then
-                ed.panelScroll = math.max(0, math.min(CropRotationPlanUI.py(1500), (ed.panelScroll or 0) + dir * CropRotationPlanUI.py(48)))
+            if page == CropYearWheelPlannerFrame.SUB_PAGE.PLANS and ed ~= nil and isInside(state.panelRegion, posX, posY) then
+                ed.panelScroll = math.max(0, math.min(CropYearWheelPlannerUI.py(1500), (ed.panelScroll or 0) + dir * CropYearWheelPlannerUI.py(48)))
                 return true
-            elseif page == CropRotationPlanFrame.SUB_PAGE.GROUPS and isInside(state.scrollRegion, posX, posY) then
+            elseif page == CropYearWheelPlannerFrame.SUB_PAGE.GROUPS and isInside(state.scrollRegion, posX, posY) then
                 state.groupScroll = math.max(0, math.min(state.scrollRegion.max, (state.groupScroll or 0) + dir))
                 return true
             end
         end
     end
 
-    return CropRotationPlanFrame:superClass().mouseEvent(self, posX, posY, isDown, isUp, button, eventUsed)
+    return CropYearWheelPlannerFrame:superClass().mouseEvent(self, posX, posY, isDown, isUp, button, eventUsed)
 end

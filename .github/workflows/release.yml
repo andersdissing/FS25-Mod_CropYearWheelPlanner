@@ -16,7 +16,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      MOD_NAME: FS25_CropRotationPlan
+      MOD_NAME: FS25_CropYearWheelPlanner
     steps:
       - uses: actions/checkout@v4
 
@@ -49,7 +49,7 @@ jobs:
           python3 tests/smoke_test.py
 
       - name: Build zip
-        # Zip the contents of Build/, not the folder. The file name stays FS25_CropRotationPlan.zip:
+        # Zip the contents of Build/, not the folder. The file name stays FS25_CropYearWheelPlanner.zip:
         # the game takes the mod name from it, so a version in the name would break savegames.
         run: |
           mkdir -p dist

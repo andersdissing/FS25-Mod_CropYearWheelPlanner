@@ -1,20 +1,20 @@
--- CropRotationPlanSync.lua
+-- CropYearWheelPlannerSync.lua
 -- Multiplayer: the server owns the plans and field groups of every farm.
 --
---   * The menu pages never change the data themselves; they call CropRotationPlanSync.request.
+--   * The menu pages never change the data themselves; they call CropYearWheelPlannerSync.request.
 --     On the server (and in single player) the edit is applied right away; a client sends it to
---     the server as a CropRotationPlanEditEvent.
+--     the server as a CropYearWheelPlannerEditEvent.
 --   * The server finds the farm from the connection (not from the event), checks the edit
 --     (spectators cannot edit, the plan has no overlaps, the field belongs to the farm, limits),
---     applies it, saves and sends the farm's new state to every client (CropRotationPlanStateEvent).
+--     applies it, saves and sends the farm's new state to every client (CropYearWheelPlannerStateEvent).
 --     A rejected edit is logged and the sender gets the current state back.
 --   * A player who joins gets the state of every farm (FSBaseMission.sendInitialClientState).
 --   * In multiplayer only the farm manager may edit a farm's plans, unless the farm manager has
 --     switched the farm to "Everyone on the farm". Only the farm manager can change that switch.
 --     In single player the player can always edit.
 
-CropRotationPlanSync = {}
-local S = CropRotationPlanSync
+CropYearWheelPlannerSync = {}
+local S = CropYearWheelPlannerSync
 
 S.OP = {
     NEW_PLAN = 1,
@@ -60,8 +60,8 @@ function S.canEdit(farmId, userId)
     if not S.isMultiplayer() then
         return true
     end
-    local farm = CropRotationPlanData.getFarm(CropRotationPlan.data, farmId, false)
-    if farm ~= nil and farm.editPermission == CropRotationPlanData.EDIT_EVERYONE then
+    local farm = CropYearWheelPlannerData.getFarm(CropYearWheelPlanner.data, farmId, false)
+    if farm ~= nil and farm.editPermission == CropYearWheelPlannerData.EDIT_EVERYONE then
         return true
     end
     return S.isFarmManager(farmId, userId)
@@ -81,9 +81,9 @@ end
 -- Edit from this machine. op = { type = S.OP.*, plan, group, id, name, groupId, fieldId, value }
 function S.request(op)
     if g_server ~= nil then
-        S.apply(op, CropRotationPlan:getFarmId(), CropRotationPlan:getUserId(), nil)
+        S.apply(op, CropYearWheelPlanner:getFarmId(), CropYearWheelPlanner:getUserId(), nil)
     elseif g_client ~= nil then
-        g_client:getServerConnection():sendEvent(CropRotationPlanEditEvent.new(op))
+        g_client:getServerConnection():sendEvent(CropYearWheelPlannerEditEvent.new(op))
     end
 end
 
@@ -130,7 +130,7 @@ local function cleanName(name)
     end
     name = string.gsub(name, "^%s+", "")
     name = string.gsub(name, "%s+$", "")
-    local max = CropRotationPlanData.MAX_NAME_LENGTH
+    local max = CropYearWheelPlannerData.MAX_NAME_LENGTH
     if string.len(name) > max then
         local i = max + 1
         while i > 1 do
@@ -148,10 +148,10 @@ S.cleanName = cleanName
 
 -- Checks a plan sent by a player; returns true or false and the reason
 function S.validatePlan(plan)
-    if type(plan.years) ~= "number" or plan.years < 1 or plan.years > CropRotationPlanLogic.MAX_YEARS then
+    if type(plan.years) ~= "number" or plan.years < 1 or plan.years > CropYearWheelPlannerLogic.MAX_YEARS then
         return false, "years out of range"
     end
-    if #plan.seeds > CropRotationPlanData.MAX_SEEDS then
+    if #plan.seeds > CropYearWheelPlannerData.MAX_SEEDS then
         return false, "too many seeds"
     end
     local Lm = plan.years * 12
@@ -162,22 +162,22 @@ function S.validatePlan(plan)
         if type(seed.t) ~= "number" or seed.t < 0 or seed.t >= Lm then
             return false, "sow month out of range"
         end
-        if seed.dur ~= nil and not CropRotationPlanLogic.contains(CropRotationPlanLogic.LEY_DURATIONS, seed.dur) then
+        if seed.dur ~= nil and not CropYearWheelPlannerLogic.contains(CropYearWheelPlannerLogic.LEY_DURATIONS, seed.dur) then
             return false, "bad ley duration"
         end
-        if seed.cut ~= nil and not CropRotationPlanLogic.contains(CropRotationPlanLogic.CUT_INTERVALS, seed.cut) then
+        if seed.cut ~= nil and not CropYearWheelPlannerLogic.contains(CropYearWheelPlannerLogic.CUT_INTERVALS, seed.cut) then
             return false, "bad cut interval"
         end
     end
-    local crops = CropRotationPlanCrops.getLookup({ plan })
-    if #CropRotationPlanLogic.getOverlaps(plan, crops) > 0 then
+    local crops = CropYearWheelPlannerCrops.getLookup({ plan })
+    if #CropYearWheelPlannerLogic.getOverlaps(plan, crops) > 0 then
         return false, "crops overlap"
     end
     return true
 end
 
 local function applyToFarm(op, farm)
-    local D = CropRotationPlanData
+    local D = CropYearWheelPlannerData
     local O = S.OP
 
     if op.type == O.NEW_PLAN then
@@ -213,7 +213,7 @@ local function applyToFarm(op, farm)
         if #farm.groups >= D.MAX_GROUPS then
             return false, "too many field groups"
         end
-        D.addGroup(farm, CropRotationPlan:getCalendarYear())
+        D.addGroup(farm, CropYearWheelPlanner:getCalendarYear())
 
     elseif op.type == O.PUT_GROUP then
         local group = D.getGroup(farm, op.group.id)
@@ -231,7 +231,7 @@ local function applyToFarm(op, farm)
         local years = plan ~= nil and plan.years or 1
         group.planYear = math.max(1, math.min(years, math.floor(op.group.planYear or 1)))
         -- "Plan year now" is counted from the server's current year
-        group.anchorYear = CropRotationPlan:getCalendarYear()
+        group.anchorYear = CropYearWheelPlanner:getCalendarYear()
 
     elseif op.type == O.DELETE_GROUP then
         D.removeGroup(farm, op.id)
@@ -266,7 +266,7 @@ end
 -- nil for the server's own player.
 function S.apply(op, farmId, userId, connection)
     if farmId == nil or farmId == spectatorFarmId() then
-        Logging.warning("[CropRotationPlan] Edit rejected: player is not on a farm")
+        Logging.warning("[CropYearWheelPlanner] Edit rejected: player is not on a farm")
         return false
     end
     local allowed
@@ -275,20 +275,20 @@ function S.apply(op, farmId, userId, connection)
     else
         allowed = S.canEdit(farmId, userId)
     end
-    local farm = CropRotationPlanData.getFarm(CropRotationPlan.data, farmId, true)
+    local farm = CropYearWheelPlannerData.getFarm(CropYearWheelPlanner.data, farmId, true)
     op.farmId = farmId
     local ok, reason = false, "only the farm manager can edit"
     if allowed then
         ok, reason = applyToFarm(op, farm)
     end
     if not ok then
-        Logging.warning("[CropRotationPlan] Edit rejected for farm %d: %s", farmId, tostring(reason))
+        Logging.warning("[CropYearWheelPlanner] Edit rejected for farm %d: %s", farmId, tostring(reason))
         if connection ~= nil then
-            connection:sendEvent(CropRotationPlanStateEvent.new({ farmId }))
+            connection:sendEvent(CropYearWheelPlannerStateEvent.new({ farmId }))
         end
         return false
     end
-    CropRotationPlan:save()
+    CropYearWheelPlanner:save()
     S.broadcastFarm(farmId)
     return true
 end
@@ -296,7 +296,7 @@ end
 -- Server: send one farm's state to every client
 function S.broadcastFarm(farmId)
     if g_server ~= nil and g_server.broadcastEvent ~= nil then
-        g_server:broadcastEvent(CropRotationPlanStateEvent.new({ farmId }))
+        g_server:broadcastEvent(CropYearWheelPlannerStateEvent.new({ farmId }))
     end
 end
 
@@ -304,23 +304,23 @@ end
 -- Server -> client: the state of one or all farms
 ---------------------------------------------------------------------------
 
-CropRotationPlanStateEvent = {}
-local CropRotationPlanStateEvent_mt = Class(CropRotationPlanStateEvent, Event)
-InitEventClass(CropRotationPlanStateEvent, "CropRotationPlanStateEvent")
+CropYearWheelPlannerStateEvent = {}
+local CropYearWheelPlannerStateEvent_mt = Class(CropYearWheelPlannerStateEvent, Event)
+InitEventClass(CropYearWheelPlannerStateEvent, "CropYearWheelPlannerStateEvent")
 
-function CropRotationPlanStateEvent.emptyNew()
-    return Event.new(CropRotationPlanStateEvent_mt)
+function CropYearWheelPlannerStateEvent.emptyNew()
+    return Event.new(CropYearWheelPlannerStateEvent_mt)
 end
 
 -- farmIds: list of farm ids, or nil for every farm
-function CropRotationPlanStateEvent.new(farmIds)
-    local self = CropRotationPlanStateEvent.emptyNew()
+function CropYearWheelPlannerStateEvent.new(farmIds)
+    local self = CropYearWheelPlannerStateEvent.emptyNew()
     self.farmIds = farmIds
     return self
 end
 
-function CropRotationPlanStateEvent:writeStream(streamId, connection)
-    local data = CropRotationPlan.data
+function CropYearWheelPlannerStateEvent:writeStream(streamId, connection)
+    local data = CropYearWheelPlanner.data
     local ids = self.farmIds
     if ids == nil then
         ids = {}
@@ -330,25 +330,25 @@ function CropRotationPlanStateEvent:writeStream(streamId, connection)
     end
     streamWriteUInt16(streamId, #ids)
     for _, farmId in ipairs(ids) do
-        CropRotationPlanData.writeFarm(streamId, farmId, CropRotationPlanData.getFarm(data, farmId, true))
+        CropYearWheelPlannerData.writeFarm(streamId, farmId, CropYearWheelPlannerData.getFarm(data, farmId, true))
     end
 end
 
-function CropRotationPlanStateEvent:readStream(streamId, connection)
+function CropYearWheelPlannerStateEvent:readStream(streamId, connection)
     self.farms = {}
     local count = streamReadUInt16(streamId)
     for _ = 1, count do
-        local farmId, farm = CropRotationPlanData.readFarm(streamId)
+        local farmId, farm = CropYearWheelPlannerData.readFarm(streamId)
         self.farms[farmId] = farm
     end
     self:run(connection)
 end
 
-function CropRotationPlanStateEvent:run(connection)
+function CropYearWheelPlannerStateEvent:run(connection)
     if connection:getIsServer() then
         -- Client: take over the server's state
         for farmId, farm in pairs(self.farms) do
-            CropRotationPlan.data.farms[farmId] = farm
+            CropYearWheelPlanner.data.farms[farmId] = farm
         end
     end
 end
@@ -357,32 +357,32 @@ end
 -- Client -> server: one edit
 ---------------------------------------------------------------------------
 
-CropRotationPlanEditEvent = {}
-local CropRotationPlanEditEvent_mt = Class(CropRotationPlanEditEvent, Event)
-InitEventClass(CropRotationPlanEditEvent, "CropRotationPlanEditEvent")
+CropYearWheelPlannerEditEvent = {}
+local CropYearWheelPlannerEditEvent_mt = Class(CropYearWheelPlannerEditEvent, Event)
+InitEventClass(CropYearWheelPlannerEditEvent, "CropYearWheelPlannerEditEvent")
 
-function CropRotationPlanEditEvent.emptyNew()
-    return Event.new(CropRotationPlanEditEvent_mt)
+function CropYearWheelPlannerEditEvent.emptyNew()
+    return Event.new(CropYearWheelPlannerEditEvent_mt)
 end
 
-function CropRotationPlanEditEvent.new(op)
-    local self = CropRotationPlanEditEvent.emptyNew()
+function CropYearWheelPlannerEditEvent.new(op)
+    local self = CropYearWheelPlannerEditEvent.emptyNew()
     self.op = op
     return self
 end
 
-function CropRotationPlanEditEvent:writeStream(streamId, connection)
+function CropYearWheelPlannerEditEvent:writeStream(streamId, connection)
     local op = self.op
     local O = S.OP
     streamWriteUInt8(streamId, op.type)
     if op.type == O.NEW_PLAN then
         streamWriteString(streamId, op.name or "")
     elseif op.type == O.PUT_PLAN then
-        CropRotationPlanData.writePlan(streamId, op.plan)
+        CropYearWheelPlannerData.writePlan(streamId, op.plan)
     elseif op.type == O.DELETE_PLAN or op.type == O.DELETE_GROUP then
         streamWriteInt32(streamId, op.id)
     elseif op.type == O.PUT_GROUP then
-        CropRotationPlanData.writeGroup(streamId, op.group)
+        CropYearWheelPlannerData.writeGroup(streamId, op.group)
     elseif op.type == O.ASSIGN_FIELD then
         streamWriteInt32(streamId, op.groupId or 0)
         streamWriteInt32(streamId, op.fieldId)
@@ -391,17 +391,17 @@ function CropRotationPlanEditEvent:writeStream(streamId, connection)
     end
 end
 
-function CropRotationPlanEditEvent:readStream(streamId, connection)
+function CropYearWheelPlannerEditEvent:readStream(streamId, connection)
     local O = S.OP
     local op = { type = streamReadUInt8(streamId) }
     if op.type == O.NEW_PLAN then
         op.name = streamReadString(streamId)
     elseif op.type == O.PUT_PLAN then
-        op.plan = CropRotationPlanData.readPlan(streamId)
+        op.plan = CropYearWheelPlannerData.readPlan(streamId)
     elseif op.type == O.DELETE_PLAN or op.type == O.DELETE_GROUP then
         op.id = streamReadInt32(streamId)
     elseif op.type == O.PUT_GROUP then
-        op.group = CropRotationPlanData.readGroup(streamId)
+        op.group = CropYearWheelPlannerData.readGroup(streamId)
     elseif op.type == O.ASSIGN_FIELD then
         op.groupId = streamReadInt32(streamId)
         op.fieldId = streamReadInt32(streamId)
@@ -412,7 +412,7 @@ function CropRotationPlanEditEvent:readStream(streamId, connection)
     self:run(connection)
 end
 
-function CropRotationPlanEditEvent:run(connection)
+function CropYearWheelPlannerEditEvent:run(connection)
     if not connection:getIsServer() then
         -- Server: the player and farm come from the connection, never from the event
         S.apply(self.op, S.getFarmIdOfConnection(connection), S.getUserIdOfConnection(connection), connection)
@@ -426,7 +426,7 @@ end
 if FSBaseMission ~= nil and FSBaseMission.sendInitialClientState ~= nil then
     FSBaseMission.sendInitialClientState = Utils.appendedFunction(FSBaseMission.sendInitialClientState, function(mission, connection, user, farm)
         if g_server ~= nil and connection ~= nil then
-            connection:sendEvent(CropRotationPlanStateEvent.new(nil))
+            connection:sendEvent(CropYearWheelPlannerStateEvent.new(nil))
         end
     end)
 end

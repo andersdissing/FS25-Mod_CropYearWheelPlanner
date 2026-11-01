@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<!-- In-game menu page (Esc) for FS25_CropRotationPlan. Uses only base game FS25 GUI profiles.
+<!-- In-game menu page (Esc) for FS25_CropYearWheelPlanner. Uses only base game FS25 GUI profiles.
      Layout follows the base game / Courseplay / AdvancedDamageSystem sub-category pages:
      header, sub-tab bar (Settings, Plans, Field groups), one container per sub-tab.
-     Row background colours are set in Lua (CropRotationPlanFrame:updateRowColors), like the
+     Row background colours are set in Lua (CropYearWheelPlannerFrame:updateRowColors), like the
      base game settings page does; without that the rows render white.
      The Plans and Field groups containers are empty: those pages are drawn by
-     CropRotationPlanFrame:draw (CropRotationPlanPages.lua) inside the container's area. -->
-<GUI name="cropRotationPlan">
-    <GuiElement profile="fs25_menuContainer" name="cropRotationPlan">
+     CropYearWheelPlannerFrame:draw (CropYearWheelPlannerPages.lua) inside the container's area. -->
+<GUI name="cropYearWheelPlanner">
+    <GuiElement profile="fs25_menuContainer" name="cropYearWheelPlanner">
         <GuiElement profile="fs25_menuHeaderPanel">
             <Bitmap profile="fs25_menuHeaderIconBg">
                 <Bitmap profile="fs25_menuHeaderIcon" id="headerIcon"/>

@@ -28,7 +28,7 @@ desc = ET.parse(os.path.join(BUILD, "modDesc.xml")).getroot()
 l10n_prefix = desc.find("l10n").get("filenamePrefix")
 texts = {t.get("name"): t.get("text") for t in ET.parse(os.path.join(BUILD, l10n_prefix + "_en.xml")).getroot().iter("text")}
 texts["button_ok"] = "OK"
-frame_ids = re.findall(r'\bid="([A-Za-z]+)"', open(os.path.join(BUILD, "gui/CropRotationPlanFrame.xml"), encoding="utf-8").read())
+frame_ids = re.findall(r'\bid="([A-Za-z]+)"', open(os.path.join(BUILD, "gui/CropYearWheelPlannerFrame.xml"), encoding="utf-8").read())
 
 ENV = r"""
 unpack = table.unpack
@@ -111,7 +111,7 @@ end }
 Utils = { appendedFunction = function(f, g) return function(...) f(...) g(...) end end }
 PlayerInputComponent = { registerGlobalPlayerActionEvents = function() end }
 FSBaseMission = { saveSavegame = function() end, sendInitialClientState = function() end }
-InputAction = { CRP_TOGGLE_SIZE = 1 }
+InputAction = { CYWP_TOGGLE_SIZE = 1 }
 g_inputBinding = { registerActionEvent = function() return true, 1 end, setActionEventText = function() end, setActionEventTextPriority = function() end }
 GuiUtils = { getUVs = function() return { 0, 0, 0, 1, 1, 0, 1, 1 } end }
 FocusManager = { setFocus = function() end }
@@ -328,11 +328,11 @@ g_fruitTypeManager = {
 
 g_currentModDirectory = MOD_DIR
 function source(path) dofile(path) end
-dofile(MOD_DIR .. "scripts/CropRotationPlan.lua")
+dofile(MOD_DIR .. "scripts/CropYearWheelPlanner.lua")
 
 -- Test helpers
-function frame() return CropRotationPlanFrame.instance end
-function farm(id) return CropRotationPlanData.getFarm(CropRotationPlan.data, id or LOCAL_FARM, true) end
+function frame() return CropYearWheelPlannerFrame.instance end
+function farm(id) return CropYearWheelPlannerData.getFarm(CropYearWheelPlanner.data, id or LOCAL_FARM, true) end
 function drawFrame() RENDERED = {} frame():draw() end
 function hitIds()
   local out = {}
@@ -431,7 +431,7 @@ print("--- single player")
 lua = make_runtime(True, 1)
 G = lua.globals()
 MOD = G.MOD
-C = G.CropRotationPlanCrops
+C = G.CropYearWheelPlannerCrops
 
 
 def ids():
@@ -453,18 +453,18 @@ check("wheat grows 10 months (Sep -> Jul)", crops.WHEAT.grow == 10, crops.WHEAT.
 check("barley grows 9 months", crops.BARLEY.grow == 9, crops.BARLEY.grow)
 check("carrot grows 4 months (Apr -> Aug)", crops.CARROT.grow == 4, crops.CARROT.grow)
 check("grass is a ley", crops.GRASS.ley is True)
-check("rice blocked: paddy", crops.RICE.block == "crp_block_paddy")
-check("poplar blocked: tree", crops.POPLAR.block == "crp_block_tree")
-check("radish blocked: cover crop", crops.OILSEEDRADISH.block == "crp_block_catchCrop")
-check("spinach blocked: all year", crops.SPINACH.block == "crp_block_allYear")
-check("sugarcane blocked: regrows", crops.SUGARCANE.block == "crp_block_regrows")
+check("rice blocked: paddy", crops.RICE.block == "cywp_block_paddy")
+check("poplar blocked: tree", crops.POPLAR.block == "cywp_block_tree")
+check("radish blocked: cover crop", crops.OILSEEDRADISH.block == "cywp_block_catchCrop")
+check("spinach blocked: all year", crops.SPINACH.block == "cywp_block_allYear")
+check("sugarcane blocked: regrows", crops.SUGARCANE.block == "cywp_block_regrows")
 check("deco fruit not listed", crops.DECO is None)
 
 frame = G.frame()
 pos = lua.eval("""function(list)
   local f, s
   for i, e in ipairs(list) do
-    if e == CropRotationPlanFrame.instance or (type(e) == "table" and e.element == CropRotationPlanFrame.instance) then f = i end
+    if e == CropYearWheelPlannerFrame.instance or (type(e) == "table" and e.element == CropYearWheelPlannerFrame.instance) then f = i end
     if e == g_inGameMenu.pageSettings or (type(e) == "table" and e.element == g_inGameMenu.pageSettings) then s = i end
   end
   return f, s
@@ -475,7 +475,7 @@ for name, lst in (("paging elements", menu.pagingElement.elements), ("paging pag
     check(f"{name}: tab directly above Settings", f is not None and s is not None and f == s - 1, (f, s))
 
 out = G.hud("full")
-check("HUD empty text", texts["crp_hudEmpty"] in out, out)
+check("HUD empty text", texts["cywp_hudEmpty"] in out, out)
 G.hud("minimized")
 
 # Settings
@@ -489,13 +489,13 @@ frame.onClickGrass(frame, 1)
 frame.onClickDisplay(frame, 2)
 frame.onClickPosition(frame, 2)
 check("display + position", MOD.settings.displayMode == "minimized" and MOD.settings.position == "left")
-local_file = G.FILES["/profile/modSettings/FS25_CropRotationPlan/settings.xml"]
+local_file = G.FILES["/profile/modSettings/FS25_CropYearWheelPlanner/settings.xml"]
 check("display + position saved on this PC", local_file is not None and local_file["settings#position"] == "left")
 
 # Plans: new plan, editor
 frame.updateSubCategoryPages(frame, 2)
 G.drawFrame()
-check("no plans text", texts["crp_noPlans"] in G.rendered())
+check("no plans text", texts["cywp_noPlans"] in G.rendered())
 G.NEXT_TEXT = "4-year"
 click("+ NEW PLAN")
 check("plan created and named", len(farm().plans) == 1 and farm().plans[1].name == "4-year")
@@ -527,7 +527,7 @@ for _ in range(20):
 ed = frame.pageState.editor
 check("plan filled with several seeds", len(ed.plan.seeds) >= 3, len(ed.plan.seeds))
 check("grass ley added with cut 3", any(ed.plan.seeds[i].crop == "GRASS" and ed.plan.seeds[i].cut == 3 for i in range(1, len(ed.plan.seeds) + 1)))
-check("no overlaps", len(G.CropRotationPlanLogic.getOverlaps(ed.plan, C.byName)) == 0)
+check("no overlaps", len(G.CropYearWheelPlannerLogic.getOverlaps(ed.plan, C.byName)) == 0)
 
 bars = [i for i in ids() if i.startswith("bar:")]
 check("bars drawn", len(bars) > 0)
@@ -618,7 +618,7 @@ check("HUD shows the plan name", "Rotation A" in G.hud("full"))
 
 # Savegame round trip
 MOD.save(MOD)
-loaded, old = G.CropRotationPlanData.load()
+loaded, old = G.CropYearWheelPlannerData.load()
 lf = loaded.farms[1]
 same = (len(lf.plans) == len(farm().plans) and lf.plans[1].name == farm().plans[1].name
         and len(lf.plans[1].seeds) == len(farm().plans[1].seeds) and lf.groups[1].planYear == 2
@@ -629,32 +629,59 @@ seeds_b = sorted((s.crop, s.t, s.dur, s.cut) for s in pylist(lf.plans[1].seeds))
 check("seeds identical after load", seeds_a == seeds_b, (seeds_a, seeds_b))
 
 # A v2.0 file (no farms) becomes farm 1 and its display settings move to this PC
-G.FILES["/savegame1/cropRotationPlan.xml"] = lua.table_from({
-    "cropRotationPlan#version": 2,
-    "cropRotationPlan.settings#displayMode": "hidden", "cropRotationPlan.settings#position": "left",
-    "cropRotationPlan.settings#grassInRotation": False,
-    "cropRotationPlan.plans.plan(0)#id": 1, "cropRotationPlan.plans.plan(0)#name": "Old", "cropRotationPlan.plans.plan(0)#years": 2,
-    "cropRotationPlan.plans.plan(0).seed(0)#crop": "WHEAT", "cropRotationPlan.plans.plan(0).seed(0)#t": 9,
-    "cropRotationPlan.fieldGroups.fieldGroup(0)#fields": "3 4", "cropRotationPlan.fieldGroups.fieldGroup(0)#plan": 1,
-    "cropRotationPlan.fieldGroups.fieldGroup(0)#planYear": 2, "cropRotationPlan.fieldGroups.fieldGroup(0)#anchorYear": 3,
+G.FILES["/savegame1/cropYearWheelPlanner.xml"] = lua.table_from({
+    "cropYearWheelPlanner#version": 2,
+    "cropYearWheelPlanner.settings#displayMode": "hidden", "cropYearWheelPlanner.settings#position": "left",
+    "cropYearWheelPlanner.settings#grassInRotation": False,
+    "cropYearWheelPlanner.plans.plan(0)#id": 1, "cropYearWheelPlanner.plans.plan(0)#name": "Old", "cropYearWheelPlanner.plans.plan(0)#years": 2,
+    "cropYearWheelPlanner.plans.plan(0).seed(0)#crop": "WHEAT", "cropYearWheelPlanner.plans.plan(0).seed(0)#t": 9,
+    "cropYearWheelPlanner.fieldGroups.fieldGroup(0)#fields": "3 4", "cropYearWheelPlanner.fieldGroups.fieldGroup(0)#plan": 1,
+    "cropYearWheelPlanner.fieldGroups.fieldGroup(0)#planYear": 2, "cropYearWheelPlanner.fieldGroups.fieldGroup(0)#anchorYear": 3,
 })
-old_data, old_display = G.CropRotationPlanData.load()
+old_data, old_display = G.CropYearWheelPlannerData.load()
 of = old_data.farms[1]
 check("v2.0 file: plans and groups become farm 1", of is not None and of.plans[1].name == "Old" and pylist(of.groups[1].fields) == [3, 4] and of.grassInRotation is False)
 check("v2.0 file: group gets an id", of.groups[1].id == 1 and of.nextGroupId == 2)
 check("v2.0 file: display settings handed over", old_display is not None and old_display.displayMode == "hidden")
+
+# Files written before the rename (Crop Rotation Plan): read when the new ones do not exist yet
+lua.execute("""
+SAVED_NEW = FILES["/savegame1/cropYearWheelPlanner.xml"]
+FILES["/savegame1/cropYearWheelPlanner.xml"] = nil
+FILES["/savegame1/cropRotationPlan.xml"] = {
+  ["cropRotationPlan#version"] = 3,
+  ["cropRotationPlan.farm(0)#id"] = 1,
+  ["cropRotationPlan.farm(0).plans.plan(0)#id"] = 1,
+  ["cropRotationPlan.farm(0).plans.plan(0)#name"] = "Before rename",
+  ["cropRotationPlan.farm(0).plans.plan(0)#years"] = 1,
+  ["cropRotationPlan.farm(0).fieldGroups.fieldGroup(0)#id"] = 1,
+  ["cropRotationPlan.farm(0).fieldGroups.fieldGroup(0)#fields"] = "8",
+}
+SAVED_LOCAL = FILES["/profile/modSettings/FS25_CropYearWheelPlanner/settings.xml"]
+FILES["/profile/modSettings/FS25_CropYearWheelPlanner/settings.xml"] = nil
+FILES["/profile/modSettings/FS25_CropRotationPlan/settings.xml"] = { ["settings#displayMode"] = "hidden", ["settings#position"] = "left" }
+LEGACY_DATA = CropYearWheelPlannerData.load()
+LEGACY_LOCAL = CropYearWheelPlannerData.loadLocal()
+FILES["/savegame1/cropRotationPlan.xml"] = nil
+FILES["/profile/modSettings/FS25_CropRotationPlan/settings.xml"] = nil
+FILES["/savegame1/cropYearWheelPlanner.xml"] = SAVED_NEW
+FILES["/profile/modSettings/FS25_CropYearWheelPlanner/settings.xml"] = SAVED_LOCAL
+""")
+lf = G.LEGACY_DATA.farms[1]
+check("rename: old savegame file cropRotationPlan.xml still read", lf is not None and lf.plans[1].name == "Before rename" and lf.groups[1].fields[1] == 8)
+check("rename: old local settings folder still read", G.LEGACY_LOCAL.displayMode == "hidden")
 MOD.save(MOD)
 
 # Example plan
 MOD.consoleLoadExample(MOD)
 check("example: 2 plans, 6 groups", len(farm().plans) == 2 and len(farm().groups) == 6)
 for i in range(1, 3):
-    check(f"example plan {i} has no overlaps", len(G.CropRotationPlanLogic.getOverlaps(farm().plans[i], C.byName)) == 0)
+    check(f"example plan {i} has no overlaps", len(G.CropYearWheelPlannerLogic.getOverlaps(farm().plans[i], C.byName)) == 0)
 out = G.hud("full")
 check("example on screen", "4-year rotation" in out and "2-year canola" in out, out[:200])
 MOD.consoleReloadCrops(MOD)
 
-lua.execute("FIT_OK = true for w = 1, 60 do local s = CropRotationPlanUI.fit('Græsmark på ørnebakken', 0.02, w * 0.002) "
+lua.execute("FIT_OK = true for w = 1, 60 do local s = CropYearWheelPlannerUI.fit('Græsmark på ørnebakken', 0.02, w * 0.002) "
             "if not utf8.len(s) then FIT_OK = false end end")
 check("shortened Danish text is valid UTF-8", G.FIT_OK is True)
 
@@ -677,7 +704,7 @@ for step in range(3000):
         G.hud(random.choice(["full", "minimized"]))
 check("random clicking: no errors", len(errors(lua)) == 0, errors(lua)[:3])
 for i in range(1, len(farm().plans) + 1):
-    check(f"plan {i} still valid after random clicks", len(G.CropRotationPlanLogic.getOverlaps(farm().plans[i], C.byName)) == 0)
+    check(f"plan {i} still valid after random clicks", len(G.CropYearWheelPlannerLogic.getOverlaps(farm().plans[i], C.byName)) == 0)
 check("random clicking: no rejected edits", len(pylist(G.WARNINGS)) == 0, pylist(G.WARNINGS)[:3])
 
 check("tab list consistent while the mod is loaded", G.tabListConsistent() is True)
@@ -733,13 +760,13 @@ pump()
 CG.MOD.loadMap(CG.MOD, "map.xml")
 check("client got farm 1 on join", len(cfarm(1).plans) == 2 and len(cfarm(1).groups) == 6)
 check("client loadMap kept the received state", CG.MOD.data.farms[1] is not None)
-check("client writes no savegame file", CG.FILES["/savegame1/cropRotationPlan.xml"] is None)
+check("client writes no savegame file", CG.FILES["/savegame1/cropYearWheelPlanner.xml"] is None)
 
 cframe = CG.frame()
 cframe.onFrameOpen(cframe)
 cframe.updateSubCategoryPages(cframe, 2)
 CG.drawFrame()
-check("client's farm 2 has no plans", texts["crp_noPlans"] in CG.rendered())
+check("client's farm 2 has no plans", texts["cywp_noPlans"] in CG.rendered())
 
 # New plan from the client: goes to the server, comes back, gets selected
 CG.NEXT_TEXT = "Client plan"
@@ -784,20 +811,20 @@ check("plan year now on the server", sfarm(2).groups[1].planYear == 2 and sfarm(
 
 # Bad edits are rejected and the sender gets the state back
 group_id = sfarm(2).groups[1].id
-OP = CG.CropRotationPlanSync.OP
-CG.CropRotationPlanSync.request(client.table_from({"type": OP.ASSIGN_FIELD, "groupId": group_id, "fieldId": 3}))
+OP = CG.CropYearWheelPlannerSync.OP
+CG.CropYearWheelPlannerSync.request(client.table_from({"type": OP.ASSIGN_FIELD, "groupId": group_id, "fieldId": 3}))
 pump()
 check("field of another farm rejected", pylist(sfarm(2).groups[1].fields) == [40] and pylist(sfarm(1).groups[1].fields) == [3, 4, 5])
-bad = CG.CropRotationPlanData.copyPlan(cfarm(2).plans[1])
+bad = CG.CropYearWheelPlannerData.copyPlan(cfarm(2).plans[1])
 bad.seeds[len(bad.seeds) + 1] = client.table_from({"crop": "CANOLA", "t": bad.seeds[1].t})
-CG.CropRotationPlanSync.request(client.table_from({"type": OP.PUT_PLAN, "plan": bad}))
+CG.CropYearWheelPlannerSync.request(client.table_from({"type": OP.PUT_PLAN, "plan": bad}))
 pump()
 check("overlapping plan rejected", len(sfarm(2).plans[1].seeds) == seeds)
 check("rejections logged on the server", len(pylist(SG.WARNINGS)) >= 2, pylist(SG.WARNINGS))
 # The client knows farm 1's plans (it got every farm on join); it sends one as its own edit
-plan1 = CG.CropRotationPlanData.copyPlan(cfarm(1).plans[1])
+plan1 = CG.CropYearWheelPlannerData.copyPlan(cfarm(1).plans[1])
 plan1.name = "Hacked"
-CG.CropRotationPlanSync.request(client.table_from({"type": OP.PUT_PLAN, "plan": plan1}))
+CG.CropYearWheelPlannerSync.request(client.table_from({"type": OP.PUT_PLAN, "plan": plan1}))
 pump()
 check("farm 2 cannot change farm 1's plan", sfarm(1).plans[1].name == "4-year rotation")
 # Plan ids are per farm: the edit landed on farm 2's own plan 1, as it should
@@ -806,9 +833,9 @@ check("the edit changed farm 2's own plan instead", sfarm(2).plans[1].name == "H
 # A spectator (user 3, farm 0) cannot edit
 CG.LOCAL_FARM = 0
 CG.drawFrame()
-check("spectator sees the join-a-farm text", texts["crp_spectator"] in CG.rendered())
+check("spectator sees the join-a-farm text", texts["cywp_spectator"] in CG.rendered())
 plan_count = lua_count = sum(len(SG.MOD.data.farms[f].plans) for f in (1, 2))
-CG.CropRotationPlanSync.request(client.table_from({"type": OP.NEW_PLAN, "name": "Spy"}))
+CG.CropYearWheelPlannerSync.request(client.table_from({"type": OP.NEW_PLAN, "name": "Spy"}))
 for msg in pylist(CG.takeNet()):
     SG.deliver(msg["name"], server.table_from(pylist(msg["values"])), False, 3)
 check("spectator edit rejected", SG.MOD.data.farms[0] is None and sum(len(SG.MOD.data.farms[f].plans) for f in (1, 2)) == plan_count)
@@ -828,7 +855,7 @@ check("server HUD shows farm 1", "4-year rotation" in out and "Hacked" not in ou
 
 # Server saves both farms
 SG.MOD.save(SG.MOD)
-loaded, _ = SG.CropRotationPlanData.load()
+loaded, _ = SG.CropYearWheelPlannerData.load()
 check("savegame keeps both farms", len(loaded.farms[1].plans) == 2 and len(loaded.farms[2].plans) == 1 and pylist(loaded.farms[2].groups[1].fields) == [40])
 
 # --- Who can edit -------------------------------------------------------------------
@@ -837,12 +864,12 @@ cframe.onFrameOpen(cframe)
 check("multiplayer: section shown", cframe.sectionMultiplayer.visible is True and cframe.editRow.visible is True)
 check("default: farm manager only", sfarm(2).editPermission == "manager" and cframe.editOption.state == 1)
 check("farm manager: switch enabled, status 'can edit'",
-      cframe.editOption.disabled is False and cframe.editStatusOption.texts[1] == texts["crp_status_canEdit"])
+      cframe.editOption.disabled is False and cframe.editStatusOption.texts[1] == texts["cywp_status_canEdit"])
 
 
 def deliver_from(user_id, op_table):
     """An edit sent by another player (user_id) on the client's machine, delivered to the server."""
-    CG.CropRotationPlanSync.request(op_table)
+    CG.CropYearWheelPlannerSync.request(op_table)
     for msg in pylist(CG.takeNet()):
         SG.deliver(msg["name"], server.table_from(pylist(msg["values"])), False, user_id)
     SG.takeNet()
@@ -871,11 +898,11 @@ CG.MANAGERS[2][2] = False
 SG.MANAGERS[2][2] = False  # the game syncs farm roles; both sides see the demotion
 cframe.onFrameOpen(cframe)
 check("non-manager: switch disabled", cframe.editOption.disabled is True)
-check("non-manager: status says view only", cframe.editStatusOption.texts[1] == texts["crp_status_managerOnly"])
+check("non-manager: status says view only", cframe.editStatusOption.texts[1] == texts["cywp_status_managerOnly"])
 check("non-manager: grass setting disabled", cframe.grassOption.disabled is True)
 cframe.updateSubCategoryPages(cframe, 2)
 CG.drawFrame()
-check("non-manager: plans page shows view only", texts["crp_status_managerOnly"] in CG.rendered())
+check("non-manager: plans page shows view only", texts["cywp_status_managerOnly"] in CG.rendered())
 check("non-manager: no edit buttons", "+ NEW PLAN" not in pylist(CG.hitIds()) and "EDIT PLAN" not in pylist(CG.hitIds()))
 check("non-manager: can still look at other plans and views", "YEAR ROWS" in pylist(CG.hitIds()))
 shown = CG.rendered()
@@ -893,7 +920,7 @@ check("non-manager: + New field group and X hidden", "+ NEW FIELD GROUP" not in 
 check("non-manager: no stepper arrows on groups", not any(i.endswith(":prev") or i.endswith(":next") for i in pylist(CG.hitIds())))
 before = len(sfarm(2).groups)
 cframe.onClickGrass(cframe, 1)
-CG.CropRotationPlanSync.request(client.table_from({"type": OP.NEW_GROUP}))
+CG.CropYearWheelPlannerSync.request(client.table_from({"type": OP.NEW_GROUP}))
 pump()
 check("non-manager: requests from the server side also rejected", len(sfarm(2).groups) == before)
 random.seed(3)
@@ -919,7 +946,7 @@ for step in range(1500):
         CG.clickIndex(random.randint(1, n_hits))
     pump()
 for i in range(1, len(sfarm(2).plans) + 1):
-    check(f"farm 2 plan {i} valid on the server", len(SG.CropRotationPlanLogic.getOverlaps(sfarm(2).plans[i], SG.CropRotationPlanCrops.byName)) == 0)
+    check(f"farm 2 plan {i} valid on the server", len(SG.CropYearWheelPlannerLogic.getOverlaps(sfarm(2).plans[i], SG.CropYearWheelPlannerCrops.byName)) == 0)
 same = (len(sfarm(2).plans) == len(cfarm(2).plans) and len(sfarm(2).groups) == len(cfarm(2).groups)
         and all(len(sfarm(2).plans[i].seeds) == len(cfarm(2).plans[i].seeds) for i in range(1, len(sfarm(2).plans) + 1)))
 check("client and server agree after random clicking", same)

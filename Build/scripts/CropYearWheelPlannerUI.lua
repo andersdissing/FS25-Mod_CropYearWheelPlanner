@@ -1,14 +1,14 @@
--- CropRotationPlanUI.lua
+-- CropYearWheelPlannerUI.lua
 -- Small immediate-mode toolkit for the Plans, Field groups and plan editor pages.
 --
--- Those pages are drawn by the frame itself (CropRotationPlanFrame:draw) with the same engine
+-- Those pages are drawn by the frame itself (CropYearWheelPlannerFrame:draw) with the same engine
 -- calls the on-screen plan uses (drawFilledRect, renderText, Overlay), and clicks are matched
--- against the boxes registered while drawing (CropRotationPlanFrame:mouseEvent). Sizes are given
+-- against the boxes registered while drawing (CropYearWheelPlannerFrame:mouseEvent). Sizes are given
 -- in GUI pixels of the 1920x1080 reference layout and scaled like the rest of the menu.
 -- Colours follow the mockups, which follow the base game menu.
 
-CropRotationPlanUI = {}
-local UI = CropRotationPlanUI
+CropYearWheelPlannerUI = {}
+local UI = CropYearWheelPlannerUI
 
 UI.C = {
     panel = { 0.17, 0.17, 0.17, 1 },        -- #2c2c2c
