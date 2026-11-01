@@ -564,6 +564,9 @@ click("years:next")
 click("CANCEL")
 check("cancel discards", farm().plans[1].years == 4)
 
+check("Plans page opens in Year rows", texts["cywp_rowsHint"] in G.rendered() and texts["cywp_columnsHint"] not in G.rendered())
+click("COLUMNS")
+check("columns view", frame.pageState.plansView == "columns" and texts["cywp_columnsHint"] in G.rendered())
 click("YEAR ROWS")
 check("year rows view", frame.pageState.plansView == "rows")
 rows_bars = [i for i in ids() if i.startswith("bar:")]
